@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M-Store | تسجيل الدخول</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#6366f1">
+<style>
+* {margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif}
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
+.login-box {
+  background:white;
+  padding:40px 30px;
+  border-radius:20px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.3);
+  width:100%;
+  max-width:400px;
+  text-align:center;
+  animation:slideUp 0.5s ease;
+}
+@keyframes slideUp {
+  from {opacity:0; transform:translateY(30px)}
+  to {opacity:1; transform:translateY(0)}
+}
+.logo {
+  font-size:60px;
+  margin-bottom:10px;
+}
+h1 {
+  color:#333;
+  font-size:28px;
+  margin-bottom:8px;
+}
+.subtitle {
+  color:#999;
+  font-size:14px;
+  margin-bottom:30px;
+}
+input {
+  width:100%;
+  padding:15px;
+  border:2px solid #e0e0e0;
+  border-radius:12px;
+  font-size:16px;
+  margin-bottom:15px;
+  transition:0.3s;
+  text-align:center;
+  letter-spacing:2px;
+}
+input:focus {
+  border-color:#667eea;
+  outline:none;
+  box-shadow:0 0 0 3px rgba(102,126,234,0.1);
+}
+button {
+  width:100%;
+  padding:15px;
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color:white;
+  border:none;
+  border-radius:12px;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+  transition:0.3s;
+}
+button:hover {
+  transform:translateY(-2px);
+  box-shadow:0 10px 25px rgba(102,126,234,0.4);
+}
+.error {
+  color:#e74c3c;
+  font-size:14px;
+  margin-top:10px;
+  display:none;
+}
+.footer {
+  margin-top:25px;
+  font-size:12px;
+  color:#aaa;
+}
+</style>
+</head>
+<body>
+<div class="login-box">
+  <div class="logo">🛒</div>
+  <h1>M-Store</h1>
+  <p class="subtitle">تطبيق إدارة المنتجات</p>
+  
+  <input type="password" id="password" placeholder="أدخل كلمة السر" maxlength="10">
+  <button onclick="login()">دخول</button>
+  <div class="error" id="error">كلمة السر غير صحيحة ❌</div>
+  
+  <div class="footer">© 2026 M-Store</div>
+</div>
+
+<script type="module">
+// Firebase Config ديالك
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAH2EdIAIgAJdSGqItQ5ZxHxekYki9ZrOY",
+  authDomain: "m-store-4d10f.firebaseapp.com",
+  databaseURL: "https://m-store-4d10f-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "m-store-4d10f",
+  storageBucket: "m-store-4d10f.firebasestorage.app",
+  messagingSenderId: "903736276607",
+  appId: "1:903736276607:web:f514d9136c286c7814f14a",
+  measurementId: "G-M6TFY56Y4L"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const storage = getStorage(app);
+
+// نخزنهم باش نستعملوهم فـ product.html
+window.db = db;
+window.storage = storage;
+
+// كلمة السر
+const CORRECT_PASSWORD = "1234@1234";
+
+function login() {
+  const pass = document.getElementById('password').value;
+  const error = document.getElementById('error');
+  
+  if(pass === CORRECT_PASSWORD) {
+    localStorage.setItem('mstore_auth', 'true');
+    window.location.href = 'product.html';
+  } else {
+    error.style.display = 'block';
+    document.getElementById('password').value = '';
+    document.getElementById('password').focus();
+  }
+}
+
+// Enter للدخول
+document.getElementById('password').addEventListener('keypress', function(e) {
+  if(e.key === 'Enter') login();
+});
+
+// إلا كان مسجل من قبل يدوز ديريكت
+if(localStorage.getItem('mstore_auth') === 'true') {
+  window.location.href = 'product.html';
+}
+
+// تسجيل Service Worker للـ PWA
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js');
+}
+</script>
+</body>
+</html>
