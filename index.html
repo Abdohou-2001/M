@@ -3,110 +3,192 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M-Store | تسجيل الدخول</title>
+<title>M-Store | متجر المنتجات</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#6366f1">
 <style>
 * {margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif}
-body {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:20px;
+body {background:#f5f7fa; min-height:100vh}
+.header {
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color:white;
+  padding:25px 20px;
+  text-align:center;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+  position:sticky;
+  top:0;
+  z-index:100;
 }
-.login-box {
+.header h1 {font-size:32px; margin-bottom:5px}
+.header p {opacity:0.9; font-size:14px}
+.container {max-width:1200px; margin:30px auto; padding:0 20px}
+.grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fill, minmax(280px, 1fr));
+  gap:25px;
+  margin-top:20px;
+}
+.card {
   background:white;
-  padding:40px 30px;
-  border-radius:20px;
-  box-shadow:0 20px 60px rgba(0,0,0,0.3);
-  width:100%;
-  max-width:400px;
-  text-align:center;
-  animation:slideUp 0.5s ease;
-}
-@keyframes slideUp {
-  from {opacity:0; transform:translateY(30px)}
-  to {opacity:1; transform:translateY(0)}
-}
-.logo {
-  font-size:60px;
-  margin-bottom:10px;
-}
-h1 {
-  color:#333;
-  font-size:28px;
-  margin-bottom:8px;
-}
-.subtitle {
-  color:#999;
-  font-size:14px;
-  margin-bottom:30px;
-}
-input {
-  width:100%;
-  padding:15px;
-  border:2px solid #e0e0e0;
-  border-radius:12px;
-  font-size:16px;
-  margin-bottom:15px;
+  border-radius:18px;
+  overflow:hidden;
+  box-shadow:0 5px 20px rgba(0,0,0,0.08);
   transition:0.3s;
-  text-align:center;
-  letter-spacing:2px;
+  position:relative;
 }
-input:focus {
-  border-color:#667eea;
-  outline:none;
-  box-shadow:0 0 0 3px rgba(102,126,234,0.1);
+.card:hover {transform:translateY(-8px); box-shadow:0 12px 35px rgba(0,0,0,0.15)}
+.card img {width:100%; height:220px; object-fit:cover; background:#f0f0f0}
+.card-body {padding:20px}
+.card-body h3 {color:#333; font-size:20px; margin-bottom:8px}
+.price {color:#667eea; font-size:24px; font-weight:bold; margin:10px 0}
+.desc {color:#777; font-size:14px; line-height:1.6}
+.delete-btn {
+  position:absolute;
+  top:12px;
+  left:12px;
+  background:#e74c3c;
+  color:white;
+  border:none;
+  width:35px;
+  height:35px;
+  border-radius:50%;
+  cursor:pointer;
+  font-size:18px;
+  display:none;
+  z-index:10;
 }
-button {
-  width:100%;
-  padding:15px;
+.admin-mode.delete-btn {display:block}
+.fab {
+  position:fixed;
+  bottom:30px;
+  left:30px;
+  width:65px;
+  height:65px;
   background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color:white;
   border:none;
-  border-radius:12px;
-  font-size:18px;
-  font-weight:bold;
+  border-radius:50%;
+  font-size:35px;
   cursor:pointer;
+  box-shadow:0 8px 25px rgba(102,126,234,0.4);
+  display:none;
+  z-index:999;
   transition:0.3s;
 }
-button:hover {
-  transform:translateY(-2px);
-  box-shadow:0 10px 25px rgba(102,126,234,0.4);
-}
-.error {
-  color:#e74c3c;
-  font-size:14px;
-  margin-top:10px;
+.fab:hover {transform:scale(1.1)}
+.admin-mode.fab {display:flex; align-items:center; justify-content:center}
+.admin-bar {
+  background:#2c3e50;
+  color:white;
+  padding:12px;
+  text-align:center;
   display:none;
 }
-.footer {
-  margin-top:25px;
-  font-size:12px;
+.admin-mode.admin-bar {display:block}
+.modal {
+  display:none;
+  position:fixed;
+  top:0; left:0; right:0; bottom:0;
+  background:rgba(0,0,0,0.6);
+  z-index:1000;
+  align-items:center;
+  justify-content:center;
+}
+.modal.show {display:flex}
+.modal-box {
+  background:white;
+  padding:30px;
+  border-radius:20px;
+  width:90%;
+  max-width:450px;
+  animation:pop 0.3s;
+}
+@keyframes pop {from {transform:scale(0.8); opacity:0} to {transform:scale(1); opacity:1}}
+.modal-box h2 {margin-bottom:20px; color:#333}
+.modal-box input,.modal-box textarea {
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border:2px solid #e0e0e0;
+  border-radius:10px;
+  font-size:15px;
+}
+.modal-box button {
+  width:100%;
+  padding:14px;
+  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+  margin-top:8px;
+}
+.close-btn {background:#95a5a6!important}
+.login-prompt {
+  text-align:center;
+  color:#999;
+  font-size:13px;
+  margin-top:15px;
+}
+.empty {
+  text-align:center;
+  padding:60px 20px;
   color:#aaa;
 }
+.empty-icon {font-size:80px; margin-bottom:20px}
 </style>
 </head>
 <body>
-<div class="login-box">
-  <div class="logo">🛒</div>
-  <h1>M-Store</h1>
-  <p class="subtitle">تطبيق إدارة المنتجات</p>
-  
-  <input type="password" id="password" placeholder="أدخل كلمة السر" maxlength="10">
-  <button onclick="login()">دخول</button>
-  <div class="error" id="error">كلمة السر غير صحيحة ❌</div>
-  
-  <div class="footer">© 2026 M-Store</div>
+<div class="admin-bar" id="adminBar">🔐 وضع المسؤول مفعّل - يمكنك إضافة وحذف المنتجات</div>
+
+<div class="header">
+  <h1>🛒 M-Store</h1>
+  <p>تصفح المنتجات - للمسؤولين فقط: اضغط مطول على الشعار للدخول</p>
+</div>
+
+<div class="container">
+  <div class="grid" id="productsGrid">
+    <div class="empty">
+      <div class="empty-icon">📦</div>
+      <h3>لا توجد منتجات بعد</h3>
+      <p>ادخل كمسؤول لإضافة أول منتج</p>
+    </div>
+  </div>
+</div>
+
+<button class="fab" onclick="openAddModal()">+</button>
+
+<div class="login-prompt" id="loginPrompt">💡 اضغط مطول على شعار M-Store الفوق للدخول كمسؤول</div>
+
+<!-- مودال كلمة السر -->
+<div class="modal" id="loginModal">
+  <div class="modal-box">
+    <h2>دخول المسؤول</h2>
+    <input type="password" id="adminPass" placeholder="أدخل كلمة السر">
+    <button onclick="checkAdmin()">دخول</button>
+    <button class="close-btn" onclick="closeLoginModal()">إلغاء</button>
+  </div>
+</div>
+
+<!-- مودال إضافة منتج -->
+<div class="modal" id="addModal">
+  <div class="modal-box">
+    <h2>إضافة منتج جديد</h2>
+    <input type="text" id="prodName" placeholder="اسم المنتج">
+    <input type="number" id="prodPrice" placeholder="السعر بالدرهم">
+    <textarea id="prodDesc" placeholder="وصف المنتج" rows="3"></textarea>
+    <input type="file" id="prodImage" accept="image/*">
+    <button onclick="addProduct()">حفظ المنتج</button>
+    <button class="close-btn" onclick="closeAddModal()">إلغاء</button>
+  </div>
 </div>
 
 <script type="module">
-// Firebase Config ديالك
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { getDatabase, ref, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAH2EdIAIgAJdSGqItQ5ZxHxekYki9ZrOY",
@@ -122,42 +204,108 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const storage = getStorage(app);
+const CORRECT_PASS = "1234@1234";
 
-// نخزنهم باش نستعملوهم فـ product.html
-window.db = db;
-window.storage = storage;
+// تسجيل دخول المسؤول بالضغط المطول على الهيدر
+let pressTimer;
+document.querySelector('.header').addEventListener('mousedown', () => {
+  pressTimer = setTimeout(() => openLoginModal(), 1500);
+});
+document.querySelector('.header').addEventListener('mouseup', () => clearTimeout(pressTimer));
+document.querySelector('.header').addEventListener('mouseleave', () => clearTimeout(pressTimer));
 
-// كلمة السر
-const CORRECT_PASSWORD = "1234@1234";
+function openLoginModal() {
+  document.getElementById('loginModal').classList.add('show');
+}
+window.closeLoginModal = () => {
+  document.getElementById('loginModal').classList.remove('show');
+  document.getElementById('adminPass').value = '';
+}
 
-function login() {
-  const pass = document.getElementById('password').value;
-  const error = document.getElementById('error');
-  
-  if(pass === CORRECT_PASSWORD) {
-    localStorage.setItem('mstore_auth', 'true');
-    window.location.href = 'product.html';
+window.checkAdmin = () => {
+  const pass = document.getElementById('adminPass').value;
+  if(pass === CORRECT_PASS) {
+    localStorage.setItem('mstore_admin', 'true');
+    document.body.classList.add('admin-mode');
+    document.getElementById('loginPrompt').style.display = 'none';
+    closeLoginModal();
+    alert('مرحبا بك أيها المسؤول ✅');
   } else {
-    error.style.display = 'block';
-    document.getElementById('password').value = '';
-    document.getElementById('password').focus();
+    alert('كلمة السر خاطئة ❌');
   }
 }
 
-// Enter للدخول
-document.getElementById('password').addEventListener('keypress', function(e) {
-  if(e.key === 'Enter') login();
+// إلا كان مسجل من قبل
+if(localStorage.getItem('mstore_admin') === 'true') {
+  document.body.classList.add('admin-mode');
+  document.getElementById('loginPrompt').style.display = 'none';
+}
+
+// قراءة المنتجات وعرضها للجميع
+const grid = document.getElementById('productsGrid');
+onValue(ref(db, 'products'), (snapshot) => {
+  grid.innerHTML = '';
+  if(!snapshot.exists()) {
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">📦</div><h3>لا توجد منتجات بعد</h3><p>ادخل كمسؤول لإضافة أول منتج</p></div>`;
+    return;
+  }
+  snapshot.forEach(child => {
+    const p = child.val();
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <button class="delete-btn" onclick="deleteProd('${child.key}', '${p.imgPath || ''}')">×</button>
+      <img src="${p.image}" alt="${p.name}">
+      <div class="card-body">
+        <h3>${p.name}</h3>
+        <div class="price">${p.price} درهم</div>
+        <p class="desc">${p.desc}</p>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
 });
 
-// إلا كان مسجل من قبل يدوز ديريكت
-if(localStorage.getItem('mstore_auth') === 'true') {
-  window.location.href = 'product.html';
+// إضافة منتج - للمسؤول فقط
+window.openAddModal = () => document.getElementById('addModal').classList.add('show');
+window.closeAddModal = () => {
+  document.getElementById('addModal').classList.remove('show');
+  document.getElementById('prodName').value = '';
+  document.getElementById('prodPrice').value = '';
+  document.getElementById('prodDesc').value = '';
+  document.getElementById('prodImage').value = '';
 }
 
-// تسجيل Service Worker للـ PWA
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
+window.addProduct = async () => {
+  const name = document.getElementById('prodName').value;
+  const price = document.getElementById('prodPrice').value;
+  const desc = document.getElementById('prodDesc').value;
+  const file = document.getElementById('prodImage').files[0];
+
+  if(!name ||!price ||!file) return alert('عمر جميع الخانات + صورة');
+
+  const imgPath = 'products/' + Date.now() + '_' + file.name;
+  const imgRef = sRef(storage, imgPath);
+  await uploadBytes(imgRef, file);
+  const url = await getDownloadURL(imgRef);
+
+  await push(ref(db, 'products'), {
+    name, price, desc, image: url, imgPath
+  });
+
+  closeAddModal();
+  alert('تمت الإضافة بنجاح ✅');
 }
+
+// حذف منتج - للمسؤول فقط
+window.deleteProd = async (key, imgPath) => {
+  if(!confirm('متأكدة بغيتي تمسحي المنتج؟')) return;
+  await remove(ref(db, 'products/' + key));
+  if(imgPath) await deleteObject(sRef(storage, imgPath));
+}
+
+// تسجيل Service Worker
+if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
 </html>
