@@ -198,7 +198,7 @@ small {display:block; margin-top:-8px; margin-bottom:10px}
     </select>
     <textarea id="pDesc" placeholder="وصف المنتج والمميزات" rows="3"></textarea>
     <input type="file" id="pImgs" accept="image/*" multiple>
-    <small style="color:var(--muted)">اختاري من 1 إلى 5 صور - الصورة الأولى تظهر هنا</small>
+    <small style="color:var(--muted)">اختار من 1 إلى 5 صور - الصورة الأولى تظهر هنا</small>
     <input type="text" id="pWhatsApp" placeholder="رقم واتساب 212613675970" value="212613675970">
     <button id="saveBtn" onclick="addProduct(event)">حفظ المنتج</button>
     <button class="close-btn" onclick="closeModal('addModal')">إلغاء</button>
@@ -368,9 +368,9 @@ window.addProduct = async (event) => {
   const files = document.getElementById('pImgs').files;
   const whatsapp = document.getElementById('pWhatsApp').value.trim();
 
-  if(!name) return alert('❌ عمري اسم المنتج');
-  if(!price || price <= 0) return alert('❌ عمري سعر صحيح');
-  if(files.length === 0) return alert('❌ اختاري صورة واحدة على الأقل');
+  if(!name) return alert('❌ اكتب اسم المنتج');
+  if(!price || price <= 0) return alert('❌ اكتب السعر ');
+  if(files.length === 0) return alert('❌ اختار صورة واحدة على الأقل');
 
   btn.disabled = true;
   btn.textContent = 'جاري رفع الصور...';
@@ -410,7 +410,7 @@ window.addProduct = async (event) => {
 
 // حذف
 window.deleteProd = async (id, imgPaths) => {
-  if(!confirm('متأكدة بغيتي تمسحي المنتج؟')) return;
+  if(!confirm('هل تريد مسح المنتج؟')) return;
   await remove(ref(db, 'products/' + id));
   if(imgPaths) imgPaths.split(',').forEach(p => deleteObject(sRef(storage, p)).catch(()=>{}));
 }
