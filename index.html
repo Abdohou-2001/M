@@ -3,145 +3,164 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>M-Store | متجرك الذكي</title>
+<title>M-Store | مواد التنظيف</title>
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#6366f1">
 <style>
 :root {
-  --bg:#f5f7fa; --card:#fff; --text:#333; --muted:#777; --primary:#667eea;
+  --bg:#f8fafc; --card:#fff; --text:#1e293b; --muted:#64748b; --primary:#6366f1; --border:#e2e8f0;
 }
 [data-theme="dark"] {
-  --bg:#1a1a2e; --card:#16213e; --text:#eee; --muted:#aaa; --primary:#8b5cf6;
+  --bg:#0f172a; --card:#1e293b; --text:#f1f5f9; --muted:#94a3b8; --primary:#818cf8; --border:#334155;
 }
 * {margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', Tahoma, sans-serif}
-body {background:var(--bg); color:var(--text); transition:0.3s; min-height:100vh}
+body {background:var(--bg); color:var(--text); transition:0.3s}
 .header {
-  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color:white; padding:20px; text-align:center; position:sticky; top:0; z-index:100;
-  display:flex; align-items:center; justify-content:space-between;
+  background:linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color:white; padding:22px 20px; text-align:center; position:sticky; top:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between; box-shadow:0 4px 20px rgba(99,102,241,0.3);
 }
-.header h1 {font-size:28px; cursor:pointer; user-select:none}
+.header h1 {font-size:26px; font-weight:700}
 .theme-btn {
-  background:rgba(255,255,255,0.2); border:none; color:white; width:45px; height:45px;
-  border-radius:50%; font-size:22px; cursor:pointer;
+  background:rgba(255,255,255,0.2); border:none; color:white; width:48px; height:48px;
+  border-radius:50%; font-size:24px; cursor:pointer; transition:0.2s;
 }
+.theme-btn:hover {transform:scale(1.1)}
 .admin-bar {
-  background:#2c3e50; color:white; padding:10px; text-align:center; display:none; font-size:13px;
+  background:#0f172a; color:#10b981; padding:10px; text-align:center; display:none; font-size:13px; font-weight:600;
 }
-.admin-mode.admin-bar {display:block}
+.admin-mode.admin-bar {display:flex; align-items:center; justify-content:center; gap:8px}
 .toolbar {
-  max-width:1200px; margin:20px auto; padding:0 20px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;
+  max-width:1200px; margin:25px auto 15px; padding:0 20px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;
 }
-.search-box {flex:1; min-width:200px; position:relative}
+.search-box {flex:1; min-width:220px; position:relative}
 .search-box input {
-  width:100%; padding:14px 45px 14px 15px; border:2px solid #ddd; border-radius:12px; font-size:15px;
-  background:var(--card); color:var(--text);
+  width:100%; padding:14px 45px 14px 18px; border:2px solid var(--border); border-radius:14px; font-size:15px;
+  background:var(--card); color:var(--text); transition:0.2s;
 }
-.search-icon {position:absolute; right:15px; top:50%; transform:translateY(-50%); font-size:18px}
-.stats {display:flex; gap:15px; align-items:center; font-size:14px; color:var(--muted)}
-.sort-btn,.filter-btn {
-  padding:10px 16px; border:2px solid var(--primary); background:var(--card); color:var(--primary);
-  border-radius:10px; cursor:pointer; font-weight:bold;
+.search-box input:focus {border-color:var(--primary); outline:none}
+.search-icon {position:absolute; left:18px; top:50%; transform:translateY(-50%); font-size:18px; opacity:0.6}
+.stats {display:flex; gap:12px; align-items:center; font-size:14px; color:var(--muted); font-weight:600}
+.sort-btn {
+  padding:12px 20px; border:2px solid var(--primary); background:var(--card); color:var(--primary);
+  border-radius:12px; cursor:pointer; font-weight:700; font-size:14px; transition:0.2s;
 }
+.sort-btn:hover {background:var(--primary); color:white}
 .categories {
-  max-width:1200px; margin:0 auto 20px; padding:0 20px; display:flex; gap:10px; overflow-x:auto;
+  max-width:1200px; margin:0 auto 25px; padding:0 20px; display:flex; gap:10px; overflow-x:auto; padding-bottom:5px;
 }
 .cat-btn {
-  padding:8px 18px; border:2px solid #ddd; background:var(--card); color:var(--text);
-  border-radius:20px; cursor:pointer; white-space:nowrap; font-size:14px;
+  padding:10px 22px; border:2px solid var(--border); background:var(--card); color:var(--text);
+  border-radius:25px; cursor:pointer; white-space:nowrap; font-size:14px; font-weight:600; transition:0.2s;
 }
 .cat-btn.active {background:var(--primary); color:white; border-color:var(--primary)}
-.container {max-width:1200px; margin:0 auto 100px; padding:0 20px}
+.container {max-width:1200px; margin:0 auto 120px; padding:0 20px}
 .grid {
-  display:grid; grid-template-columns:repeat(auto-fill, minmax(270px, 1fr)); gap:20px;
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:22px;
 }
 .card {
-  background:var(--card); border-radius:18px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.08);
-  transition:0.3s; position:relative; cursor:pointer;
+  background:var(--card); border-radius:20px; overflow:hidden; box-shadow:0 4px 18px rgba(0,0,0,0.06);
+  transition:0.3s; position:relative; cursor:pointer; border:1px solid var(--border);
 }
-.card:hover {transform:translateY(-6px)}
-.card img {width:100%; height:200px; object-fit:cover; background:#f0f0f0}
-.card-body {padding:18px}
-.card-body h3 {font-size:18px; margin-bottom:6px}
-.price {color:var(--primary); font-size:22px; font-weight:bold; margin:8px 0}
-.desc {color:var(--muted); font-size:13px; line-height:1.5; height:38px; overflow:hidden}
-.views {font-size:11px; color:#999; margin-top:5px}
+.card:hover {transform:translateY(-8px); box-shadow:0 12px 35px rgba(99,102,241,0.15)}
+.card img {width:100%; height:210px; object-fit:cover; background:#f1f5f9}
+.card-body {padding:20px}
+.card-body h3 {font-size:19px; margin-bottom:8px; color:var(--text)}
+.price {color:var(--primary); font-size:24px; font-weight:800; margin:10px 0}
+.desc {color:var(--muted); font-size:13px; line-height:1.6; height:40px; overflow:hidden}
+.views {font-size:11px; color:var(--muted); margin-top:6px}
 .card-actions {
-  display:flex; justify-content:space-between; margin-top:12px;
+  display:flex; justify-content:space-between; margin-top:14px; padding-top:12px; border-top:1px solid var(--border);
 }
 .fav-btn,.share-btn {
-  background:none; border:none; font-size:22px; cursor:pointer; padding:5px;
+  background:none; border:none; font-size:24px; cursor:pointer; padding:6px; transition:0.2s;
 }
-.fav-btn.active {color:#e74c3c}
+.fav-btn.active {color:#ef4444}
 .delete-btn {
-  position:absolute; top:10px; left:10px; background:#e74c3c; color:white; border:none;
-  width:32px; height:32px; border-radius:50%; cursor:pointer; font-size:18px; display:none; z-index:10;
+  position:absolute; top:12px; left:12px; background:#ef4444; color:white; border:none;
+  width:34px; height:34px; border-radius:50%; cursor:pointer; font-size:20px; display:none; z-index:10;
+  box-shadow:0 4px 12px rgba(239,68,68,0.4);
 }
-.admin-mode.delete-btn {display:block}
+.admin-mode.delete-btn {display:flex; align-items:center; justify-content:center}
 .new-badge {
-  position:absolute; top:10px; right:10px; background:#27ae60; color:white;
-  padding:4px 10px; border-radius:12px; font-size:11px; font-weight:bold;
+  position:absolute; top:12px; right:12px; background:#10b981; color:white;
+  padding:5px 12px; border-radius:14px; font-size:11px; font-weight:700;
 }
 .fab {
-  position:fixed; bottom:30px; left:30px; width:60px; height:60px;
-  background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color:white; border:none; border-radius:50%; font-size:32px; cursor:pointer;
-  box-shadow:0 8px 25px rgba(102,126,234,0.4); display:none; z-index:999;
+  position:fixed; bottom:28px; left:28px; width:62px; height:62px;
+  background:linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color:white; border:none; border-radius:50%; font-size:34px; cursor:pointer;
+  box-shadow:0 10px 30px rgba(99,102,241,0.4); z-index:999; transition:0.3s;
+  display:flex; align-items:center; justify-content:center;
 }
-.admin-mode.fab {display:flex; align-items:center; justify-content:center}
+.fab:hover {transform:scale(1.12) rotate(90deg)}
 .modal {
   display:none; position:fixed; top:0; left:0; right:0; bottom:0;
-  background:rgba(0,0,0,0.6); z-index:1000; align-items:center; justify-content:center; padding:20px;
+  background:rgba(0,0,0,0.65); backdrop-filter:blur(5px); z-index:1000; align-items:center; justify-content:center; padding:20px;
 }
 .modal.show {display:flex}
 .modal-box {
-  background:var(--card); padding:25px; border-radius:20px; width:100%; max-width:500px;
-  max-height:90vh; overflow-y:auto;
+  background:var(--card); padding:30px; border-radius:24px; width:100%; max-width:480px;
+  max-height:90vh; overflow-y:auto; box-shadow:0 25px 60px rgba(0,0,0,0.3);
+  animation:pop 0.3s ease;
 }
-.modal-box h2 {margin-bottom:18px}
+@keyframes pop {from {transform:scale(0.9); opacity:0} to {transform:scale(1); opacity:1}}
+.modal-box h2 {margin-bottom:22px; font-size:22px; color:var(--text)}
+.admin-notice {
+  background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); color:#92400e;
+  padding:12px 16px; border-radius:12px; margin-bottom:18px; font-size:13px; font-weight:600;
+  border-right:4px solid #f59e0b;
+}
+[data-theme="dark"].admin-notice {
+  background:linear-gradient(135deg, #422006 0%, #78350f 100%); color:#fbbf24; border-right-color:#f59e0b;
+}
 .modal-box input,.modal-box textarea,.modal-box select {
-  width:100%; padding:12px; margin-bottom:12px; border:2px solid #ddd; border-radius:10px;
-  font-size:15px; background:var(--bg); color:var(--text);
+  width:100%; padding:14px 16px; margin-bottom:14px; border:2px solid var(--border); border-radius:12px;
+  font-size:15px; background:var(--bg); color:var(--text); transition:0.2s;
+}
+.modal-box input:focus,.modal-box textarea:focus,.modal-box select:focus {
+  border-color:var(--primary); outline:none
 }
 .modal-box button {
-  width:100%; padding:14px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color:white; border:none; border-radius:10px; font-size:16px; font-weight:bold; cursor:pointer; margin-top:8px;
+  width:100%; padding:15px; background:linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color:white; border:none; border-radius:12px; font-size:16px; font-weight:700; cursor:pointer; margin-top:10px;
+  transition:0.2s;
 }
-.close-btn {background:#95a5a6!important}
+.modal-box button:hover {transform:translateY(-2px); box-shadow:0 8px 20px rgba(99,102,241,0.4)}
+.close-btn {background:#64748b!important}
+.close-btn:hover {background:#475569!important}
 .empty {
-  text-align:center; padding:60px 20px; color:var(--muted); grid-column:1/-1;
+  text-align:center; padding:70px 20px; color:var(--muted); grid-column:1/-1;
 }
-.empty-icon {font-size:70px; margin-bottom:15px}
-.login-prompt {
-  text-align:center; color:var(--muted); font-size:12px; margin:10px 0;
-}
+.empty-icon {font-size:75px; margin-bottom:18px}
 </style>
 </head>
 <body>
-<div class="admin-bar">🔐 وضع المسؤول مفعّل</div>
+<div class="admin-bar" id="adminBar">🔐 وضع المسؤول مفعّل - يمكنك الإضافة والحذف</div>
 
 <div class="header">
   <button class="theme-btn" onclick="toggleTheme()">🌙</button>
-  <h1 id="logo">🛒 M-Store</h1>
+  <h1>🛒 M-Store</h1>
   <button class="theme-btn" onclick="showFavorites()">❤️</button>
 </div>
 
 <div class="toolbar">
   <div class="search-box">
-    <input type="text" id="search" placeholder="ابحث عن منتج...">
+    <input type="text" id="search" placeholder="ابحث عن منتج التنظيف...">
     <span class="search-icon">🔍</span>
   </div>
   <div class="stats">
     <span id="count">0 منتج</span>
-    <button class="sort-btn" onclick="toggleSort()">أ-ي</button>
+    <button class="sort-btn" onclick="toggleSort()">A → Z</button>
   </div>
 </div>
 
 <div class="categories">
   <button class="cat-btn active" onclick="filterCat('all', this)">الكل</button>
-  <button class="cat-btn" onclick="filterCat('ملابس', this)">ملابس</button>
-  <button class="cat-btn" onclick="filterCat('إلكترونيات', this)">إلكترونيات</button>
-  <button class="cat-btn" onclick="filterCat('منزلية', this)">منزلية</button>
+  <button class="cat-btn" onclick="filterCat('سوائل', this)">سوائل</button>
+  <button class="cat-btn" onclick="filterCat('مناديل', this)">مناديل</button>
+  <button class="cat-btn" onclick="filterCat('معطرات', this)">معطرات</button>
+  <button class="cat-btn" onclick="filterCat('أدوات', this)">أدوات</button>
   <button class="cat-btn" onclick="filterCat('أخرى', this)">أخرى</button>
 </div>
 
@@ -149,15 +168,14 @@ body {background:var(--bg); color:var(--text); transition:0.3s; min-height:100vh
   <div class="grid" id="grid"></div>
 </div>
 
-<button class="fab" onclick="openAddModal()">+</button>
+<button class="fab" onclick="openLoginModal()">+</button>
 
-<div class="login-prompt" id="loginPrompt">💡 اضغطي مطول على شعار M-Store للدخول كمسؤول</div>
-
-<!-- مودال الدخول -->
+<!-- مودال كلمة السر -->
 <div class="modal" id="loginModal">
   <div class="modal-box">
     <h2>دخول المسؤول</h2>
-    <input type="password" id="adminPass" placeholder="كلمة السر">
+    <div class="admin-notice">⚠️ هذه المنطقة خاصة بالمسؤول فقط</div>
+    <input type="password" id="adminPass" placeholder="أدخل كلمة المرور">
     <button onclick="checkAdmin()">دخول</button>
     <button class="close-btn" onclick="closeModal('loginModal')">إلغاء</button>
   </div>
@@ -166,20 +184,21 @@ body {background:var(--bg); color:var(--text); transition:0.3s; min-height:100vh
 <!-- مودال الإضافة -->
 <div class="modal" id="addModal">
   <div class="modal-box">
-    <h2>إضافة منتج جديد</h2>
+    <h2>إضافة منتج تنظيف جديد</h2>
     <input type="text" id="pName" placeholder="اسم المنتج">
     <input type="number" id="pPrice" placeholder="السعر بالدرهم">
     <select id="pCat">
-      <option value="ملابس">ملابس</option>
-      <option value="إلكترونيات">إلكترونيات</option>
-      <option value="منزلية">منزلية</option>
+      <option value="سوائل">سوائل</option>
+      <option value="مناديل">مناديل</option>
+      <option value="معطرات">معطرات</option>
+      <option value="أدوات">أدوات</option>
       <option value="أخرى">أخرى</option>
     </select>
-    <textarea id="pDesc" placeholder="الوصف" rows="3"></textarea>
+    <textarea id="pDesc" placeholder="وصف المنتج والمميزات" rows="3"></textarea>
     <input type="file" id="pImgs" accept="image/*" multiple>
-    <small style="color:var(--muted)">اختاري 1 إلى 5 صور</small>
-    <input type="text" id="pWhatsApp" placeholder="رقم واتساب للطلب 2126xxxxxxxx">
-    <button onclick="addProduct()">حفظ</button>
+    <small style="color:var(--muted)">اختاري من 1 إلى 5 صور - الصورة الأولى تظهر هنا</small>
+    <input type="text" id="pWhatsApp" placeholder="رقم واتساب 2126xxxxxxxx">
+    <button onclick="addProduct()">حفظ المنتج</button>
     <button class="close-btn" onclick="closeModal('addModal')">إلغاء</button>
   </div>
 </div>
@@ -210,38 +229,39 @@ let sortAZ = true;
 let currentCat = 'all';
 let showFavOnly = false;
 
-// دارك مود
+// دارك مود مصلح
 function toggleTheme() {
-  const t = document.body.getAttribute('data-theme') === 'dark'? 'light' : 'dark';
-  document.body.setAttribute('data-theme', t);
+  const t = document.documentElement.getAttribute('data-theme') === 'dark'? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('theme', t);
-  document.querySelector('.theme-btn').textContent = t === 'dark'? '☀️' : '🌙';
+  document.querySelectorAll('.theme-btn')[0].textContent = t === 'dark'? '☀️' : '🌙';
 }
-if(localStorage.getItem('theme') === 'dark') {
-  document.body.setAttribute('data-theme', 'dark');
-  document.querySelector('.theme-btn').textContent = '☀️';
+const savedTheme = localStorage.getItem('theme');
+if(savedTheme === 'dark') {
+  document.documentElement.setAttribute('data-theme', 'dark');
+  document.querySelectorAll('.theme-btn')[0].textContent = '☀️';
 }
 
-// دخول المسؤول بالضغط المطول
-let pressTimer;
-document.getElementById('logo').addEventListener('mousedown', () => {
-  pressTimer = setTimeout(() => document.getElementById('loginModal').classList.add('show'), 1200);
-});
-document.getElementById('logo').addEventListener('mouseup', () => clearTimeout(pressTimer));
+// مودال الدخول
+window.openLoginModal = () => document.getElementById('loginModal').classList.add('show');
+window.closeModal = (id) => document.getElementById(id).classList.remove('show');
+
 window.checkAdmin = () => {
   if(document.getElementById('adminPass').value === CORRECT_PASS) {
     localStorage.setItem('mstore_admin', 'true');
     document.body.classList.add('admin-mode');
-    document.getElementById('loginPrompt').style.display = 'none';
     closeModal('loginModal');
-    alert('مرحبا بك أيها المسؤول ✅');
-  } else alert('كلمة السر خاطئة ❌');
+    document.getElementById('adminPass').value = '';
+    setTimeout(() => openAddModal(), 300);
+  } else {
+    alert('كلمة المرور خاطئة ❌');
+    document.getElementById('adminPass').value = '';
+  }
 }
+
 if(localStorage.getItem('mstore_admin') === 'true') {
   document.body.classList.add('admin-mode');
-  document.getElementById('loginPrompt').style.display = 'none';
 }
-window.closeModal = (id) => document.getElementById(id).classList.remove('show');
 
 // قراءة المنتجات
 const grid = document.getElementById('grid');
@@ -254,14 +274,14 @@ onValue(ref(db, 'products'), (snap) => {
 // البحث
 document.getElementById('search').addEventListener('input', render);
 
-// الترتيب
+// الترتيب A-Z
 window.toggleSort = () => {
   sortAZ =!sortAZ;
-  document.querySelector('.sort-btn').textContent = sortAZ? 'أ-ي' : 'ي-أ';
+  document.querySelector('.sort-btn').textContent = sortAZ? 'A → Z' : 'Z → A';
   render();
 }
 
-// التصنيف
+// التصنيفات مواد التنظيف
 window.filterCat = (cat, btn) => {
   currentCat = cat;
   document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
@@ -271,7 +291,7 @@ window.filterCat = (cat, btn) => {
 
 // المفضلة
 function getFavs() {return JSON.parse(localStorage.getItem('favs') || '[]')}
-function toggleFav(id) {
+window.toggleFav = (id) => {
   let favs = getFavs();
   favs = favs.includes(id)? favs.filter(f => f!== id) : [...favs, id];
   localStorage.setItem('favs', JSON.stringify(favs));
@@ -286,28 +306,25 @@ window.showFavorites = () => {
 function render() {
   let products = [...allProducts];
 
-  // البحث
   const search = document.getElementById('search').value.toLowerCase();
   if(search) products = products.filter(p => p.name.toLowerCase().includes(search) || p.desc.toLowerCase().includes(search));
 
-  // التصنيف
   if(currentCat!== 'all') products = products.filter(p => p.category === currentCat);
 
-  // المفضلة
   if(showFavOnly) products = products.filter(p => getFavs().includes(p.id));
 
-  // الترتيب
-  products.sort((a,b) => sortAZ? a.name.localeCompare(b.name, 'ar') : b.name.localeCompare(a.name, 'ar'));
+  // ترتيب A-Z بالانجليزي
+  products.sort((a,b) => sortAZ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name));
 
   document.getElementById('count').textContent = products.length + ' منتج';
 
   if(products.length === 0) {
-    grid.innerHTML = `<div class="empty"><div class="empty-icon">📦</div><h3>لا توجد منتجات</h3></div>`;
+    grid.innerHTML = `<div class="empty"><div class="empty-icon">📦</div><h3>لا توجد منتجات</h3><p>اضغطي على + للدخول كمسؤول وإضافة منتجات</p></div>`;
     return;
   }
 
   grid.innerHTML = '';
-  const threeNewest = allProducts.sort((a,b) => b.createdAt - a.createdAt).slice(0,3).map(p => p.id);
+  const threeNewest = allProducts.sort((a,b) => (b.createdAt || 0) - (a.createdAt || 0)).slice(0,3).map(p => p.id);
 
   products.forEach(p => {
     const card = document.createElement('div');
@@ -332,24 +349,30 @@ function render() {
   });
 }
 
-// إضافة منتج
-window.openAddModal = () => document.getElementById('addModal').classList.add('show');
+// إضافة
+window.openAddModal = () => {
+  if(localStorage.getItem('mstore_admin')!== 'true') {
+    openLoginModal();
+    return;
+  }
+  document.getElementById('addModal').classList.add('show');
+}
 
 window.addProduct = async () => {
-  const name = document.getElementById('pName').value;
+  const name = document.getElementById('pName').value.trim();
   const price = document.getElementById('pPrice').value;
   const category = document.getElementById('pCat').value;
-  const desc = document.getElementById('pDesc').value;
+  const desc = document.getElementById('pDesc').value.trim();
   const files = document.getElementById('pImgs').files;
-  const whatsapp = document.getElementById('pWhatsApp').value;
+  const whatsapp = document.getElementById('pWhatsApp').value.trim();
 
-  if(!name ||!price || files.length === 0) return alert('عمري الخانات + صورة');
+  if(!name ||!price || files.length === 0) return alert('عمر الاسم + السعر + صورة على الأقل');
 
   const imgPaths = [];
   const images = [];
 
   for(let i=0; i<Math.min(files.length, 5); i++) {
-    const path = 'products/' + Date.now() + '_' + i + '_' + files[i].name;
+    const path = 'products/' + Date.now() + '_' + i + '_' + files[i].name.replace(/\s/g,'_');
     const imgRef = sRef(storage, path);
     await uploadBytes(imgRef, files[i]);
     const url = await getDownloadURL(imgRef);
@@ -358,30 +381,33 @@ window.addProduct = async () => {
   }
 
   await push(ref(db, 'products'), {
-    name, price, category, desc, images, imgPaths, whatsapp, views: 0, createdAt: Date.now()
+    name, price, category, desc, images, imgPaths: imgPaths.join(','), whatsapp, views: 0, createdAt: Date.now()
   });
 
   closeModal('addModal');
-  alert('تمت الإضافة ✅');
+  ['pName','pPrice','pDesc','pWhatsApp'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('pImgs').value = '';
+  alert('تمت الإضافة بنجاح ✅');
 }
 
 // حذف
 window.deleteProd = async (id, imgPaths) => {
-  if(!confirm('مسح المنتج؟')) return;
+  if(!confirm('هل تريد مسح المنتج؟')) return;
   await remove(ref(db, 'products/' + id));
-  if(imgPaths) imgPaths.split(',').forEach(p => deleteObject(sRef(storage, p)));
+  if(imgPaths) imgPaths.split(',').forEach(p => deleteObject(sRef(storage, p)).catch(()=>{}));
 }
 
 // عرض المنتج
 function viewProduct(id) {
-  update(ref(db, 'products/' + id), {views: (allProducts.find(p => p.id === id).views || 0) + 1});
+  const prod = allProducts.find(p => p.id === id);
+  update(ref(db, 'products/' + id), {views: (prod.views || 0) + 1});
   localStorage.setItem('currentProduct', id);
   window.location.href = 'product.html';
 }
 
 // مشاركة
 window.shareProd = (name, id) => {
-  const url = window.location.href + '?p=' + id;
+  const url = window.location.origin + '/product.html?p=' + id;
   if(navigator.share) navigator.share({title: name, url});
   else {
     navigator.clipboard.writeText(url);
@@ -389,8 +415,7 @@ window.shareProd = (name, id) => {
   }
 }
 
-// Service Worker
 if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 </script>
 </body>
-</html>
+  </html>
