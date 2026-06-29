@@ -8,32 +8,32 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
-  
-  * {
+
+    * {
     font-family: 'Cairo', sans-serif;
   }
-  
+
   body {
     background: #f8fafc;
   }
-  
-  .scrollbar-hide::-webkit-scrollbar {
+
+.scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
-  
-  .scrollbar-hide {
+
+.scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
-  .modal-backdrop {
+
+.modal-backdrop {
     backdrop-filter: blur(4px);
   }
-  
-  .animate-slide-up {
+
+.animate-slide-up {
     animation: slideUp 0.3s ease-out;
   }
-  
+
   @keyframes slideUp {
     from {
       transform: translateY(20px);
@@ -44,21 +44,21 @@
       opacity: 1;
     }
   }
-  
-  .animate-fade-in {
+
+.animate-fade-in {
     animation: fadeIn 0.2s ease-out;
   }
-  
+
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
   }
-  
-  .product-card:hover {
+
+.product-card:hover {
     transform: translateY(-2px);
     transition: all 0.2s ease;
   }
-  
+
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -75,7 +75,7 @@
         <div class="flex items-start justify-between">
           <div>
             <p class="text-gray-500 text-xs md:text-sm mb-1">قيمة المخزون</p>
-            <p class="text-xl md:text-2xl font-bold text-gray-900" id="totalValue">2,450</p>
+            <p class="text-xl md:text-2xl font-bold text-gray-900" id="totalValue">0</p>
             <p class="text-xs text-gray-500 mt-1">درهم</p>
           </div>
           <div class="w-10 h-10 md:w-12 md:h-12 bg-emerald-100 rounded-lg flex items-center justify-center">
@@ -83,12 +83,12 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white rounded-xl shadow-sm p-4 md:p-5 border border-gray-100">
         <div class="flex items-start justify-between">
           <div>
             <p class="text-gray-500 text-xs md:text-sm mb-1">إجمالي المخزون</p>
-            <p class="text-xl md:text-2xl font-bold text-gray-900" id="totalStock">156</p>
+            <p class="text-xl md:text-2xl font-bold text-gray-900" id="totalStock">0</p>
             <p class="text-xs text-gray-500 mt-1">وحدة</p>
           </div>
           <div class="w-10 h-10 md:w-12 md:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -96,12 +96,12 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white rounded-xl shadow-sm p-4 md:p-5 border border-gray-100">
         <div class="flex items-start justify-between">
           <div>
             <p class="text-gray-500 text-xs md:text-sm mb-1">منتجات منخفضة</p>
-            <p class="text-xl md:text-2xl font-bold text-amber-600" id="lowStockCount">12</p>
+            <p class="text-xl md:text-2xl font-bold text-amber-600" id="lowStockCount">0</p>
             <p class="text-xs text-gray-500 mt-1">منتج</p>
           </div>
           <div class="w-10 h-10 md:w-12 md:h-12 bg-amber-100 rounded-lg flex items-center justify-center">
@@ -109,12 +109,12 @@
           </div>
         </div>
       </div>
-      
+
       <div class="bg-white rounded-xl shadow-sm p-4 md:p-5 border border-gray-100">
         <div class="flex items-start justify-between">
           <div>
             <p class="text-gray-500 text-xs md:text-sm mb-1">إجمالي المنتجات</p>
-            <p class="text-xl md:text-2xl font-bold text-gray-900" id="totalProducts">28</p>
+            <p class="text-xl md:text-2xl font-bold text-gray-900" id="totalProducts">0</p>
             <p class="text-xs text-gray-500 mt-1">منتج</p>
           </div>
           <div class="w-10 h-10 md:w-12 md:h-12 bg-violet-100 rounded-lg flex items-center justify-center">
@@ -128,10 +128,10 @@
     <div class="bg-white rounded-xl shadow-sm p-4 mb-4 border border-gray-100">
       <div class="flex gap-2">
         <div class="flex-1 relative">
-          <input 
-            type="text" 
-            id="searchInput" 
-            placeholder="البحث عن منتج..." 
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="البحث عن منتج..."
             class="w-full pr-10 pl-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition text-sm md:text-base"
           >
           <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -149,7 +149,7 @@
         <button class="category-pill active px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition bg-emerald-600 text-white shadow-md" data-category="الكل">
           الكل
         </button>
-        <button class="category-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition bg-white text-gray-700 border border-gray-200 hover:border-emerald-500" data-category="كوش">
+        <button class="category-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition bg-white text-gray-700 border-gray-200 hover:border-emerald-500" data-category="كوش">
           كوش
         </button>
         <button class="category-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition bg-white text-gray-700 border border-gray-200 hover:border-emerald-500" data-category="سوائل">
@@ -161,7 +161,7 @@
         <button class="category-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition bg-white text-gray-700 border border-gray-200 hover:border-emerald-500" data-category="مواد غذائية">
           مواد غذائية
         </button>
-        <button class="category-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition bg-white text-gray-700 border border-gray-200 hover:border-emerald-500" data-category="أخرى">
+        <button class="category-pill px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition bg-white text-gray-700 border-gray-200 hover:border-emerald-500" data-category="أخرى">
           أخرى
         </button>
       </div>
@@ -232,12 +232,12 @@
       </div>
       <form id="productForm" class="p-6 space-y-4">
         <input type="hidden" id="productId">
-        
+
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">اسم المنتج *</label>
           <input type="text" id="productName" required class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="مثال: زيت عافية 1 لتر">
         </div>
-        
+
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">الفئة *</label>
           <select id="productCategory" required class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition">
@@ -249,7 +249,7 @@
             <option value="أخرى">أخرى</option>
           </select>
         </div>
-        
+
         <div class="grid grid-cols-2 gap-4">
           <div>
             <label class="block text-sm font-semibold text-gray-700 mb-2">السعر (درهم) *</label>
@@ -260,17 +260,17 @@
             <input type="number" id="productStock" required min="0" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="0">
           </div>
         </div>
-        
+
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">حد التنبيه للكمية المنخفضة</label>
           <input type="number" id="lowStockThreshold" min="0" value="10" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="10">
         </div>
-        
+
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">رابط الصورة (اختياري)</label>
           <input type="url" id="productImage" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none transition" placeholder="https://example.com/image.jpg">
         </div>
-        
+
         <div class="flex gap-3 pt-4">
           <button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-semibold transition shadow-md">
             <i class="fa-solid fa-check ml-2"></i>
@@ -320,11 +320,11 @@
         <div>
           <label class="block text-sm font-semibold text-gray-700 mb-2">الحالة</label>
           <div class="space-y-2">
-            <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
+            <label class="flex items-center gap-3 p-3 rounded-lg border-gray-200 hover:bg-gray-50 cursor-pointer">
               <input type="radio" name="statusFilter" value="all" checked class="w-4 h-4 text-emerald-600">
               <span>الكل</span>
             </label>
-            <label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer">
+            <label class="flex items-center gap-3 p-3 rounded-lg border-gray-200 hover:bg-gray-50 cursor-pointer">
               <input type="radio" name="statusFilter" value="available" class="w-4 h-4 text-emerald-600">
               <span>متوفر</span>
             </label>
@@ -355,7 +355,7 @@
   </div>
 
 <script>
-  // Initial Demo Data
+  // Initial Demo Data - الأثمنة كاملين 0
   const initialProducts = [
   { id: 1, name: 'Asperox Magic Yellow', category: 'منظفات', price: 0, stock: 0, lowStockThreshold: 10, image: 'https://i.ibb.co/Qjz9xgdQ/1779799104968.png', hidden: false },
   { id: 2, name: 'Luisa', category: 'كوش', price: 0, stock: 0, lowStockThreshold: 10, image: 'https://i.ibb.co/KxShH2Df/file-00000000923471f6b71cffcbf83f6797-1.png', hidden: false },
@@ -464,6 +464,8 @@
     const stored = localStorage.getItem('products');
     if (stored) {
       products = JSON.parse(stored);
+      // تأكد أن كل منتج عندو hidden
+      products = products.map(p => ({...p, hidden: p.hidden || false }));
     } else {
       products = [...initialProducts];
       saveProducts();
@@ -475,13 +477,12 @@
   }
 
   function setupEventListeners() {
-    document.getElementById('addProductBtn').addEventListener('click', openAddModal);
     document.getElementById('fabBtn').addEventListener('click', openAddModal);
     document.getElementById('filterBtn').addEventListener('click', openFilterModal);
     document.getElementById('searchInput').addEventListener('input', handleSearch);
     document.getElementById('productForm').addEventListener('submit', handleFormSubmit);
     document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
-    
+
     document.querySelectorAll('.category-pill').forEach(pill => {
       pill.addEventListener('click', () => filterByCategory(pill.dataset.category, pill));
     });
@@ -490,14 +491,14 @@
   function renderProducts() {
     const container = document.getElementById('productsContainer');
     const emptyState = document.getElementById('emptyState');
-    
+
     let filtered = products.filter(p => {
       const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = currentFilter === 'الكل' || p.category === currentFilter;
       const isLow = p.stock <= p.lowStockThreshold;
-      const matchesStatus = statusFilter === 'all' || 
-                           (statusFilter === 'low' && isLow) || 
-                           (statusFilter === 'available' && !isLow);
+      const matchesStatus = statusFilter === 'all' ||
+                           (statusFilter === 'low' && isLow) ||
+                           (statusFilter === 'available' &&!isLow);
       return matchesSearch && matchesCategory && matchesStatus;
     });
 
@@ -512,12 +513,15 @@
 
   function createProductCard(product) {
     const isLow = product.stock <= product.lowStockThreshold;
-    const statusClass = isLow ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700';
-    const statusText = isLow ? 'منخفض' : 'متوفر';
+    const statusClass = isLow? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700';
+    const statusText = isLow? 'منخفض' : 'متوفر';
     const defaultImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop';
-    
+    const hideBtnClass = product.hidden? 'bg-green-100 hover:bg-green-200 text-green-700' : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-700';
+    const hideBtnIcon = product.hidden? 'fa-eye' : 'fa-eye-slash';
+    const hideBtnText = product.hidden? 'إظهار' : 'إخفاء';
+
     return `
-      <div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all">
+      <div class="product-card bg-white rounded-xl shadow-sm border-gray-100 overflow-hidden transition-all ${product.hidden? 'opacity-60' : ''}">
         <div class="p-4">
           <div class="flex gap-4">
             <div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
@@ -540,9 +544,9 @@
             </div>
           </div>
           <div class="flex gap-2 mt-4 pt-4 border-t border-gray-100">
-            <button onclick="viewDetails(${product.id})" class="flex-1 px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-sm font-medium transition flex items-center justify-center gap-1.5">
-              <i class="fa-solid fa-eye text-xs"></i>
-              <span>تفاصيل</span>
+            <button onclick="toggleHideProduct(${product.id})" class="flex-1 px-3 py-2 ${hideBtnClass} rounded-lg text-sm font-medium transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid ${hideBtnIcon} text-xs"></i>
+              <span>${hideBtnText}</span>
             </button>
             <button onclick="editProduct(${product.id})" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg transition">
               <i class="fa-solid fa-pen-to-square"></i>
@@ -560,7 +564,7 @@
     const totalStock = products.reduce((sum, p) => sum + p.stock, 0);
     const totalValue = products.reduce((sum, p) => sum + (p.price * p.stock), 0);
     const lowStockCount = products.filter(p => p.stock <= p.lowStockThreshold).length;
-    
+
     document.getElementById('totalStock').textContent = totalStock.toLocaleString('ar-MA');
     document.getElementById('totalValue').textContent = totalValue.toLocaleString('ar-MA', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
     document.getElementById('lowStockCount').textContent = lowStockCount;
@@ -593,7 +597,7 @@
   function editProduct(id) {
     const product = products.find(p => p.id === id);
     if (!product) return;
-    
+
     editingProductId = id;
     document.getElementById('modalTitle').textContent = 'تعديل المنتج';
     document.getElementById('productId').value = product.id;
@@ -613,24 +617,25 @@
 
   function handleFormSubmit(e) {
     e.preventDefault();
-    
+
     const productData = {
       name: document.getElementById('productName').value.trim(),
       category: document.getElementById('productCategory').value,
       price: parseFloat(document.getElementById('productPrice').value),
       stock: parseInt(document.getElementById('productStock').value),
       lowStockThreshold: parseInt(document.getElementById('lowStockThreshold').value),
-      image: document.getElementById('productImage').value.trim()
+      image: document.getElementById('productImage').value.trim(),
+      hidden: false
     };
 
     if (editingProductId) {
       const index = products.findIndex(p => p.id === editingProductId);
-      products[index] = { ...products[index], ...productData };
+      products[index] = {...products[index],...productData };
       showToast('تم تحديث المنتج بنجاح', 'success');
     } else {
       const newProduct = {
         id: Date.now(),
-        ...productData
+       ...productData
       };
       products.push(newProduct);
       showToast('تم إضافة المنتج بنجاح', 'success');
@@ -642,11 +647,13 @@
     closeProductModal();
   }
 
-  function viewDetails(id) {
+  function toggleHideProduct(id) {
     const product = products.find(p => p.id === id);
     if (product) {
-      showToast(`عرض تفاصيل: ${product.name}`, 'info');
-      // يمكنك إضافة صفحة تفاصيل هنا
+      product.hidden =!product.hidden;
+      saveProducts();
+      renderProducts();
+      showToast(product.hidden? 'تم إخفاء المنتج من الرئيسية' : 'تم إظهار المنتج في الرئيسية', 'success');
     }
   }
 
@@ -662,7 +669,7 @@
 
   function confirmDelete() {
     if (deletingProductId) {
-      products = products.filter(p => p.id !== deletingProductId);
+      products = products.filter(p => p.id!== deletingProductId);
       saveProducts();
       renderProducts();
       updateStats();
@@ -699,15 +706,15 @@
     const toast = document.getElementById('toast');
     const icon = document.getElementById('toastIcon');
     const msg = document.getElementById('toastMessage');
-    
+
     msg.textContent = message;
-    
+
     if (type === 'success') {
       icon.className = 'fa-solid fa-check-circle text-emerald-400';
     } else if (type === 'info') {
       icon.className = 'fa-solid fa-info-circle text-blue-400';
     }
-    
+
     toast.classList.remove('hidden');
     setTimeout(() => {
       toast.classList.add('hidden');
@@ -716,8 +723,8 @@
 
   // Placeholder navigation functions - ready for your custom code
   function navigateToHome() {
-  window.location.href = "menu.html";
-}
+    window.location.href = "Menu.html";
+  }
 
   function navigateToCustomers() {
     showToast('صفحة العملاء - جاهزة للتطوير', 'info');
