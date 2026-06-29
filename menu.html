@@ -379,9 +379,39 @@
   </main>
 
   <!-- Bottom Navigation -->
-  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-30">
-    <div class="max-w-7xl mx-auto px-2">
-      <div class="grid grid-cols-5 gap-1">
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-5 h-16">
+
+      <button onclick="window.location.href='menu.html'" class="flex flex-col items-center justify-center gap-1 text-emerald-600 relative">
+        <div class="absolute -top-1 w-12 h-1 bg-emerald-600 rounded-full"></div>
+        <i class="fa-solid fa-house text-xl"></i>
+        <span class="text-xs font-semibold">الرئيسية</span>
+      </button>
+
+      <button onclick="window.location.href='customers.html'" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-emerald-600 transition">
+        <i class="fa-solid fa-users text-xl"></i>
+        <span class="text-xs font-medium">العملاء</span>
+      </button>
+
+      <button onclick="window.location.href='index.html'" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-emerald-600 transition">
+        <i class="fa-solid fa-box text-xl"></i>
+        <span class="text-xs font-medium">المنتجات</span>
+      </button>
+
+      <button onclick="window.location.href='sales.html'" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-emerald-600 transition">
+        <i class="fa-solid fa-cart-shopping text-xl"></i>
+        <span class="text-xs font-medium">المبيعات</span>
+      </button>
+
+      <button onclick="window.location.href='reports.html'" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-emerald-600 transition">
+        <i class="fa-solid fa-chart-simple text-xl"></i>
+        <span class="text-xs font-medium">التقارير</span>
+      </button>
+
+    </div>
+  </div>
+</nav>
         <!-- الرئيسية -->
         <a href="#" class="nav-item active flex flex-col items-center justify-center py-3 px-2 transition">
           <div class="nav-icon w-12 h-12 rounded-xl flex items-center justify-center mb-1">
