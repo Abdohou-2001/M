@@ -741,9 +741,13 @@
     // Add your custom code here
   }
 
-  document.getElementById('menuBtn').addEventListener('click', () => {
+  const menuBtn = document.getElementById('menuBtn');
+
+if (menuBtn) {
+  menuBtn.addEventListener('click', () => {
     showToast('القائمة الجانبية - جاهزة للتطوير', 'info');
   });
+}
 </script>
 
 <script type="module" src="firebase.js"></script>
