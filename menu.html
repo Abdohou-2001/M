@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mostafa Clean Shop - الرئيسية</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+    * {
+    font-family: 'Cairo', sans-serif;
+  }
+  body {
+    background-color: #f8fafc;
+  }
+ .header-gradient {
+    background: linear-gradient(135deg, #0F766E 0%, #0d635a 100%);
+  }
+ .product-card {
+    transition: all 0.3s ease;
+  }
+ .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(15, 118, 110, 0.15), 0 8px 10px -6px rgba(15, 118, 110, 0.1);
+  }
+ .nav-item.active {
+    color: #0F766E;
+  }
+ .nav-item.active.nav-icon {
+    background: rgba(15, 118, 110, 0.1);
+  }
+ .side-menu {
+    transition: transform 0.3s ease-in-out;
+    transform: translateX(100%);
+  }
+ .side-menu.open {
+    transform: translateX(0);
+  }
+ .overlay {
+    transition: opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+ .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+ .search-input:focus {
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.2);
+  }
+ .badge-dot {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity:.5; }
+  }
+ .section-title::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 3px;
+    background: #0F766E;
+    margin-top: 8px;
+    border-radius: 2px;
+  }
+ .img-placeholder {
+    background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s linear infinite;
+  }
+  @keyframes shimmer {
+    to { background-position-x: -200%; }
+  }
+</style>
+</head>
+<body class="pb-20">
+  <!-- Overlay for mobile menu -->
+  <div id="overlay" class="overlay fixed inset-0 bg-black/50 z-40"></div>
+
+  <!-- Side Menu -->
+  <aside id="sideMenu" class="side-menu fixed top-0 right-0 w-72 h-full bg-white shadow-2xl z-50 overflow-y-auto">
+    <div class="header-gradient p-6 text-white">
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center backdrop-blur-sm">
+            <i class="fa-solid fa-soap text-2xl"></i>
+          </div>
+          <div>
+            <h2 class="font-bold text-lg">Mostafa Clean Shop</h2>
+            <p class="text-xs text-white/80">متجر النظافة الأول</p>
+          </div>
+        <button id="closeMenu" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/20 transition">
+          <i class="fa-solid fa-xmark text-xl"></i>
+        </button>
+      </div>
+    </div>
+    <nav class="py-4">
+      <a href="#" class="flex items-center gap-4 px-6 py-3.5 text-[#0F766E] bg-teal-50 border-r-4 border-[#0F766E]">
+        <i class="fa-solid fa-house text-lg w-5"></i>
+        <span class="font-semibold">الرئيسية</span>
+      </a>
+      <a href="products.html" class="flex items-center gap-4 px-6 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#0F766E] transition">
+        <i class="fa-solid fa-box text-lg w-5"></i>
+        <span class="font-medium">جميع المنتجات</span>
+      </a>
+      <a href="#" class="flex items-center gap-4 px-6 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#0F766E] transition">
+        <i class="fa-solid fa-layer-group text-lg w-5"></i>
+        <span class="font-medium">الفئات</span>
+      </a>
+      <a href="#" class="flex items-center gap-4 px-6 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#0F766E] transition">
+        <i class="fa-solid fa-cart-shopping text-lg w-5"></i>
+        <span class="font-medium">السلة</span>
+        <span class="mr-auto bg-[#0F766E] text-white text-xs px-2 py-0.5 rounded-full">3</span>
+      </a>
+      <a href="#" class="flex items-center gap-4 px-6 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#0F766E] transition">
+        <i class="fa-solid fa-heart text-lg w-5"></i>
+        <span class="font-medium">المفضلة</span>
+      </a>
+      <div class="h-px bg-gray-200 my-3 mx-6"></div>
+      <a href="#" class="flex items-center gap-4 px-6 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#0F766E] transition">
+        <i class="fa-solid fa-gear text-lg w-5"></i>
+        <span class="font-medium">الإعدادات</span>
+      </a>
+      <a href="#" class="flex items-center gap-4 px-6 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#0F766E] transition">
+        <i class="fa-solid fa-circle-question text-lg w-5"></i>
+        <span class="font-medium">المساعدة والدعم</span>
+      </a>
+      <a href="#" class="flex items-center gap-4 px-6 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#0F766E] transition">
+        <i class="fa-solid fa-arrow-right-from-bracket text-lg w-5"></i>
+        <span class="font-medium">تسجيل الخروج</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Header -->
+  <header class="header-gradient text-white shadow-lg sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-center justify-between px-4 py-4">
+        <!-- Hamburger Menu -->
+        <button id="menuBtn" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition">
+          <i class="fa-solid fa-bars text-xl"></i>
+        </button>
+
+        <!-- Logo & Title -->
+        <div class="flex flex-col items-center">
+          <div class="flex items-center gap-2">
+            <i class="fa-solid fa-soap text-2xl"></i>
+            <h1 class="text-xl sm:text-2xl font-bold">Mostafa Clean Shop</h1>
+          </div>
+          <p class="text-xs sm:text-sm text-white/90 mt-0.5">منتجات تنظيف عالية الجودة</p>
+        </div>
+
+        <!-- Search Icon -->
+        <button id="searchToggle" class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-white/10 transition">
+          <i class="fa-solid fa-magnifying-glass text-lg"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Search Bar -->
+  <div class="bg-[#0F766E] pb-5 px-4">
+    <div class="max-w-7xl mx-auto">
+      <div class="relative">
+        <input
+          type="text"
+          id="searchInput"
+          placeholder="ابحث عن منتج..."
+          class="search-input w-full px-5 py-3.5 pr-12 rounded-xl border-2 border-transparent focus:border-white/30 outline-none text-gray-800 placeholder-gray-400 shadow-lg"
+        >
+        <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-6">
+    <!-- Section Title -->
+    <div class="mb-6">
+      <h2 class="section-title text-2xl sm:text-3xl font-bold text-gray-800">جميع المنتجات</h2>
+      <p class="text-gray-500 text-sm mt-3">تسوق أفضل منتجات التنظيف والعناية المنزلية</p>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="productsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+
+      <!-- Product 1: Asperox -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="Asperox">
+        <div class="aspect-square bg-gradient-to-br from-blue-50 to-blue-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1583947581924-a31d8c4f23d9?w=400&h=400&fit=crop" alt="Asperox" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">Asperox</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">12.50 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2: دالة Clenix -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="دالة Clenix">
+        <div class="aspect-square bg-gradient-to-br from-green-50 to-green-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=400&fit=crop" alt="دالة Clenix" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">دالة Clenix</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">8.00 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3: جافيل دوزي -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="جافيل دوزي">
+        <div class="aspect-square bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=400&h=400&fit=crop" alt="جافيل دوزي" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">جافيل دوزي</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">5.50 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4: Dalaa 550ml -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="Dalaa 550ml">
+        <div class="aspect-square bg-gradient-to-br from-pink-50 to-pink-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1563453392212-326f5e854473?w=400&h=400&fit=crop" alt="Dalaa 550ml" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">Dalaa 550ml</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">6.75 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 5: Selpak -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="Selpak">
+        <div class="aspect-square bg-gradient-to-br from-purple-50 to-purple-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1584551246679-0daf3d275d0f?w=400&h=400&fit=crop" alt="Selpak" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">Selpak</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">3.20 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 6: Pando -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="Pando">
+        <div class="aspect-square bg-gradient-to-br from-orange-50 to-orange-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop" alt="Pando" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">Pando</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">9.90 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 7: Ariel 7kg -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="Ariel 7kg">
+        <div class="aspect-square bg-gradient-to-br from-cyan-50 to-cyan-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1604335398970-7c9b6b44e622?w=400&h=400&fit=crop" alt="Ariel 7kg" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">Ariel 7kg</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">45.00 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 8: Yes 550ml -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="Yes 550ml">
+        <div class="aspect-square bg-gradient-to-br from-lime-50 to-lime-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=400&h=400&fit=crop" alt="Yes 550ml" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">Yes 550ml</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">4.50 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 9: ميو -->
+      <div class="product-card bg-white rounded-2xl shadow-sm overflow-hidden border border-gray-100" data-name="ميو">
+        <div class="aspect-square bg-gradient-to-br from-rose-50 to-rose-100 p-4 flex items-center justify-center relative">
+          <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?w=400&h=400&fit=crop" alt="ميو" class="w-full h-full object-contain" loading="lazy">
+          <span class="absolute top-3 left-3 bg-green-500 text-white text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+            <span class="badge-dot w-1.5 h-1.5 bg-white rounded-full"></span>
+            متوفر
+          </span>
+        </div>
+        <div class="p-3 sm:p-4">
+          <h3 class="font-bold text-gray-800 text-sm sm:text-base mb-2">ميو</h3>
+          <div class="flex items-center justify-between">
+            <span class="text-[#0F766E] font-bold text-sm sm:text-base">7.25 دج</span>
+            <button class="w-8 h-8 rounded-lg bg-[#0F766E]/10 text-[#0F766E] hover:bg-[#0F766E] hover:text-white transition flex items-center justify-center">
+              <i class="fa-solid fa-cart-plus text-sm"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- No Results Message -->
+    <div id="noResults" class="hidden text-center py-16">
+      <i class="fa-solid fa-box-open text-6xl text-gray-300 mb-4"></i>
+      <h3 class="text-xl font-bold text-gray-700 mb-2">لا توجد نتائج</h3>
+      <p class="text-gray-500">لم نجد أي منتجات تطابق بحثك</p>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-30">
+    <div class="max-w-7xl mx-auto px-2">
+      <div class="grid grid-cols-5 gap-1">
+        <!-- الرئيسية -->
+        <a href="#" class="nav-item active flex flex-col items-center justify-center py-3 px-2 transition">
+          <div class="nav-icon w-12 h-12 rounded-xl flex items-center justify-center mb-1">
+            <i class="fa-solid fa-house text-xl"></i>
+          </div>
+          <span class="text-xs font-semibold">الرئيسية</span>
+        </a>
+
+        <!-- المنتجات -->
+        <a href="products.html" class="nav-item flex flex-col items-center justify-center py-3 px-2 text-gray-500 hover:text-[#0F766E] transition">
+          <div class="nav-icon w-12 h-12 rounded-xl flex items-center justify-center mb-1">
+            <i class="fa-solid fa-box text-xl"></i>
+          </div>
+          <span class="text-xs font-medium">المنتجات</span>
+        </a>
+
+        <!-- السلة -->
+        <a href="#" class="nav-item flex flex-col items-center justify-center py-3 px-2 text-gray-500 hover:text-[#0F766E] transition relative">
+          <div class="nav-icon w-12 h-12 rounded-xl flex items-center justify-center mb-1">
+            <i class="fa-solid fa-cart-shopping text-xl"></i>
+            <span class="absolute top-1 right-2 bg-red-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">3</span>
+          </div>
+          <span class="text-xs font-medium">السلة</span>
+        </a>
+
+        <!-- الفئات -->
+        <a href="#" class="nav-item flex flex-col items-center justify-center py-3 px-2 text-gray-500 hover:text-[#0F766E] transition">
+          <div class="nav-icon w-12 h-12 rounded-xl flex items-center justify-center mb-1">
+            <i class="fa-solid fa-layer-group text-xl"></i>
+          </div>
+          <span class="text-xs font-medium">الفئات</span>
+        </a>
+
+        <!-- الإعدادات -->
+        <a href="#" class="nav-item flex flex-col items-center justify-center py-3 px-2 text-gray-500 hover:text-[#0F766E] transition">
+          <div class="nav-icon w-12 h-12 rounded-xl flex items-center justify-center mb-1">
+            <i class="fa-solid fa-gear text-xl"></i>
+          </div>
+          <span class="text-xs font-medium">الإعدادات</span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+<script>
+  // Menu Toggle
+  const menuBtn = document.getElementById('menuBtn');
+  const closeMenu = document.getElementById('closeMenu');
+  const sideMenu = document.getElementById('sideMenu');
+  const overlay = document.getElementById('overlay');
+
+  function openMenu() {
+    sideMenu.classList.add('open');
+    overlay.classList.add('show');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenuFunc() {
+    sideMenu.classList.remove('open');
+    overlay.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  menuBtn.addEventListener('click', openMenu);
+  closeMenu.addEventListener('click', closeMenuFunc);
+  overlay.addEventListener('click', closeMenuFunc);
+
+  // Search Functionality
+  const searchInput = document.getElementById('searchInput');
+  const searchToggle = document.getElementById('searchToggle');
+  const productsGrid = document.getElementById('productsGrid');
+  const noResults = document.getElementById('noResults');
+  const productCards = document.querySelectorAll('.product-card');
+
+  function performSearch() {
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    let visibleCount = 0;
+
+    productCards.forEach(card => {
+      const productName = card.getAttribute('data-name').toLowerCase();
+      if (productName.includes(searchTerm)) {
+        card.style.display = '';
+        visibleCount++;
+      } else {
+        card.style.display = 'none';
+      }
+    });
+
+    if (visibleCount === 0) {
+      productsGrid.style.display = 'none';
+      noResults.classList.remove('hidden');
+    } else {
+      productsGrid.style.display = '';
+      noResults.classList.add('hidden');
+    }
+  }
+
+  searchInput.addEventListener('input', performSearch);
+  searchInput.addEventListener('keyup', (e) => {
+    if (e.key === 'Enter') performSearch();
+  });
+
+  searchToggle.addEventListener('click', () => {
+    searchInput.focus();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Add to Cart Animation
+  document.querySelectorAll('.product-card button').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const icon = this.querySelector('i');
+      icon.classList.remove('fa-cart-plus');
+      icon.classList.add('fa-check');
+      this.classList.add('bg-green-500', 'text-white');
+      this.classList.remove('bg-[#0F766E]/10', 'text-[#0F766E]');
+
+      setTimeout(() => {
+        icon.classList.remove('fa-check');
+        icon.classList.add('fa-cart-plus');
+        this.classList.remove('bg-green-500', 'text-white');
+        this.classList.add('bg-[#0F766E]/10', 'text-[#0F766E]');
+      }, 1000);
+    });
+  });
+
+  // Image lazy load fallback
+  document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('error', function() {
+      this.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23e5e7eb" width="400" height="400"/%3E%3Ctext x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="20" fill="%239ca3af"%3Eصورة المنتج%3C/text%3E%3C/svg%3E';
+    });
+  });
+</script>
+<script>(function(){document.addEventListener("click",function(e){var a=e.target.closest("[data-product-id]");if(!a)return;e.preventDefault();var pid=a.getAttribute("data-product-id");if(pid)parent.postMessage({type:"ecto-artifact-link-click",productId:pid},"*")})})();</script>
+</body>
+</html>
