@@ -357,11 +357,16 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
       return;
     }
     
-    if (foundCustomer.password!= password) {
-      showToast('كلمة المرور غير صحيحة', 'error');
-      resetButton();
-      return;
-    }
+    console.log("Password from Firebase:", foundCustomer.password);
+console.log("Password entered:", password);
+console.log("Type Firebase:", typeof foundCustomer.password);
+console.log("Type Entered:", typeof password);
+
+if (String(foundCustomer.password).trim() !== String(password).trim()) {
+  showToast('كلمة المرور غير صحيحة', 'error');
+  resetButton();
+  return;
+}
     
     if (foundCustomer.status === 'suspended' || foundCustomer.status === 'inactive' || foundCustomer.status === 'blocked') {
       showToast('تم إيقاف هذا الحساب', 'error');
