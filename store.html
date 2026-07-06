@@ -603,5 +603,34 @@ function showToast(message, type = 'success') {
   }, 3000);
 }
 </script>
+
+<!-- Bottom Navigation -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-50">
+  <div class="grid grid-cols-3 h-16">
+
+    <!-- المنتجات -->
+    <button onclick="window.location.href='store.html'"
+      class="flex flex-col items-center justify-center text-emerald-600">
+      <i class="fa-solid fa-box text-xl"></i>
+      <span class="text-xs mt-1">المنتجات</span>
+    </button>
+
+    <!-- مسح الباركود -->
+    <button onclick="window.location.href='scan.html'"
+      class="flex flex-col items-center justify-center text-gray-500 hover:text-emerald-600">
+      <i class="fa-solid fa-barcode text-2xl"></i>
+      <span class="text-xs mt-1">مسح</span>
+    </button>
+
+    <!-- طلباتي -->
+    <button onclick="window.location.href='orders.html'"
+      class="flex flex-col items-center justify-center text-gray-500 hover:text-emerald-600">
+      <i class="fa-solid fa-cart-shopping text-xl"></i>
+      <span class="text-xs mt-1">طلباتي</span>
+    </button>
+
+  </div>
+</nav>
+
 </body>
 </html>
