@@ -20,35 +20,35 @@
   body::before {
     content: '';
     position: absolute;
-    width: 300px;
-    height: 300px;
+    width: 600px;
+    height: 600px;
     background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
-    top: -200px;
-    right: -200px;
+    top: -250px;
+    right: -250px;
     animation: float 20s ease-in-out infinite;
   }
   
   body::after {
     content: '';
     position: absolute;
-    width: 250px;
-    height: 250px;
+    width: 500px;
+    height: 500px;
     background: radial-gradient(circle, rgba(5, 150, 105, 0.2) 0%, transparent 70%);
-    bottom: -150px;
-    left: -150px;
+    bottom: -200px;
+    left: -200px;
     animation: float 15s ease-in-out infinite reverse;
   }
   
   @keyframes float {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    50% { transform: translate(30px, 30px) scale(1.1); }
+    0%, 100% { transform: translate(0, 0) scale(1) rotate(0deg); }
+    50% { transform: translate(40px, 40px) scale(1.1) rotate(5deg); }
   }
   
  .glass {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 0.3);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
   }
   
@@ -136,8 +136,9 @@
   }
 </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-4 overflow-x-hidden">
-<div class="relative z-10 w-full max-w-md mx-auto animate-fade-in">
+<body class="flex items-center justify-center p-4">
+
+<div class="w-full max-w-md relative z-10 animate-fade-in">
   <!-- Logo Section -->
   <div class="text-center mb-8 animate-slide-up">
     <div class="inline-block">
@@ -162,7 +163,7 @@
         <label class="block text-sm font-semibold text-gray-700 mb-2">رقم الحساب</label>
         <div class="relative">
           <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-            <i class="fa-solid fa-user text-emerald-600"></i>
+            <i class="fa-solid fa-id-card text-emerald-600"></i>
           </div>
           <input 
             type="number" 
@@ -236,7 +237,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD5KnoOye-Ns7RNQq9KqGNSmakYydIoLAw",
@@ -252,8 +253,8 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 // التحقق من تسجيل الدخول المسبق
-if (localStorage.getItem('login') === 'true') {
-  window.location.href = 'index.html';
+if (localStorage.getItem('customer')) {
+  window.location.href = 'store.html';
 }
 
 // إظهار/إخفاء كلمة المرور
@@ -271,6 +272,38 @@ document.getElementById('togglePassword').addEventListener('click', function() {
     eyeIcon.classList.add('fa-eye');
   }
 });
+
+// الحصول على معلومات الجهاز
+function getDeviceInfo() {
+  const ua = navigator.userAgent;
+  let os = 'Unknown';
+  let browser = 'Unknown';
+  let device = 'Desktop';
+  
+  if (/android/i.test(ua)) os = 'Android';
+  else if (/iPad|iPhone|iPod/.test(ua)) { os = 'iOS'; device = 'Mobile'; }
+  else if (/Win/.test(ua)) os = 'Windows';
+  else if (/Mac/.test(ua)) os = 'MacOS';
+  else if (/Linux/.test(ua)) os = 'Linux';
+  
+  if (/chrome/i.test(ua) &&!/edg/i.test(ua)) browser = 'Chrome';
+  else if (/safari/i.test(ua) &&!/chrome/i.test(ua)) browser = 'Safari';
+  else if (/firefox/i.test(ua)) browser = 'Firefox';
+  else if (/edg/i.test(ua)) browser = 'Edge';
+  
+  if (/Mobile|Android|iPhone/.test(ua)) device = 'Mobile';
+  else if (/Tablet|iPad/.test(ua)) device = 'Tablet';
+  
+  return {
+    device,
+    os,
+    browser,
+    screenWidth: window.screen.width,
+    screenHeight: window.screen.height,
+    language: navigator.language,
+    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+  };
+}
 
 // تسجيل الدخول
 document.getElementById('loginForm').addEventListener('submit', async function(e) {
@@ -306,11 +339,13 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     
     const customers = snapshot.val();
     let foundCustomer = null;
+    let customerKey = null;
     
     // البحث عن العميل
     for (const key in customers) {
       if (customers[key].id == customerId) {
         foundCustomer = customers[key];
+        customerKey = key;
         break;
       }
     }
@@ -328,23 +363,45 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
       return;
     }
     
-    if (foundCustomer.status === 'inactive' || foundCustomer.status === 'blocked') {
+    if (foundCustomer.status === 'suspended' || foundCustomer.status === 'inactive' || foundCustomer.status === 'blocked') {
       showToast('تم إيقاف هذا الحساب', 'error');
       resetButton();
       return;
     }
     
-    // نجح تسجيل الدخول
-    localStorage.setItem('customerId', foundCustomer.id);
-    localStorage.setItem('customerName', foundCustomer.name);
-    localStorage.setItem('customerPhone', foundCustomer.phone);
-    localStorage.setItem('customerCity', foundCustomer.city);
-    localStorage.setItem('login', 'true');
+    if (foundCustomer.status!== 'active') {
+      showToast('تم إيقاف هذا الحساب', 'error');
+      resetButton();
+      return;
+    }
+    
+    // تحديث معلومات تسجيل الدخول
+    const deviceInfo = getDeviceInfo();
+    const loginData = {
+      lastLogin: Date.now(),
+      loginCount: (foundCustomer.loginCount || 0) + 1,
+      device: deviceInfo.device,
+      os: deviceInfo.os,
+      browser: deviceInfo.browser,
+      screenWidth: deviceInfo.screenWidth,
+      screenHeight: deviceInfo.screenHeight,
+      language: deviceInfo.language,
+      timeZone: deviceInfo.timeZone
+    };
+    
+    await update(ref(db, `customers/${customerKey}`), loginData);
+    
+    // حفظ في LocalStorage
+    localStorage.setItem('customer', JSON.stringify({
+      key: customerKey,
+     ...foundCustomer,
+     ...loginData
+    }));
     
     showToast('تم تسجيل الدخول بنجاح', 'success');
     
     setTimeout(() => {
-      window.location.href = 'index.html';
+      window.location.href = 'store.html';
     }, 1500);
     
   } catch (error) {
