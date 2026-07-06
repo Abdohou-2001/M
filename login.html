@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الدخول - WEST</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
+    * { font-family: 'Cairo', sans-serif; }
+  
+  body {
+    background: linear-gradient(135deg, #065f46 0%, #047857 50%, #10b981 100%);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  body::before {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(16, 185, 129, 0.3) 0%, transparent 70%);
+    top: -200px;
+    right: -200px;
+    animation: float 20s ease-in-out infinite;
+  }
+  
+  body::after {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(5, 150, 105, 0.2) 0%, transparent 70%);
+    bottom: -150px;
+    left: -150px;
+    animation: float 15s ease-in-out infinite reverse;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(30px, 30px) scale(1.1); }
+  }
+  
+ .glass {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  }
+  
+ .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+ .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+  
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+ .input-focus {
+    transition: all 0.3s ease;
+  }
+  
+ .input-focus:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+  }
+  
+ .btn-ripple {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+ .btn-ripple:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  }
+  
+ .btn-ripple:active {
+    transform: translateY(0);
+  }
+  
+ .btn-ripple::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+  
+ .btn-ripple:active::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+ .logo-glow {
+    animation: glow 3s ease-in-out infinite;
+  }
+  
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
+    50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.8); }
+  }
+  
+ .spinner {
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+<div class="w-full max-w-md relative z-10 animate-fade-in">
+  <!-- Logo Section -->
+  <div class="text-center mb-8 animate-slide-up">
+    <div class="inline-block">
+      <div class="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 logo-glow shadow-2xl">
+        <i class="fa-solid fa-store text-5xl text-emerald-600"></i>
+      </div>
+      <h1 class="text-4xl font-extrabold text-white mb-2 drop-shadow-lg">WEST</h1>
+      <p class="text-emerald-100 text-sm">متجرك الإلكتروني المفضل</p>
+    </div>
+  </div>
+
+  <!-- Login Card -->
+  <div class="glass rounded-3xl p-8 animate-slide-up" style="animation-delay: 0.1s">
+    <div class="text-center mb-8">
+      <h2 class="text-2xl font-bold text-gray-900 mb-2">مرحباً بك</h2>
+      <p class="text-gray-600 text-sm">قم بتسجيل الدخول للوصول إلى جميع المنتجات</p>
+    </div>
+
+    <form id="loginForm" class="space-y-5">
+      <!-- ID Field -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">رقم الحساب</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+            <i class="fa-solid fa-user text-emerald-600"></i>
+          </div>
+          <input 
+            type="number" 
+            id="customerId" 
+            class="input-focus w-full pr-12 pl-4 py-3.5 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:outline-none text-lg font-semibold bg-white" 
+            placeholder="أدخل رقم الحساب"
+            required
+          >
+        </div>
+      </div>
+
+      <!-- Password Field -->
+      <div>
+        <label class="block text-sm font-semibold text-gray-700 mb-2">كلمة المرور</label>
+        <div class="relative">
+          <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+            <i class="fa-solid fa-lock text-emerald-600"></i>
+          </div>
+          <input 
+            type="password" 
+            id="password" 
+            class="input-focus w-full pr-12 pl-12 py-3.5 border-2 border-gray-200 rounded-xl focus:border-emerald-500 focus:outline-none text-lg font-semibold bg-white" 
+            placeholder="أدخل كلمة المرور"
+            required
+          >
+          <button 
+            type="button" 
+            id="togglePassword"
+            class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 hover:text-emerald-600 transition"
+          >
+            <i class="fa-solid fa-eye" id="eyeIcon"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Login Button -->
+      <button 
+        type="submit" 
+        id="loginBtn"
+        class="btn-ripple w-full bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-700 hover:to-emerald-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg transition-all"
+      >
+        <span id="btnText">تسجيل الدخول</span>
+        <div id="btnSpinner" class="hidden spinner mx-auto"></div>
+      </button>
+    </form>
+
+    <!-- Info -->
+    <div class="mt-6 text-center">
+      <p class="text-xs text-gray-500">
+        <i class="fa-solid fa-shield-halved text-emerald-600 ml-1"></i>
+        بياناتك محمية ومشفرة بالكامل
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="text-center mt-6 text-white text-xs opacity-75">
+    <p>© 2026 WEST. جميع الحقوق محفوظة</p>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden fixed top-6 left-1/2 -translate-x-1/2 z-50 animate-slide-up">
+  <div class="bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 min-w-[300px]">
+    <div id="toastIcon" class="text-2xl"></div>
+    <div class="flex-1">
+      <p id="toastMessage" class="font-semibold"></p>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, get, child } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD5KnoOye-Ns7RNQq9KqGNSmakYydIoLAw",
+  authDomain: "my-store-4f430.firebaseapp.com",
+  databaseURL: "https://my-store-4f430-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "my-store-4f430",
+  storageBucket: "my-store-4f430.firebasestorage.app",
+  messagingSenderId: "674007434765",
+  appId: "1:674007434765:web:c4005d096ab86167cc3744"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// التحقق من تسجيل الدخول المسبق
+if (localStorage.getItem('login') === 'true') {
+  window.location.href = 'index.html';
+}
+
+// إظهار/إخفاء كلمة المرور
+document.getElementById('togglePassword').addEventListener('click', function() {
+  const passwordInput = document.getElementById('password');
+  const eyeIcon = document.getElementById('eyeIcon');
+  
+  if (passwordInput.type === 'password') {
+    passwordInput.type = 'text';
+    eyeIcon.classList.remove('fa-eye');
+    eyeIcon.classList.add('fa-eye-slash');
+  } else {
+    passwordInput.type = 'password';
+    eyeIcon.classList.remove('fa-eye-slash');
+    eyeIcon.classList.add('fa-eye');
+  }
+});
+
+// تسجيل الدخول
+document.getElementById('loginForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  const customerId = document.getElementById('customerId').value.trim();
+  const password = document.getElementById('password').value.trim();
+  
+  if (!customerId ||!password) {
+    showToast('الرجاء ملء جميع الحقول', 'error');
+    return;
+  }
+  
+  // تفعيل Loading
+  const btnText = document.getElementById('btnText');
+  const btnSpinner = document.getElementById('btnSpinner');
+  const loginBtn = document.getElementById('loginBtn');
+  
+  btnText.classList.add('hidden');
+  btnSpinner.classList.remove('hidden');
+  loginBtn.disabled = true;
+  
+  try {
+    // قراءة جميع العملاء
+    const customersRef = ref(db, 'customers');
+    const snapshot = await get(customersRef);
+    
+    if (!snapshot.exists()) {
+      showToast('خطأ في الاتصال بقاعدة البيانات', 'error');
+      resetButton();
+      return;
+    }
+    
+    const customers = snapshot.val();
+    let foundCustomer = null;
+    
+    // البحث عن العميل
+    for (const key in customers) {
+      if (customers[key].id == customerId) {
+        foundCustomer = customers[key];
+        break;
+      }
+    }
+    
+    // التحقق
+    if (!foundCustomer) {
+      showToast('هذا الحساب غير موجود', 'error');
+      resetButton();
+      return;
+    }
+    
+    if (foundCustomer.password!= password) {
+      showToast('كلمة المرور غير صحيحة', 'error');
+      resetButton();
+      return;
+    }
+    
+    if (foundCustomer.status === 'inactive' || foundCustomer.status === 'blocked') {
+      showToast('تم إيقاف هذا الحساب', 'error');
+      resetButton();
+      return;
+    }
+    
+    // نجح تسجيل الدخول
+    localStorage.setItem('customerId', foundCustomer.id);
+    localStorage.setItem('customerName', foundCustomer.name);
+    localStorage.setItem('customerPhone', foundCustomer.phone);
+    localStorage.setItem('customerCity', foundCustomer.city);
+    localStorage.setItem('login', 'true');
+    
+    showToast('تم تسجيل الدخول بنجاح', 'success');
+    
+    setTimeout(() => {
+      window.location.href = 'index.html';
+    }, 1500);
+    
+  } catch (error) {
+    console.error('Login Error:', error);
+    showToast('حدث خطأ، حاول مرة أخرى', 'error');
+    resetButton();
+  }
+});
+
+function resetButton() {
+  const btnText = document.getElementById('btnText');
+  const btnSpinner = document.getElementById('btnSpinner');
+  const loginBtn = document.getElementById('loginBtn');
+  
+  btnText.classList.remove('hidden');
+  btnSpinner.classList.add('hidden');
+  loginBtn.disabled = false;
+}
+
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  const icon = document.getElementById('toastIcon');
+  const messageEl = document.getElementById('toastMessage');
+  
+  messageEl.textContent = message;
+  
+  if (type === 'success') {
+    icon.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-400"></i>';
+  } else {
+    icon.innerHTML = '<i class="fa-solid fa-circle-xmark text-red-400"></i>';
+  }
+  
+  toast.classList.remove('hidden');
+  
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 3000);
+}
+</script>
+</body>
+</html>
