@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>السلة - WEST</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    * { font-family: 'Cairo', sans-serif; }
+
+  body {
+    background: #f8fafc;
+    padding-bottom: 140px;
+  }
+
+.soft-shadow {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
+
+.soft-shadow-lg {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
+.cart-item {
+    transition: all 0.3s ease;
+  }
+
+.cart-item:hover {
+    transform: translateX(-4px);
+  }
+
+.animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+.animate-fade-in {
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+.animate-scale {
+    animation: scale 0.2s ease-out;
+  }
+
+  @keyframes scale {
+    0% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+  }
+
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+  }
+
+  @keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+
+.qty-btn:active {
+    transform: scale(0.9);
+  }
+</style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-40 border-b-2 border-emerald-500">
+    <div class="max-w-4xl mx-auto px-4 py-4">
+      <div class="flex items-center justify-between">
+        <button onclick="history.back()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-50 hover:bg-emerald-100 transition">
+          <i class="fa-solid fa-arrow-right text-emerald-600"></i>
+        </button>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center shadow-lg">
+            <i class="fa-solid fa-cart-shopping text-white text-xl"></i>
+          </div>
+          <div>
+            <h1 class="text-xl font-bold text-gray-900">سلة المشتريات</h1>
+            <p class="text-xs text-gray-500" id="itemsCount">0 منتج</p>
+          </div>
+        </div>
+        <button onclick="clearCartConfirm()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 hover:bg-red-100 transition">
+          <i class="fa-solid fa-trash text-red-600"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 pt-6">
+
+    <!-- بيانات العميل -->
+    <div class="bg-gradient-to-l from-emerald-600 to-emerald-500 rounded-2xl soft-shadow-lg p-5 mb-6 text-white">
+      <div class="flex items-center gap-3">
+        <div class="w-14 h-14 bg-white/20 backdrop-blur rounded-xl flex items-center justify-center">
+          <i class="fa-solid fa-user text-2xl"></i>
+        </div>
+        <div class="flex-1">
+          <p class="text-emerald-100 text-sm mb-1">اسم العميل</p>
+          <h2 id="customerName" class="text-2xl font-bold">جاري التحميل...</h2>
+        </div>
+      </div>
+    </div>
+
+    <!-- Loading Skeleton -->
+    <div id="loadingSkeleton" class="space-y-4">
+      <div class="bg-white rounded-2xl soft-shadow p-4">
+        <div class="flex gap-4">
+          <div class="skeleton w-24 h-24 rounded-xl"></div>
+          <div class="flex-1 space-y-3">
+            <div class="skeleton h-5 rounded w-3/4"></div>
+            <div class="skeleton h-4 rounded w-1/2"></div>
+            <div class="skeleton h-10 rounded w-full"></div>
+          </div>
+        </div>
+      <div class="bg-white rounded-2xl soft-shadow p-4">
+        <div class="flex gap-4">
+          <div class="skeleton w-24 h-24 rounded-xl"></div>
+          <div class="flex-1 space-y-3">
+            <div class="skeleton h-5 rounded w-3/4"></div>
+            <div class="skeleton h-4 rounded w-1/2"></div>
+            <div class="skeleton h-10 rounded w-full"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cart Items -->
+    <div id="cartItems" class="space-y-3 mb-6"></div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16 animate-fade-in">
+      <div class="w-32 h-32 mx-auto mb-6 bg-emerald-50 rounded-full flex items-center justify-center">
+        <i class="fa-solid fa-cart-shopping text-5xl text-emerald-300"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-900 mb-2">السلة فارغة</h3>
+      <p class="text-gray-500 mb-6">لم تقم بإضافة أي منتجات بعد</p>
+      <button onclick="window.location.href='store.html'" class="bg-emerald-600 hover:bg-emerald-700 text-white px-8 py-3 rounded-xl font-bold transition shadow-lg">
+        <i class="fa-solid fa-store ml-2"></i>تصفح المتجر
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Summary Fixed Bottom -->
+  <div id="cartSummary" class="hidden fixed bottom-16 left-0 right-0 bg-white border-t-2 border-emerald-500 shadow-2xl z-30">
+    <div class="max-w-4xl mx-auto px-4 py-4">
+      <div class="bg-emerald-50 rounded-xl p-4 mb-3">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-gray-600 font-semibold">عدد المنتجات</span>
+          <span id="totalItems" class="text-lg font-bold text-gray-900">0</span>
+        </div>
+        <div class="flex items-center justify-between">
+          <span class="text-gray-600 font-semibold">المجموع الكلي</span>
+          <span id="totalPrice" class="text-2xl font-bold text-emerald-600">0 درهم</span>
+        </div>
+      </div>
+
+      <button onclick="confirmOrder()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl font-bold text-lg transition shadow-lg flex items-center justify-center gap-3">
+        <i class="fa-brands fa-whatsapp text-2xl"></i>
+        تأكيد الطلب
+      </button>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-lg z-40">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-4 h-16">
+        <button onclick="window.location.href='store.html'" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-emerald-600 transition">
+          <i class="fa-solid fa-house text-xl"></i>
+          <span class="text-xs font-medium">الرئيسية</span>
+        </button>
+        <button onclick="window.location.href='categories.html'" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-emerald-600 transition">
+          <i class="fa-solid fa-grid-2 text-xl"></i>
+          <span class="text-xs font-medium">الأقسام</span>
+        </button>
+        <button class="flex flex-col items-center justify-center gap-1 text-emerald-600 relative">
+          <div class="absolute -top-1 w-12 h-1 bg-emerald-600 rounded-full"></div>
+          <i class="fa-solid fa-cart-shopping text-xl"></i>
+          <span class="text-xs font-semibold">السلة</span>
+          <span id="cartBadge" class="hidden absolute top-1 left-1/2 -translate-x-1/2 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold"></span>
+        </button>
+        <button onclick="window.location.href='profile.html'" class="flex flex-col items-center justify-center gap-1 text-gray-500 hover:text-emerald-600 transition">
+          <i class="fa-solid fa-user text-xl"></i>
+          <span class="text-xs font-medium">حسابي</span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Confirm Modal -->
+  <div id="confirmModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="absolute inset-0 bg-black/50" onclick="closeConfirmModal()"></div>
+    <div class="relative bg-white rounded-3xl soft-shadow-lg w-full max-w-md animate-slide-up p-6">
+      <div class="text-center mb-6">
+        <div class="w-20 h-20 mx-auto mb-4 bg-emerald-100 rounded-full flex items-center justify-center">
+          <i class="fa-solid fa-check text-3xl text-emerald-600"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">تم إرسال الطلب</h3>
+        <p class="text-gray-600">هل تريد إفراغ السلة الآن؟</p>
+      </div>
+      <div class="flex gap-3">
+        <button onclick="emptyCart()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition">
+          نعم، إفراغ السلة
+        </button>
+        <button onclick="closeConfirmModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-xl font-semibold transition">
+          لا، الاحتفاظ بها
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-50 animate-fade-in">
+    <div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3 min-w-[300px]">
+      <i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400"></i>
+      <span id="toastMessage"></span>
+    </div>
+  </div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, onValue, update, remove, get, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyD5KnoOye-Ns7RNQq9KqGNSmakYydIoLAw",
+  authDomain: "my-store-4f430.firebaseapp.com",
+  databaseURL: "https://my-store-4f430-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "my-store-4f430",
+  storageBucket: "my-store-4f430.firebasestorage.app",
+  messagingSenderId: "674007434765",
+  appId: "1:674007434765:web:c4005d096ab86167cc3744"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// الحصول على اسم العميل من localStorage أو URL
+const urlParams = new URLSearchParams(window.location.search);
+const customerId = urlParams.get('id') || localStorage.getItem('customerId');
+let customerName = localStorage.getItem('customerName') || 'Mini brahim';
+let cartItems = {};
+
+document.getElementById('customerName').textContent = customerName;
+
+// تحميل السلة Realtime
+function loadCart() {
+  if (!customerName) return;
+
+  onValue(ref(db, `cart/${customerName}`), (snapshot) => {
+    cartItems = {};
+    if (snapshot.exists()) {
+      snapshot.forEach(child => {
+        cartItems[child.key] = { key: child.key,...child.val() };
+      });
+    }
+    renderCart();
+    document.getElementById('loadingSkeleton').classList.add('hidden');
+  });
+}
+
+// عرض السلة
+function renderCart() {
+  const container = document.getElementById('cartItems');
+  const emptyState = document.getElementById('emptyState');
+  const summary = document.getElementById('cartSummary');
+  const items = Object.values(cartItems);
+
+  if (items.length === 0) {
+    container.innerHTML = '';
+    emptyState.classList.remove('hidden');
+    summary.classList.add('hidden');
+    updateBadge(0);
+    return;
+  }
+
+  emptyState.classList.add('hidden');
+  summary.classList.remove('hidden');
+
+  container.innerHTML = items.map(item => createCartItem(item)).join('');
+  updateSummary(items);
+  updateBadge(items.length);
+}
+
+// إنشاء عنصر السلة
+function createCartItem(item) {
+  const subtotal = item.price * item.quantity;
+  return `
+    <div class="cart-item bg-white rounded-2xl soft-shadow p-4 border-2 border-gray-100 animate-slide-up">
+      <div class="flex gap-4">
+        <img src="${item.image || 'https://via.placeholder.com/100'}"
+             alt="${item.name}"
+             class="w-24 h-24 rounded-xl object-cover border-2 border-emerald-100">
+
+        <div class="flex-1">
+          <div class="flex items-start justify-between mb-2">
+            <div>
+              <h3 class="font-bold text-gray-900 text-lg mb-1">${item.name}</h3>
+              <p class="text-emerald-600 font-bold">${item.price} درهم</p>
+            </div>
+            <button onclick="removeItem('${item.key}')" class="w-9 h-9 flex items-center justify-center rounded-lg bg-red-50 hover:bg-red-100 text-red-600 transition">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+
+          <div class="flex items-center justify-between mt-3">
+            <div class="flex items-center gap-2 bg-gray-50 rounded-xl p-1">
+              <button onclick="updateQuantity('${item.key}', ${item.quantity - 1})"
+                      class="qty-btn w-9 h-9 flex items-center justify-center rounded-lg bg-white hover:bg-emerald-50 text-emerald-600 transition border border-gray-200">
+                <i class="fa-solid fa-minus"></i>
+              </button>
+              <span class="w-12 text-center font-bold text-gray-900">${item.quantity}</span>
+              <button onclick="updateQuantity('${item.key}', ${item.quantity + 1})"
+                      class="qty-btn w-9 h-9 flex items-center justify-center rounded-lg bg-white hover:bg-emerald-50 text-emerald-600 transition border border-gray-200">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+            <div class="text-left">
+              <p class="text-xs text-gray-500 mb-0.5">المجموع الفرعي</p>
+              <p class="text-lg font-bold text-gray-900">${subtotal} درهم</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// تحديث الملخص
+function updateSummary(items) {
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  document.getElementById('itemsCount').textContent = `${items.length} منتج`;
+  document.getElementById('totalItems').textContent = totalItems;
+  document.getElementById('totalPrice').textContent = `${totalPrice} درهم`;
+}
+
+// تحديث Badge
+function updateBadge(count) {
+  const badge = document.getElementById('cartBadge');
+  if (count > 0) {
+    badge.textContent = count;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+// تحديث الكمية
+window.updateQuantity = async function(itemKey, newQty) {
+  if (newQty < 1) {
+    removeItem(itemKey);
+    return;
+  }
+
+  try {
+    await update(ref(db, `cart/${customerName}/${itemKey}`), {
+      quantity: newQty
+    });
+    showToast('تم تحديث الكمية', 'success');
+  } catch (error) {
+    console.error('Error updating quantity:', error);
+    showToast('فشل تحديث الكمية', 'error');
+  }
+}
+
+// حذف منتج
+window.removeItem = async function(itemKey) {
+  try {
+    await remove(ref(db, `cart/${customerName}/${itemKey}`));
+    showToast('تم حذف المنتج من السلة', 'success');
+  } catch (error) {
+    console.error('Error removing item:', error);
+    showToast('فشل حذف المنتج', 'error');
+  }
+}
+
+// تأكيد الطلب
+window.confirmOrder = function() {
+  const items = Object.values(cartItems);
+  if (items.length === 0) {
+    showToast('السلة فارغة', 'error');
+    return;
+  }
+
+  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  let message = `مرحباً مصطفى 👋\n\nلدي طلب جديد.\n\nاسم العميل:\n${customerName}\n\nــــــــــــــــــــ\n\n`;
+
+  items.forEach((item, index) => {
+    message += `${index + 1}- ${item.name}\nالكمية: ${item.quantity}\nالسعر: ${item.price} درهم\n\n`;
+  });
+
+  message += `ــــــــــــــــــــ\n\nإجمالي المنتجات:\n${totalItems}\n\nالمجموع:\n${totalPrice} درهم\n\nشكراً.`;
+
+  const url = `https://wa.me/212637205650?text=${encodeURIComponent(message)}`;
+  window.open(url, '_blank');
+
+  setTimeout(() => {
+    document.getElementById('confirmModal').classList.remove('hidden');
+  }, 500);
+}
+
+// إفراغ السلة
+window.emptyCart = async function() {
+  try {
+    await remove(ref(db, `cart/${customerName}`));
+    closeConfirmModal();
+    showToast('تم إفراغ السلة بنجاح', 'success');
+  } catch (error) {
+    console.error('Error emptying cart:', error);
+    showToast('فشل إفراغ السلة', 'error');
+  }
+}
+
+// تأكيد إفراغ السلة
+window.clearCartConfirm = function() {
+  if (Object.keys(cartItems).length === 0) {
+    showToast('السلة فارغة بالفعل', 'error');
+    return;
+  }
+  if (confirm('هل أنت متأكد من إفراغ السلة؟')) {
+    emptyCart();
+  }
+}
+
+// إغلاق المودال
+window.closeConfirmModal = function() {
+  document.getElementById('confirmModal').classList.add('hidden');
+}
+
+// عرض Toast
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('toast');
+  const icon = document.getElementById('toastIcon');
+  document.getElementById('toastMessage').textContent = message;
+
+  if (type === 'error') {
+    icon.className = 'fa-solid fa-circle-xmark text-red-400';
+  } else {
+    icon.className = 'fa-solid fa-check-circle text-emerald-400';
+  }
+
+  toast.classList.remove('hidden');
+  setTimeout(() => toast.classList.add('hidden'), 3000);
+}
+
+// إضافة للسلة - استدعيها من product.html
+window.addToCart = async function(product) {
+  if (!customerName) {
+    showToast('يرجى تسجيل الدخول أولاً', 'error');
+    return;
+  }
+
+  try {
+    const cartRef = ref(db, `cart/${customerName}/${product.id}`);
+    const snapshot = await get(cartRef);
+
+    if (snapshot.exists()) {
+      // المنتج موجود - زيادة الكمية
+      const currentQty = snapshot.val().quantity || 0;
+      await update(cartRef, {
+        quantity: currentQty + 1
+      });
+      showToast('تم زيادة الكمية', 'success');
+    } else {
+      // منتج جديد
+      await set(cartRef, {
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        image: product.image,
+        quantity: 1
+      });
+      showToast('تمت الإضافة للسلة', 'success');
+    }
+  } catch (error) {
+    console.error('Error adding to cart:', error);
+    showToast('فشل إضافة المنتج', 'error');
+  }
+}
+
+// بدء التطبيق
+document.addEventListener('DOMContentLoaded', () => {
+  loadCart();
+});
+</script>
+
+</body>
+</html>
