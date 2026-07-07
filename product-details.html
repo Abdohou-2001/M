@@ -381,7 +381,7 @@ async function loadProduct() {
 
     product = { id: productId,...snapshot.val() };
 
-    if (product.hidden) {
+    if (product.hidden === true) {
       showNotFound();
       return;
     }
@@ -415,7 +415,7 @@ function renderProduct() {
   document.getElementById('productPrice').textContent = price.toFixed(2);
 
   // Public Price
-  if (product.publicPrice && product.publicPrice > price) {
+  if (product.publicPrice && parseFloat(product.publicPrice) > price) {
     document.getElementById('publicPriceContainer').classList.remove('hidden');
     document.getElementById('publicPrice').textContent = parseFloat(product.publicPrice).toFixed(2) + ' درهم';
     const discount = ((product.publicPrice - price) / product.publicPrice * 100).toFixed(0);
@@ -460,6 +460,7 @@ function renderProduct() {
   document.getElementById('productDescription').textContent = desc;
 
   updateTotal();
+  updateButtons();
 }
 
 // Render Stars
@@ -589,7 +590,7 @@ async function loadSimilarProducts() {
     const allProducts = [];
     snapshot.forEach(child => {
       const p = { id: child.key,...child.val() };
-      if (p.id!== product.id && p.category === product.category &&!p.hidden) {
+      if (p.id!== product.id && p.category === product.category && p.hidden!== true) {
         allProducts.push(p);
       }
     });
