@@ -299,9 +299,14 @@ function showResult(success, barcode, product = null) {
 // نجاح القراءة
 async function onScanSuccess(decodedText, decodedResult) {
   if (!canScan(decodedText)) return;
-  
+
+  if (html5QrCode && isScanning) {
+      isScanning = false;
+      await html5QrCode.stop();
+  }
+
   console.log('Scanned:', decodedText);
-  
+
   playBeep();
   vibrate();
   
