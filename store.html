@@ -513,9 +513,8 @@ function renderProducts() {
 // ==================== عرض المنتج ====================
 window.viewProduct = function(productId) {
   if (!permissions.allowProductDetails) return;
-  window.location.href = `product.html?id=${productId}`;
+  window.location.href = `product-details.html?id=${productId}`;
 }
-
 // ==================== المفضلة ====================
 window.toggleFavorite = async function(productId) {
   if (!permissions.allowFavorite) return;
