@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>مسح الباركود - WEST</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -10,7 +10,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
     * { font-family: 'Cairo', sans-serif; }
-  
+
   body {
     background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 100%);
     min-height: 100vh;
@@ -73,14 +73,17 @@
     50% { opacity: 0.5; }
   }
 
-  .success-animation {
-    animation: successPop 0.5s ease-out;
+  .modal-backdrop {
+    backdrop-filter: blur(4px);
   }
 
-  @keyframes successPop {
-    0% { transform: scale(0.5); opacity: 0; }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); opacity: 1; }
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
   }
 </style>
 </head>
@@ -109,7 +112,7 @@
   </header>
 
   <main class="max-w-2xl mx-auto px-4 pt-6">
-    
+
     <!-- Instructions -->
     <div id="instructions" class="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 mb-6">
       <div class="flex items-center gap-3">
@@ -145,23 +148,26 @@
       </div>
     </div>
 
-    <!-- Last Scan Result -->
-    <div id="result" class="hidden">
-      <div class="bg-white rounded-2xl shadow-lg p-6 border-2 border-gray-100">
-        <div class="flex items-center gap-3 mb-4">
-          <div id="resultIcon" class="w-14 h-14 rounded-xl flex items-center justify-center">
-            <i class="fa-solid fa-check text-2xl"></i>
-          </div>
-          <div class="flex-1">
-            <h3 id="resultTitle" class="font-bold text-lg text-gray-900"></h3>
-            <p id="resultBarcode" class="text-sm text-gray-500 font-mono"></p>
-          </div>
-        </div>
-        <div id="productCard"></div>
-      </div>
-    </div>
-
   </main>
+
+  <!-- Error Modal -->
+  <div id="errorModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="modal-backdrop absolute inset-0 bg-black/50" onclick="closeErrorModal()"></div>
+    <div class="relative bg-white rounded-3xl shadow-2xl w-full max-w-md animate-slide-up p-6 text-center">
+      <div class="w-20 h-20 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center">
+        <i class="fa-solid fa-circle-xmark text-4xl text-red-500"></i>
+      </div>
+      <h3 class="text-2xl font-bold text-gray-900 mb-2">هذا المنتج غير موجود</h3>
+      <p class="text-gray-600 mb-6">لم يتم العثور على المنتج في قاعدة البيانات</p>
+      <div class="bg-gray-100 rounded-xl p-3 mb-6">
+        <p class="text-xs text-gray-500 mb-1">Barcode:</p>
+        <p id="errorBarcode" class="text-sm font-mono font-bold text-gray-900"></p>
+      </div>
+      <button onclick="closeErrorModal()" class="w-full bg-gray-900 hover:bg-gray-800 text-white py-3 rounded-xl font-bold transition">
+        إغلاق
+      </button>
+    </div>
+  </div>
 
   <!-- Audio -->
   <audio id="beepSound" src="freesound_community-store-scanner-beep-90395.mp3" preload="auto"></audio>
@@ -189,6 +195,7 @@ let isScanning = false;
 let lastScannedCode = null;
 let lastScanTime = 0;
 let isFlashOn = false;
+let isProcessing = false;
 
 // تشغيل الصوت
 function playBeep() {
@@ -206,7 +213,7 @@ function playError() {
 // اهتزاز الهاتف
 function vibrate() {
   if (navigator.vibrate) {
-    navigator.vibrate(200);
+    navigator.vibrate([200, 100, 200]);
   }
 }
 
@@ -221,16 +228,16 @@ function canScan(code) {
   return true;
 }
 
-// البحث عن المنتج
-async function searchProduct(barcode) {
+// البحث عن المنتج بالباركود فقط
+async function searchProductByBarcode(barcode) {
   try {
     const snapshot = await get(ref(db, 'products'));
-    if (snapshot.exists()) {
-      const products = snapshot.val();
-      for (const [key, product] of Object.entries(products)) {
-        if (product.barcode === barcode) {
-          return { id: key, ...product };
-        }
+    if (!snapshot.exists()) return null;
+
+    const products = snapshot.val();
+    for (const [key, product] of Object.entries(products)) {
+      if (product.barcode === barcode) {
+        return { id: key, ...product };
       }
     }
     return null;
@@ -240,77 +247,38 @@ async function searchProduct(barcode) {
   }
 }
 
-// عرض النتيجة
-function showResult(success, barcode, product = null) {
-  const resultDiv = document.getElementById('result');
-  const resultIcon = document.getElementById('resultIcon');
-  const resultTitle = document.getElementById('resultTitle');
-  const resultBarcode = document.getElementById('resultBarcode');
-  const productCard = document.getElementById('productCard');
+// عرض خطأ المنتج غير موجود
+function showErrorModal(barcode) {
+  document.getElementById('errorBarcode').textContent = barcode;
+  document.getElementById('errorModal').classList.remove('hidden');
+}
 
-  resultDiv.classList.remove('hidden');
-  resultDiv.classList.add('success-animation');
-
-  if (success && product) {
-    resultIcon.className = 'w-14 h-14 rounded-xl flex items-center justify-center bg-emerald-100';
-    resultIcon.innerHTML = '<i class="fa-solid fa-check text-2xl text-emerald-600"></i>';
-    resultTitle.textContent = product.name;
-    resultTitle.className = 'font-bold text-lg text-emerald-900';
-    resultBarcode.textContent = `باركود: ${barcode}`;
-    
-    productCard.innerHTML = `
-      <div class="flex gap-4 mb-4">
-        <img src="${product.image || 'https://via.placeholder.com/100'}" class="w-24 h-24 rounded-xl object-cover border-2 border-emerald-100">
-        <div class="flex-1">
-          <p class="text-sm text-gray-500 mb-1">${product.category || 'منتج'}</p>
-          <p class="text-2xl font-bold text-emerald-600">${product.price} درهم</p>
-          <p class="text-sm text-gray-400">السعر العمومي: ${product.publicPrice} درهم</p>
-          <p class="text-xs text-gray-500 mt-1">العلبة: ${product.piecesPerBox || 1} قطعة</p>
-        </div>
-      </div>
-      <button onclick="window.location.href='product.html?id=${product.id}'" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition shadow-lg">
-        <i class="fa-solid fa-eye ml-2"></i>عرض تفاصيل المنتج
-      </button>
-    `;
-
-    // الانتقال التلقائي بعد ثانيتين
-    setTimeout(() => {
-      window.location.href = `store.html?id=${product.id}`;
-    }, 2000);
-
-  } else {
-    resultIcon.className = 'w-14 h-14 rounded-xl flex items-center justify-center bg-red-100';
-    resultIcon.innerHTML = '<i class="fa-solid fa-xmark text-2xl text-red-600"></i>';
-    resultTitle.textContent = 'هذا المنتج غير موجود';
-    resultTitle.className = 'font-bold text-lg text-red-900';
-    resultBarcode.textContent = `باركود: ${barcode}`;
-    productCard.innerHTML = `
-      <div class="bg-red-50 rounded-xl p-4 text-center">
-        <p class="text-red-700 font-semibold">لم يتم العثور على المنتج في قاعدة البيانات</p>
-      </div>
-    `;
+// إغلاق مودال الخطأ
+window.closeErrorModal = function() {
+  document.getElementById('errorModal').classList.add('hidden');
+  isProcessing = false;
+  // إعادة تشغيل الكاميرا
+  if (!isScanning) {
+    startScanning();
   }
-
-  setTimeout(() => {
-    resultDiv.classList.add('hidden');
-  }, 3000);
 }
 
 // نجاح القراءة
 async function onScanSuccess(decodedText, decodedResult) {
-  if (!canScan(decodedText)) return;
+  if (!canScan(decodedText) || isProcessing) return;
 
-  if (html5QrCode && isScanning) {
-      isScanning = false;
-      await html5QrCode.stop();
-  }
-
+  isProcessing = true;
   console.log('Scanned:', decodedText);
+
+  // إيقاف الكاميرا
+  if (html5QrCode && isScanning) {
+    await html5QrCode.stop();
+    isScanning = false;
+  }
 
   playBeep();
   vibrate();
-  
-  document.getElementById('instructions').classList.add('hidden');
+
   document.getElementById('status').innerHTML = `
     <div class="inline-flex items-center gap-2 bg-emerald-500 px-6 py-3 rounded-full shadow-lg">
       <i class="fa-solid fa-spinner fa-spin text-white"></i>
@@ -318,24 +286,21 @@ async function onScanSuccess(decodedText, decodedResult) {
     </div>
   `;
 
-  const product = await searchProduct(decodedText);
-  
+  const product = await searchProductByBarcode(decodedText);
+
   if (product) {
-    showResult(true, decodedText, product);
+    // الانتقال مباشرة لصفحة التفاصيل
+    window.location.href = `product-details.html?id=${product.id}`;
   } else {
     playError();
-    showResult(false, decodedText);
-  }
-
-  setTimeout(() => {
-    document.getElementById('instructions').classList.remove('hidden');
+    showErrorModal(decodedText);
     document.getElementById('status').innerHTML = `
       <div class="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-md border border-gray-200">
         <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
         <span class="text-sm font-semibold text-gray-700">في انتظار المسح...</span>
       </div>
     `;
-  }, 3000);
+  }
 }
 
 // فشل القراءة
@@ -346,13 +311,13 @@ function onScanFailure(error) {
 // تشغيل الفلاش
 window.toggleFlash = async function() {
   if (!html5QrCode) return;
-  
+
   try {
     isFlashOn = !isFlashOn;
     await html5QrCode.applyVideoConstraints({
       advanced: [{ torch: isFlashOn }]
     });
-    
+
     const btn = document.getElementById('flashBtn');
     if (isFlashOn) {
       btn.innerHTML = '<i class="fa-solid fa-bolt text-amber-500"></i>';
@@ -368,8 +333,10 @@ window.toggleFlash = async function() {
 
 // بدء المسح
 async function startScanning() {
+  if (isScanning) return;
+
   html5QrCode = new Html5Qrcode("reader");
-  
+
   const config = {
     fps: 10,
     qrbox: { width: 250, height: 150 },
@@ -387,7 +354,7 @@ async function startScanning() {
       onScanSuccess,
       onScanFailure
     );
-    
+
     isScanning = true;
     document.getElementById('status').innerHTML = `
       <div class="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-md border border-gray-200">
@@ -395,12 +362,12 @@ async function startScanning() {
         <span class="text-sm font-semibold text-gray-700">في انتظار المسح...</span>
       </div>
     `;
-    
+
     // إظهار زر الفلاش إذا كان مدعوم
     setTimeout(() => {
       document.getElementById('flashBtn').classList.remove('hidden');
     }, 1000);
-    
+
   } catch (err) {
     console.error('Error starting camera:', err);
     document.getElementById('status').innerHTML = `
