@@ -195,10 +195,36 @@ window.handleAuth = async function() {
     try {
     setLoading(true);
 
+    await emailjs.send("service_wkx3xnm", "template_6z991zk", {
+        to_email: email,
+        to_name: fullName,
+        otp_code: generatedOtp,
+        user_name: fullName,
+        email: email,
+        message: `رمز التحقق الخاص بك هو: ${generatedOtp} - صالح لمدة 5 دقائق`
+    });
+
+    showOtpModal(email);
+    showSuccess("تم إرسال رمز التحقق");
+
+} catch (e) {
+    console.error(e);
+    showError("فشل إرسال رمز التحقق");
+
+} finally {
+    setLoading(false);
+}
+    
+  } else {
+    // Login with Firebase
+    try {
+    setLoading(true);
+
     await signInWithEmailAndPassword(auth, email, password);
 
     // حفظ حالة تسجيل الدخول
     localStorage.setItem("loggedIn", "true");
+    localStorage.setItem("appVersion", "10");
 
     showSuccess("تم تسجيل الدخول بنجاح");
 
@@ -212,18 +238,6 @@ window.handleAuth = async function() {
 } finally {
     setLoading(false);
 }
-    
-  } else {
-    // Login with Firebase
-    try {
-      setLoading(true);
-      await signInWithEmailAndPassword(auth, email, password);
-      showSuccess('تم تسجيل الدخول بنجاح');
-      setTimeout(() => window.location.href = 'index.html', 500);
-    } catch (e) {
-      handleFirebaseError(e);
-    } finally { setLoading(false); }
-  }
 }
 
 function showOtpModal(email) {
