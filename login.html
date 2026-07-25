@@ -190,8 +190,8 @@ window.handleAuth = async function() {
       await signInWithEmailAndPassword(auth, email, password);
       localStorage.setItem("loggedIn","true");
       localStorage.setItem("appVersion","10");
-      showSuccess('تم تسجيل الدخول بنجاح');
-      setTimeout(() => window.location.href = "index.html", 500);
+      showSuccess("تم تسجيل الدخول بنجاح");
+      setTimeout(()=>{ window.location.href="index.html"; },500);
     } catch (e) {
       handleFirebaseError(e);
     } finally {
@@ -247,18 +247,12 @@ function clearTimers() {
 
 window.verifyOtpCode = async function() {
   const enteredOtp = document.getElementById('otpInput').value.trim();
-  if (Date.now() > otpExpiryTime) {
-    showErrorInModal('انتهت صلاحية الرمز');
-    return;
-  }
-  if (enteredOtp !== generatedOtp) {
-    showErrorInModal('❌ رمز التحقق غير صحيح');
-    return;
-  }
+  if (Date.now() > otpExpiryTime) { showErrorInModal('انتهت صلاحية الرمز'); return; }
+  if (enteredOtp !== generatedOtp) { showErrorInModal('❌ رمز التحقق غير صحيح'); return; }
   try {
     setLoading(true, 'otpModal');
     const userCredential = await createUserWithEmailAndPassword(auth, pendingUserData.email, pendingUserData.password);
-    await updateProfile(userCredential.user, { displayName: pendingUserData.fullName });
+    await updateProfile(userCredential.user,{ displayName: pendingUserData.fullName });
     localStorage.setItem("loggedIn","true");
     localStorage.setItem("appVersion","10");
     closeOtpModal();
@@ -303,6 +297,7 @@ window.sendResetEmail = async function() {
 
 window.logoutKarni = async function() {
   localStorage.removeItem("loggedIn");
+  localStorage.removeItem("appVersion");
   await signOut(auth);
   window.location.href = 'login.html';
 }
