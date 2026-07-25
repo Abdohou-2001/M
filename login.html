@@ -265,8 +265,13 @@ window.verifyOtpCode = async function() {
 
 window.resendOtp = async function() {
   generatedOtp = generateOtp();
-  otpExpiryTime = Date.now() + 5 * 60 * 1000;
-  try {
+
+console.log("OTP الحقيقي:", generatedOtp);
+alert("OTP الحقيقي: " + generatedOtp);
+
+otpExpiryTime = Date.now() + 5 * 60 * 1000;
+
+try {
     await emailjs.send("service_wkx3xnm", "template_6z991zk", {
       to_email: pendingUserData.email,
       to_name: pendingUserData.fullName,
