@@ -223,15 +223,16 @@ window.handleAuth = async function() {
     await signInWithEmailAndPassword(auth, email, password);
 
     // حفظ حالة تسجيل الدخول
-    localStorage.setItem("loggedIn", "true");
-    localStorage.setItem("appVersion", "10");
+    // حفظ حالة تسجيل الدخول
+localStorage.setItem("loggedIn", "true");
+localStorage.setItem("appVersion", "10");
 
-    showSuccess("تم تسجيل الدخول بنجاح");
+closeOtpModal();
+showSuccess("تم إنشاء الحساب بنجاح");
 
-    setTimeout(() => {
-        window.location.href = "index.html";
-    }, 500);
-
+setTimeout(() => {
+    window.location.href = "index.html";
+}, 800);
 } catch (e) {
     handleFirebaseError(e);
 
