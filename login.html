@@ -6,7 +6,6 @@
 <title>Karni Pro - تسجيل الدخول</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<!-- EmailJS SDK -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap');
@@ -21,9 +20,7 @@
 <body class="min-h-screen flex items-center justify-center p-4">
 
 <div class="w-full max-w-md">
-  <!-- بطاقة Karni Pro الأصلية - لم يتغير التصميم -->
   <div class="bg-white rounded-2xl soft-shadow-lg p-8 animate-slide-up">
-    
     <div class="text-center mb-8">
       <div class="w-20 h-20 bg-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
         <i class="fa-solid fa-box text-white text-3xl"></i>
@@ -31,14 +28,10 @@
       <h1 class="text-2xl font-bold text-gray-900">Karni Pro</h1>
       <p class="text-sm text-gray-500 mt-1" id="pageSubtitle">تسجيل الدخول إلى حسابك</p>
     </div>
-
-    <!-- تبويب -->
     <div class="bg-gray-100 rounded-xl p-1 flex mb-6">
       <button id="loginTab" onclick="switchMode('login')" class="flex-1 bg-white text-gray-900 py-2.5 rounded-lg font-bold text-sm shadow-sm transition">تسجيل الدخول</button>
       <button id="signupTab" onclick="switchMode('signup')" class="flex-1 text-gray-500 py-2.5 rounded-lg font-bold text-sm transition">إنشاء حساب</button>
     </div>
-
-    <!-- نموذج -->
     <div id="authForm">
       <div id="fullNameGroup" class="mb-4 hidden">
         <label class="text-sm font-semibold text-gray-700 mb-2 block">الاسم الكامل</label>
@@ -56,22 +49,18 @@
         <label class="text-sm font-semibold text-gray-700 mb-2 block">تأكيد كلمة المرور</label>
         <input id="confirmPasswordInput" type="password" class="w-full p-3.5 border-2 border-gray-200 rounded-xl focus:border-emerald-500 outline-none transition" placeholder="••••••••">
       </div>
-
       <div class="text-left mb-6">
         <button onclick="openForgotModal()" class="text-sm text-emerald-600 font-semibold hover:underline">نسيت كلمة المرور؟</button>
       </div>
-
       <button id="actionBtn" onclick="handleAuth()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-4 rounded-xl font-bold text-lg shadow-lg transition flex items-center justify-center gap-2">
         <i id="actionIcon" class="fa-solid fa-right-to-bracket"></i>
         <span id="actionText">تسجيل الدخول</span>
       </button>
     </div>
-
     <div id="errorBox" class="hidden mt-6 p-3 rounded-xl text-sm font-semibold text-center"></div>
   </div>
 </div>
 
-<!-- Modal رمز التحقق -->
 <div id="otpModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl p-8 max-w-sm w-full animate-slide-up text-center">
     <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -80,25 +69,19 @@
     <h3 class="text-xl font-bold text-gray-900 mb-2">أدخل رمز التحقق</h3>
     <p class="text-sm text-gray-500 mb-2">تم إرسال رمز مكون من 6 أرقام إلى</p>
     <p id="otpEmailDisplay" class="text-sm font-bold text-gray-900 mb-6"></p>
-    
     <input id="otpInput" type="text" maxlength="6" class="otp-input w-full p-4 border-2 border-emerald-300 rounded-xl focus:border-emerald-500 outline-none text-center text-2xl font-bold tracking-widest mb-4" placeholder="000000">
-    
     <div class="flex items-center justify-between mb-6">
       <p class="text-xs text-gray-500">صلاحية الرمز: <span id="expiryTimer" class="font-bold text-emerald-600">05:00</span></p>
       <p class="text-xs text-gray-500">انتهاء الصلاحية بعد 5 دقائق</p>
     </div>
-
     <button onclick="verifyOtpCode()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold transition mb-3">تأكيد الرمز</button>
-    
     <button id="resendBtn" onclick="resendOtp()" disabled class="w-full bg-gray-100 text-gray-400 py-3 rounded-xl font-semibold transition disabled:cursor-not-allowed">
       إعادة إرسال الرمز (<span id="resendTimer">60</span>ث)
     </button>
-    
     <button onclick="closeOtpModal()" class="w-full mt-3 text-sm text-gray-500 hover:text-gray-700">إلغاء</button>
   </div>
 </div>
 
-<!-- Modal نسيت كلمة المرور -->
 <div id="forgotModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
   <div class="bg-white rounded-2xl p-6 max-w-sm w-full animate-slide-up">
     <h3 class="text-lg font-bold text-gray-900 mb-4">إعادة تعيين كلمة المرور</h3>
@@ -114,7 +97,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-// Firebase Config - from your project
 const firebaseConfig = {
   apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
   authDomain: "karnipromaroc.firebaseapp.com",
@@ -127,11 +109,8 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-
-// Init EmailJS
 emailjs.init("m5C05A9CqCq2Ux4cu");
 
-// Global state
 let currentMode = 'login';
 let generatedOtp = null;
 let otpExpiryTime = null;
@@ -139,7 +118,6 @@ let pendingUserData = null;
 let resendInterval = null;
 let expiryInterval = null;
 
-// Check auth state - redirect if logged in
 onAuthStateChanged(auth, (user) => {
   if (user && !window.location.href.includes('login.html?stay')) {
     window.location.href = 'index.html';
@@ -150,7 +128,6 @@ window.switchMode = function(mode) {
   currentMode = mode;
   document.getElementById('loginTab').className = mode==='login' ? 'flex-1 bg-white text-gray-900 py-2.5 rounded-lg font-bold text-sm shadow-sm' : 'flex-1 text-gray-500 py-2.5 rounded-lg font-bold text-sm';
   document.getElementById('signupTab').className = mode==='signup' ? 'flex-1 bg-white text-gray-900 py-2.5 rounded-lg font-bold text-sm shadow-sm' : 'flex-1 text-gray-500 py-2.5 rounded-lg font-bold text-sm';
-  
   if (mode === 'login') {
     document.getElementById('pageSubtitle').textContent = 'تسجيل الدخول إلى حسابك';
     document.getElementById('actionText').textContent = 'تسجيل الدخول';
@@ -167,7 +144,6 @@ window.switchMode = function(mode) {
   hideError();
 }
 
-// Generate 6-digit OTP
 function generateOtp() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
@@ -179,66 +155,49 @@ window.handleAuth = async function() {
   const confirmPassword = document.getElementById('confirmPasswordInput').value;
 
   hideError();
-
-  // Validation
   if (!email || !password) { showError('الرجاء إدخال البريد وكلمة المرور'); return; }
+  
   if (currentMode === 'signup') {
     if (!fullName) { showError('الرجاء إدخال الاسم الكامل'); return; }
     if (password.length < 6) { showError('كلمة المرور ضعيفة'); return; }
     if (password !== confirmPassword) { showError('كلمة المرور وتأكيدها غير متطابقين'); return; }
     
-    // Create OTP and send via EmailJS
     generatedOtp = generateOtp();
-    otpExpiryTime = Date.now() + 5 * 60 * 1000; // 5 minutes
+    otpExpiryTime = Date.now() + 5 * 60 * 1000;
     pendingUserData = { fullName, email, password };
 
     try {
-    setLoading(true);
-
-    await emailjs.send("service_wkx3xnm", "template_6z991zk", {
+      setLoading(true);
+      await emailjs.send("service_wkx3xnm", "template_6z991zk", {
         to_email: email,
         to_name: fullName,
         otp_code: generatedOtp,
         user_name: fullName,
         email: email,
         message: `رمز التحقق الخاص بك هو: ${generatedOtp} - صالح لمدة 5 دقائق`
-    });
-
-    showOtpModal(email);
-    showSuccess("تم إرسال رمز التحقق");
-
-} catch (e) {
-    console.error(e);
-    showError("فشل إرسال رمز التحقق");
-
-} finally {
-    setLoading(false);
-}
-    
+      });
+      showOtpModal(email);
+      showSuccess("تم إرسال رمز التحقق");
+    } catch (e) {
+      console.error(e);
+      showError("فشل إرسال رمز التحقق");
+    } finally {
+      setLoading(false);
+    }
   } else {
-    // Login with Firebase
     try {
-    setLoading(true);
-
-    await signInWithEmailAndPassword(auth, email, password);
-
-    // حفظ حالة تسجيل الدخول
-    // حفظ حالة تسجيل الدخول
-localStorage.setItem("loggedIn", "true");
-localStorage.setItem("appVersion", "10");
-
-closeOtpModal();
-showSuccess("تم إنشاء الحساب بنجاح");
-
-setTimeout(() => {
-    window.location.href = "index.html";
-}, 800);
-} catch (e) {
-    handleFirebaseError(e);
-
-} finally {
-    setLoading(false);
-}
+      setLoading(true);
+      await signInWithEmailAndPassword(auth, email, password);
+      localStorage.setItem("loggedIn","true");
+      localStorage.setItem("appVersion","10");
+      showSuccess('تم تسجيل الدخول بنجاح');
+      setTimeout(() => window.location.href = "index.html", 500);
+    } catch (e) {
+      handleFirebaseError(e);
+    } finally {
+      setLoading(false);
+    }
+  }
 }
 
 function showOtpModal(email) {
@@ -255,12 +214,10 @@ window.closeOtpModal = function() {
 
 function startTimers() {
   let resendTime = 60;
-  let expiryTime = 5 * 60; // 5 minutes
-
+  let expiryTime = 5 * 60;
   document.getElementById('resendBtn').disabled = true;
   document.getElementById('resendTimer').textContent = resendTime;
   document.getElementById('expiryTimer').textContent = '05:00';
-
   resendInterval = setInterval(() => {
     resendTime--;
     document.getElementById('resendTimer').textContent = resendTime;
@@ -271,7 +228,6 @@ function startTimers() {
       document.getElementById('resendBtn').className = 'w-full bg-white border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-50 py-3 rounded-xl font-semibold transition';
     }
   }, 1000);
-
   expiryInterval = setInterval(() => {
     expiryTime--;
     const minutes = Math.floor(expiryTime / 60).toString().padStart(2, '0');
@@ -291,27 +247,23 @@ function clearTimers() {
 
 window.verifyOtpCode = async function() {
   const enteredOtp = document.getElementById('otpInput').value.trim();
-  
   if (Date.now() > otpExpiryTime) {
     showErrorInModal('انتهت صلاحية الرمز');
     return;
   }
-  
   if (enteredOtp !== generatedOtp) {
     showErrorInModal('❌ رمز التحقق غير صحيح');
     return;
   }
-
-  // OTP correct - create account in Firebase
   try {
     setLoading(true, 'otpModal');
     const userCredential = await createUserWithEmailAndPassword(auth, pendingUserData.email, pendingUserData.password);
     await updateProfile(userCredential.user, { displayName: pendingUserData.fullName });
-    
+    localStorage.setItem("loggedIn","true");
+    localStorage.setItem("appVersion","10");
     closeOtpModal();
     showSuccess('تم إنشاء الحساب بنجاح');
-    setTimeout(() => window.location.href = 'index.html', 800);
-    
+    setTimeout(() => window.location.href = "index.html", 800);
   } catch (e) {
     handleFirebaseError(e, true);
   } finally { setLoading(false, 'otpModal'); }
@@ -320,7 +272,6 @@ window.verifyOtpCode = async function() {
 window.resendOtp = async function() {
   generatedOtp = generateOtp();
   otpExpiryTime = Date.now() + 5 * 60 * 1000;
-  
   try {
     await emailjs.send("service_wkx3xnm", "template_6z991zk", {
       to_email: pendingUserData.email,
@@ -337,7 +288,6 @@ window.resendOtp = async function() {
   }
 }
 
-// Forgot password
 window.openForgotModal = function() { document.getElementById('forgotModal').classList.remove('hidden'); }
 window.closeForgotModal = function() { document.getElementById('forgotModal').classList.add('hidden'); }
 
@@ -351,8 +301,8 @@ window.sendResetEmail = async function() {
   } catch (e) { handleFirebaseError(e); }
 }
 
-// Logout - use this in index.html
 window.logoutKarni = async function() {
+  localStorage.removeItem("loggedIn");
   await signOut(auth);
   window.location.href = 'login.html';
 }
@@ -381,7 +331,6 @@ function showError(msg) {
   box.classList.remove('hidden');
 }
 function showErrorInModal(msg) {
-  // reuse same errorBox inside modal as toast
   const input = document.getElementById('otpInput');
   input.classList.add('border-red-400');
   showError(msg);
