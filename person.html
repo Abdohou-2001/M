@@ -460,7 +460,7 @@ window.sendConfirmWhatsapp = function(index){
     const op = customerOperations[index];
     const total = document.getElementById('totalAmount').textContent;
     const cleanPhone = phone.replace(/\D/g,'');
-    const message = `✅ إشعار استلام دفعة\n\nالسلام عليكم ${customerName}\n\nتم تسجيل استلام مبلغ قدره:\n\n💵 ${op.amount} درهم\n\n📌 المبلغ المتبقي الواجب أداؤه:\n${total}\n\n🙏 شكراً لكم على حسن تعاونكم.\n\n👤 مصطفى`;
+    const message = `✅ إشعار استلام دفعة\n\nالسلام عليكم ${customerName}\n\nتم تسجيل استلام مبلغ قدره:\n\n💵 ${op.amount} درهم\n\n📌 المبلغ المتبقي الواجب أداؤه:\n${total}\n\n🙏 شكراً لكم على حسن تعاونكم.\n\n📖 karni pro`;
     window.open('https://wa.me/212'+cleanPhone.replace(/^0/,'')+'?text='+encodeURIComponent(message),'_blank');
 }
 
