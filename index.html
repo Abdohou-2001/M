@@ -174,6 +174,33 @@
         .drawer-item.danger{color:var(--danger);margin-top:4px;background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.12)}
         .drawer-item.danger i{color:var(--danger)}
         .drawer-footer{padding:14px 16px 22px;border-top:1px solid var(--border);font-size:10.5px;color:var(--text-muted);text-align:center}
+
+        /* ===== City Filter & Smart Search - Added ===== */
+        .search-wrapper{position:relative; margin:0 14px 12px; z-index:90}
+        .search-wrapper.sticky{position:sticky; top:88px; z-index:95; margin:0; padding:8px 14px 12px; background:var(--bg); backdrop-filter:blur(12px); box-shadow:0 4px 20px rgba(0,0,0,0.06)}
+        .search-wrapper .search-box{margin:0}
+        .autocomplete-list{position:absolute; top:calc(100% + 8px); left:0; right:0; background:var(--card); border-radius:16px; box-shadow:var(--shadow-lg); border:1px solid var(--border); max-height:320px; overflow-y:auto; z-index:96; display:none; animation:cardIn 0.25s ease-out}
+        .autocomplete-list.active{display:block}
+        .autocomplete-item{display:flex; align-items:center; gap:12px; padding:12px 14px; cursor:pointer; transition:var(--transition); border-bottom:1px solid var(--border)}
+        .autocomplete-item:last-child{border-bottom:none}
+        .autocomplete-item:hover{background:var(--bg)}
+        .autocomplete-item:active{transform:scale(0.98)}
+        .autocomplete-avatar{width:38px; height:38px; border-radius:11px; background:linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%); display:flex; align-items:center; justify-content:center; font-weight:800; color:var(--primary); font-size:14px; flex-shrink:0}
+        .autocomplete-name{font-size:13.5px; font-weight:700; flex:1}
+        .autocomplete-city{font-size:11px; color:var(--text-muted)}
+        .autocomplete-no{padding:18px; text-align:center; font-size:13px; color:var(--text-muted); font-weight:600}
+        .city-modal{position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(12px); z-index:1100; display:none; align-items:center; justify-content:center; padding:16px}
+        .city-modal.active{display:flex; animation:fadeIn 0.2s}
+        .city-modal-content{background:var(--card); border-radius:22px; padding:18px; width:100%; max-width:360px; box-shadow:var(--shadow-lg); border:1px solid var(--border); max-height:70vh; display:flex; flex-direction:column}
+        .city-modal-header{display:flex; justify-content:space-between; align-items:center; margin-bottom:12px}
+        .city-modal-title{font-size:15px; font-weight:800}
+        .city-list{display:flex; flex-direction:column; gap:6px; overflow-y:auto; max-height:50vh; padding:2px}
+        .city-item{padding:12px 14px; border-radius:12px; background:var(--bg); border:1.5px solid var(--border); font-size:13px; font-weight:600; cursor:pointer; display:flex; justify-content:space-between; align-items:center; transition:var(--transition)}
+        .city-item:hover{border-color:var(--primary-light)}
+        .city-item.active{background:var(--primary); color:white; border-color:var(--primary)}
+        .city-item span.badge{background:rgba(0,0,0,0.08); padding:2px 8px; border-radius:20px; font-size:11px}
+        .city-item.active span.badge{background:rgba(255,255,255,0.22)}
+
     </style>
 </head>
 <body>
@@ -240,16 +267,21 @@
         <button class="action-btn" onclick="openRoute()"><i class="fas fa-route"></i> المسار</button>
     </div>
 
-    <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="ابحث عن زبون..." id="searchInput">
+    <div class="search-wrapper" id="searchWrapper">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="ابحث عن زبون..." id="searchInput" onfocus="onSearchFocus()" autocomplete="off">
+            <i class="fas fa-times" id="clearSearchBtn" onclick="clearSearch()" style="cursor:pointer; display:none; font-size:12px; background:var(--bg); width:22px; height:22px; border-radius:50%; align-items:center; justify-content:center;"></i>
+        </div>
+        <div class="autocomplete-list" id="autocompleteList"></div>
     </div>
 
-    <div class="filter-tabs">
-        <button class="filter-tab active" onclick="filterBy('all')">الكل</button>
-        <button class="filter-tab" onclick="filterBy('today')">اليوم</button>
-        <button class="filter-tab" onclick="filterBy('overdue')">متأخر</button>
-        <button class="filter-tab" onclick="filterBy('upcoming')">قادم</button>
+    <div class="filter-tabs" id="filterTabs">
+        <button class="filter-tab active" data-filter="all" onclick="filterBy('all')"><i class="fas fa-layer-group"></i> الكل</button>
+        <button class="filter-tab" data-filter="today" onclick="filterBy('today')"><i class="fas fa-sun"></i> اليوم</button>
+        <button class="filter-tab" data-filter="overdue" onclick="filterBy('overdue')"><i class="fas fa-exclamation-circle"></i> متأخر</button>
+        <button class="filter-tab" data-filter="upcoming" onclick="filterBy('upcoming')"><i class="fas fa-clock"></i> قادم</button>
+        <button class="filter-tab" data-filter="city" id="cityFilterBtn" onclick="openCityFilter()"><i class="fas fa-city"></i> المدينة</button>
     </div>
 
     <div class="customers-list" id="customersList">
@@ -266,9 +298,21 @@
                 <div class="form-group"><label class="form-label">اسم الزبون *</label><input type="text" class="form-input" id="customerName" required></div>
                 <div class="form-group"><label class="form-label">المبلغ *</label><input type="number" class="form-input" id="customerAmount" required></div>
                 <div class="form-group"><label class="form-label">رقم الهاتف</label><input type="tel" class="form-input" id="customerPhone"></div>
+                <div class="form-group"><label class="form-label">المدينة (اختياري)</label><input type="text" class="form-input" id="customerCity" placeholder="مثال: الدار البيضاء"></div>
                 <div class="form-group"><label class="form-label">تاريخ الاستحقاق *</label><input type="date" class="form-input" id="customerDate" required></div>
                 <div class="form-buttons"><button type="submit" class="btn-save"><i class="fas fa-save"></i> حفظ</button><button type="button" class="btn-cancel" onclick="closeModal()"><i class="fas fa-times"></i> إلغاء</button></div>
             </form>
+        </div>
+    </div>
+
+    <div class="city-modal" id="cityModal" onclick="if(event.target===this) closeCityFilter()">
+        <div class="city-modal-content">
+            <div class="city-modal-header">
+                <div class="city-modal-title"><i class="fas fa-city" style="color:var(--primary)"></i> فلترة حسب المدينة</div>
+                <button class="drawer-close" style="background:var(--bg); color:var(--text); border:1px solid var(--border); width:32px; height:32px; border-radius:10px; cursor:pointer; display:flex; align-items:center; justify-content:center;" onclick="closeCityFilter()"><i class="fas fa-times" style="font-size:12px"></i></button>
+            </div>
+            <div class="city-list" id="cityList"></div>
+            <button class="btn-save" style="margin-top:14px" onclick="clearCityFilter()"><i class="fas fa-undo"></i> عرض كل المدن</button>
         </div>
     </div>
 
@@ -391,6 +435,135 @@
         }
         window.contactUs = function(){ window.open('mailto:karnipro@gmail.com?subject=Karni Pro - تواصل'); }
 
+        // ===== City Filter & Smart Search - Added (No existing function modified) =====
+        let currentCityFilter = null;
+        let allCitiesCache = [];
+
+        function getAllCities(){
+            const cities = new Set();
+            Object.values(allCustomers).forEach(c=>{
+                if(c.city && c.city.trim()) cities.add(c.city.trim());
+                if(c.ville && c.ville.trim()) cities.add(c.ville.trim());
+                if(c.address && c.address.trim()){
+                    // Try extract city if address contains
+                    const parts = c.address.split(',');
+                    if(parts.length>1) cities.add(parts[parts.length-1].trim());
+                }
+            });
+            allCitiesCache = Array.from(cities).sort();
+            return allCitiesCache;
+        }
+
+        window.openCityFilter = function(){
+            const cities = getAllCities();
+            const listEl = document.getElementById('cityList');
+            if(cities.length===0){
+                listEl.innerHTML = `<div class="autocomplete-no"><i class="fas fa-city" style="font-size:24px; display:block; margin-bottom:8px; opacity:0.3"></i>لا توجد مدن في البيانات<br><span style="font-size:11px">أضف مدينة عند إنشاء زبون</span></div>`;
+            } else {
+                listEl.innerHTML = cities.map(city=>{
+                    const count = Object.values(allCustomers).filter(c=> (c.city===city || c.ville===city)).length;
+                    const isActive = currentCityFilter===city ? 'active' : '';
+                    return `<div class="city-item ${isActive}" onclick="filterByCity('${city.replace(/'/g, "\'")}')"><span>${city}</span><span class="badge">${count}</span></div>`;
+                }).join('');
+            }
+            document.getElementById('cityModal').classList.add('active');
+        }
+        window.closeCityFilter = function(){ document.getElementById('cityModal').classList.remove('active'); }
+        window.clearCityFilter = function(){
+            currentCityFilter = null;
+            document.getElementById('cityFilterBtn').classList.remove('active');
+            document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+            document.querySelector('[data-filter="all"]').classList.add('active');
+            applyFilter(currentFilter);
+            closeCityFilter();
+            showToast('تم عرض جميع المدن');
+        }
+        window.filterByCity = function(city){
+            currentCityFilter = city;
+            document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));
+            document.getElementById('cityFilterBtn').classList.add('active');
+            const filtered = {};
+            Object.keys(allCustomers).forEach(key=>{
+                const c = allCustomers[key];
+                if((c.city && c.city===city) || (c.ville && c.ville===city)) filtered[key]=c;
+            });
+            renderCustomers(filtered);
+            closeCityFilter();
+            showToast(`مدينة: ${city} - ${Object.keys(filtered).length} زبون`);
+            document.getElementById('customersList').scrollIntoView({behavior:'smooth', block:'start'});
+        }
+
+        // Smart Search with Sticky + Autocomplete
+        window.onSearchFocus = function(){
+            const wrapper = document.getElementById('searchWrapper');
+            wrapper.classList.add('sticky');
+            wrapper.scrollIntoView({behavior:'smooth', block:'start'});
+            if(document.getElementById('searchInput').value.trim()) showAutocomplete();
+        }
+        function showAutocomplete(){
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            const listEl = document.getElementById('autocompleteList');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if(!query){ listEl.classList.remove('active'); clearBtn.style.display='none'; return; }
+            clearBtn.style.display='flex';
+            const matches = [];
+            Object.keys(allCustomers).forEach(key=>{
+                const c = allCustomers[key];
+                if(c.name && c.name.toLowerCase().includes(query)) matches.push({id:key, ...c});
+            });
+            if(matches.length===0){
+                listEl.innerHTML = `<div class="autocomplete-no"><i class="fas fa-search"></i> لا توجد نتائج لـ "${query}"</div>`;
+                listEl.classList.add('active');
+                return;
+            }
+            listEl.innerHTML = matches.slice(0,10).map(m=>{
+                const initial = m.name.charAt(0);
+                return `<div class="autocomplete-item" onclick="selectAutocomplete('${m.id}')"><div class="autocomplete-avatar">${initial}</div><div style="flex:1; min-width:0"><div class="autocomplete-name">${m.name}</div><div class="autocomplete-city">${m.city ? m.city+' • ' : ''}${m.amount||0} درهم • ${m.phone||''}</div></div><i class="fas fa-chevron-left" style="color:var(--text-muted); font-size:10px"></i></div>`;
+            }).join('');
+            listEl.classList.add('active');
+        }
+        window.selectAutocomplete = function(id){
+            const listEl = document.getElementById('autocompleteList');
+            listEl.classList.remove('active');
+            const wrapper = document.getElementById('searchWrapper');
+            wrapper.classList.remove('sticky');
+            // If customer card exists in DOM, scroll to it, else filter to show it
+            const allKeys = Object.keys(allCustomers);
+            if(!allCustomers[id]){
+                showToast('الزبون غير موجود');
+                return;
+            }
+            // Temporarily show all then scroll
+            const filtered = {}; filtered[id] = allCustomers[id];
+            // Also show surrounding? show single for focus
+            renderCustomers(filtered);
+            setTimeout(()=>{
+                const el = document.querySelector(`[data-customer-id="${id}"]`);
+                if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+                // Highlight
+                if(el){ el.style.transform='scale(1.02)'; el.style.boxShadow='0 0 0 3px rgba(20,184,166,0.25), var(--shadow-md)'; setTimeout(()=>{ el.style.transform=''; el.style.boxShadow=''; },1200); }
+            },100);
+        }
+        window.clearSearch = function(){
+            document.getElementById('searchInput').value='';
+            document.getElementById('autocompleteList').classList.remove('active');
+            document.getElementById('clearSearchBtn').style.display='none';
+            document.getElementById('searchWrapper').classList.remove('sticky');
+            applyFilter(currentFilter);
+            if(currentCityFilter) filterByCity(currentCityFilter);
+        }
+        // Enhance original searchCustomer to also trigger autocomplete
+        const _originalSearchCustomer = window.searchCustomer;
+        // Will be overwritten later, but we keep reference via custom
+
+        document.addEventListener('click', (e)=>{
+            const wrapper = document.getElementById('searchWrapper');
+            if(wrapper && !wrapper.contains(e.target)){
+                document.getElementById('autocompleteList').classList.remove('active');
+                wrapper.classList.remove('sticky');
+            }
+        });
+
         // ===== Original Functions - لم يتم تغييرها =====
         window.openCalendar = function() {
             currentFilter = 'today';
@@ -423,7 +596,7 @@
                 customersCount++; totalAmount += parseInt(customer.amount) || 0;
                 if(customer.date === today) todayCount++; else if(customer.date < today) overdueCount++;
                 const overdueClass = customer.date < today? 'overdue' : '';
-                const card = `<div class="customer-card ${overdueClass}" onclick="openDetails('${key}')" style="animation-delay:${index*0.04}s"><div class="customer-header"><div class="customer-avatar">${customer.name.charAt(0)}</div><div class="customer-info"><div class="customer-name">${customer.name}</div><div class="customer-amount">${customer.amount} درهم</div><div class="customer-meta"><span><i class="fas fa-phone"></i> ${customer.phone || '-'}</span><span><i class="fas fa-calendar"></i> ${customer.date}</span></div></div></div><div class="customer-actions"><button class="btn btn-profile" onclick="event.stopPropagation(); openDetails('${key}')"><i class="fas fa-user"></i> التفاصيل</button><button class="btn btn-edit-phone" onclick="event.stopPropagation(); editCustomerPhone('${key}')"><i class="fas fa-phone"></i></button><button class="btn btn-edit-amount" onclick="event.stopPropagation(); editCustomerAmount('${key}')"><i class="fas fa-money-bill-wave"></i></button><button class="btn btn-calendar" onclick="event.stopPropagation(); setPaymentDate('${key}')"><i class="fas fa-calendar-alt"></i></button><button class="btn btn-delete" onclick="event.stopPropagation(); confirmDelete('${key}')"><i class="fas fa-trash"></i></button></div></div>`;
+                const card = `<div class="customer-card ${overdueClass}" data-customer-id="${key}" onclick="openDetails('${key}')" style="animation-delay:${index*0.04}s"><div class="customer-header"><div class="customer-avatar">${customer.name.charAt(0)}</div><div class="customer-info"><div class="customer-name">${customer.name}</div><div class="customer-amount">${customer.amount} درهم</div><div class="customer-meta"><span><i class="fas fa-phone"></i> ${customer.phone || '-'}</span><span><i class="fas fa-calendar"></i> ${customer.date}</span></div></div></div><div class="customer-actions"><button class="btn btn-profile" onclick="event.stopPropagation(); openDetails('${key}')"><i class="fas fa-user"></i> التفاصيل</button><button class="btn btn-edit-phone" onclick="event.stopPropagation(); editCustomerPhone('${key}')"><i class="fas fa-phone"></i></button><button class="btn btn-edit-amount" onclick="event.stopPropagation(); editCustomerAmount('${key}')"><i class="fas fa-money-bill-wave"></i></button><button class="btn btn-calendar" onclick="event.stopPropagation(); setPaymentDate('${key}')"><i class="fas fa-calendar-alt"></i></button><button class="btn btn-delete" onclick="event.stopPropagation(); confirmDelete('${key}')"><i class="fas fa-trash"></i></button></div></div>`;
                 list.innerHTML += card;
             });
             updateStats({totalAmount, customersCount, todayCount, overdueCount});
@@ -439,6 +612,7 @@
             document.getElementById('customerName').value = '';
             document.getElementById('customerAmount').value = '';
             document.getElementById('customerPhone').value = '';
+            if(document.getElementById('customerCity')) document.getElementById('customerCity').value = '';
             setTodayDate();
             document.getElementById('customerModal').classList.add('active');
         }
@@ -446,7 +620,8 @@
         window.saveCustomer = async function(e) {
             e.preventDefault();
             const id = document.getElementById('customerId').value;
-            const data = { name: document.getElementById('customerName').value, amount: parseInt(document.getElementById('customerAmount').value), phone: document.getElementById('customerPhone').value, date: document.getElementById('customerDate').value, updatedAt: new Date().toISOString() };
+            const cityVal = document.getElementById('customerCity') ? document.getElementById('customerCity').value.trim() : '';
+            const data = { name: document.getElementById('customerName').value, amount: parseInt(document.getElementById('customerAmount').value), phone: document.getElementById('customerPhone').value, city: cityVal, ville: cityVal, date: document.getElementById('customerDate').value, updatedAt: new Date().toISOString() };
             if(id) await updateCustomer(id, data); else await addCustomer(data);
             closeModal();
         }
@@ -472,6 +647,12 @@
         }
         window.searchCustomer = function() {
             const search = document.getElementById('searchInput').value.toLowerCase();
+            showAutocomplete();
+            if(!search.trim()){
+                applyFilter(currentFilter);
+                if(currentCityFilter) filterByCity(currentCityFilter);
+                return;
+            }
             const filtered = {};
             Object.keys(allCustomers).forEach(key => { if(allCustomers[key].name.toLowerCase().includes(search)) { filtered[key] = allCustomers[key]; } });
             renderCustomers(filtered);
