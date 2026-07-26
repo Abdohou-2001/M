@@ -23,95 +23,144 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>تفاصيل الزبون - Karni Pro</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Tahoma',sans-serif}
-    body{background:#f5f7fa;min-height:100vh}  .header{background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);padding:30px 20px 60px;border-radius:0 0 30px 30px;box-shadow:0 4px 20px rgba(0,184,148,0.3);position:relative}
-.header h1{color:white;font-size:28px;text-align:center;margin-bottom:10px}
-.back-btn{position:absolute;top:20px;right:20px;width:45px;height:45px;border-radius:15px;background:rgba(255,255,255,0.2);border:none;color:white;font-size:22px;cursor:pointer;backdrop-filter:blur(10px)}
-.back-btn:active{transform:scale(0.95)}
-.container{padding:20px;margin-top:-40px;position:relative;z-index:2}
-.card{background:white;border-radius:25px;padding:25px;margin-bottom:15px;box-shadow:0 4px 15px rgba(0,0,0,0.08);animation:slideUp 0.4s ease}
-@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
-.avatar{width:80px;height:80px;border-radius:25px;background:linear-gradient(135deg, #00b894, #00cec9);color:white;font-size:36px;font-weight:bold;display:flex;align-items:center;justify-content:center;margin:0 auto 15px}
-.name{text-align:center;font-size:24px;font-weight:bold;color:#2d3436;margin-bottom:5px}
-.phone{text-align:center;color:#636e72;font-size:16px;margin-bottom:20px}
-.total-box{background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);color:white;padding:20px;border-radius:20px;text-align:center;margin-bottom:20px}
-.total-label{font-size:14px;opacity:0.9;margin-bottom:5px}
-.total-value{font-size:32px;font-weight:bold}
-.label{display:block;font-weight:bold;color:#2d3436;margin:15px 0 8px;font-size:15px}
-.input{width:100%;padding:16px;border:2px solid #dfe6e9;border-radius:15px;font-size:18px;background:#f8f9fa;transition:0.3s}
-.input:focus{border-color:#00b894;background:white;outline:none;box-shadow:0 0 0 3px rgba(0,184,148,0.1)}
-.input[readonly]{background:#e9ecef;color:#6c757d;cursor:not-allowed}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.save-btn{width:100%;padding:18px;border:none;border-radius:15px;background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);color:white;font-size:18px;font-weight:bold;cursor:pointer;margin-top:25px;box-shadow:0 4px 15px rgba(0,184,148,0.3);transition:0.2s}
-.save-btn:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(0,184,148,0.2)}
-.save-btn:disabled{opacity:0.6;cursor:not-allowed}
-.loading{text-align:center;padding:50px;color:#636e72;font-size:18px}
-.date-label{font-size:12px;color:#74b9ff;margin-top:5px;font-weight:normal}
-.paid-input{border:2px solid #ff7675!important;background:#fff5f5!important}
-.received-input{border:2px solid #00b894!important;background:#f0fff4!important}
-.history-title{font-size:18px;font-weight:bold;color:#2d3436;margin:25px 0 15px}
-.history-item{background:#f8f9fa;border-right:4px solid #00b894;padding:12px 15px;border-radius:12px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
-.history-paid{border-right-color:#ff7675!important}
-.history-amount{font-weight:bold;font-size:16px}
-.history-paid.history-amount{color:#ff7675}
-.history-received.history-amount{color:#00b894}
-.history-date{font-size:13px;color:#636e72}
-.whatsapp-btn{background:#25D366;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
-.confirm-btn{background:#2563eb;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
-.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:#2d3436;color:white;padding:12px 20px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.2);font-size:14px;font-weight:bold;z-index:3000;transition:all 0.35s;opacity:0}
-.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Cairo','Tahoma',sans-serif}
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+    body{background:#f5f7fa;min-height:100vh}
+    .header{background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);padding:30px 20px 60px;border-radius:0 0 30px 30px;box-shadow:0 4px 20px rgba(0,184,148,0.3);position:relative}
+    .header h1{color:white;font-size:26px;text-align:center;margin-bottom:10px;font-weight:800}
+    .back-btn{position:absolute;top:20px;right:20px;width:44px;height:44px;border-radius:14px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.25);color:white;font-size:18px;cursor:pointer;backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center}
+    .back-btn:active{transform:scale(0.93)}
+    .container{padding:20px;margin-top:-40px;position:relative;z-index:2;max-width:600px;margin-left:auto;margin-right:auto}
+    .card{background:white;border-radius:24px;padding:22px;margin-bottom:15px;box-shadow:0 8px 24px rgba(0,0,0,0.06);animation:slideUp 0.4s ease;border:1px solid #f0f0f0}
+    @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+    .avatar{width:76px;height:76px;border-radius:20px;background:linear-gradient(135deg, #00b894, #00cec9);color:white;font-size:32px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;box-shadow:0 6px 16px rgba(0,184,148,0.25)}
+    .name{text-align:center;font-size:22px;font-weight:800;color:#2d3436;margin-bottom:4px}
+    .phone{text-align:center;color:#636e72;font-size:14px;margin-bottom:18px}
+    .total-box{background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);color:white;padding:18px;border-radius:18px;text-align:center;margin-bottom:18px;box-shadow:0 8px 20px rgba(0,184,148,0.25);position:relative;overflow:hidden}
+    .total-box::before{content:'';position:absolute;top:-30%;left:-20%;width:140%;height:200%;background:radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 60%);pointer-events:none}
+    .total-label{font-size:12px;opacity:0.9;margin-bottom:4px;font-weight:600;position:relative}
+    .total-value{font-size:30px;font-weight:800;position:relative}
+    .label{display:flex;align-items:center;gap:6px;font-weight:700;color:#2d3436;margin:14px 0 7px;font-size:13.5px}
+    .label i{color:#00b894;font-size:13px}
+    .input{width:100%;padding:13px 14px;border:1.5px solid #e9ecef;border-radius:12px;font-size:14px;background:#f8f9fa;transition:all 0.25s;font-family:'Cairo'}
+    .input:focus{border-color:#00b894;background:white;outline:none;box-shadow:0 0 0 3px rgba(0,184,148,0.12)}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .save-btn{width:100%;padding:15px;border:none;border-radius:14px;background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);color:white;font-size:15px;font-weight:800;cursor:pointer;margin-top:20px;box-shadow:0 6px 16px rgba(0,184,148,0.28);display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s}
+    .save-btn:active{transform:scale(0.97)}
+    .save-btn:disabled{opacity:0.6}
+    .loading{text-align:center;padding:60px 20px;color:#636e72}
+    .date-label{font-size:11px;color:#74b9ff;margin-top:5px}
+    .paid-input{border-color:#ff6b6b!important;background:#fff5f5!important}
+    .received-input{border-color:#00b894!important;background:#f0fdf4!important}
+    .history-title{font-size:15px;font-weight:800;color:#2d3436;margin:22px 0 12px;display:flex;align-items:center;gap:8px}
+    .history-item{background:white;border:1px solid #f0f0f0;border-right:4px solid #00b894;padding:14px 14px;border-radius:16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,0.04);transition:all 0.25s;animation:slideUp 0.3s backwards}
+    .history-item:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(0,0,0,0.07)}
+    .history-paid{border-right-color:#ff6b6b!important}
+    .history-amount{font-weight:800;font-size:14px;display:flex;align-items:center;gap:6px}
+    .history-paid .history-amount{color:#ff6b6b}
+    .history-received .history-amount{color:#00b894}
+    .history-date{font-size:11.5px;color:#636e72;margin-top:3px}
+    .history-actions{display:flex;gap:6px}
+    .h-btn{width:34px;height:34px;border:none;border-radius:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all 0.2s;box-shadow:0 2px 6px rgba(0,0,0,0.06)}
+    .h-btn:active{transform:scale(0.9)}
+    .h-btn-wa{background:#25D366;color:white}
+    .h-btn-ok{background:#2563eb;color:white}
+    .h-btn-edit{background:#f1f5f9;color:#64748b}
+    .h-btn-del{background:#fff1f2;color:#e11d48}
+    /* Toast Pro */
+    .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-120px);background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);color:#1e293b;padding:14px 18px;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.14);display:flex;align-items:center;gap:12px;z-index:4000;transition:all 0.45s cubic-bezier(0.4,0,0.2,1);opacity:0;border:1px solid rgba(0,0,0,0.06);min-width:280px;max-width:90vw}
+    .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+    .toast-icon{width:32px;height:32px;border-radius:10px;background:#00b894;color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .toast.success .toast-icon{background:#00b894}
+    .toast.error .toast-icon{background:#ef4444}
+    .toast-msg{flex:1;font-size:13px;font-weight:700;line-height:1.4}
+    .toast-progress{position:absolute;bottom:0;left:0;height:3px;background:#00b894;border-radius:0 0 16px 16px;animation:progress 2.8s linear forwards}
+    @keyframes progress{from{width:100%}to{width:0%}}
+    /* Modal Pro */
+    .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(12px);z-index:5000;display:none;align-items:center;justify-content:center;padding:16px}
+    .modal-overlay.active{display:flex;animation:fadeIn 0.2s}
+    @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+    .modal-box{background:white;border-radius:22px;padding:22px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,0.2);animation:modalIn 0.35s cubic-bezier(0.4,0,0.2,1);border:1px solid #f0f0f0}
+    @keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+    .modal-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:20px}
+    .modal-icon.warning{background:#fef3c7;color:#d97706}
+    .modal-icon.danger{background:#fee2e2;color:#dc2626}
+    .modal-icon.info{background:#e0f2f1;color:#0f766e}
+    .modal-title{text-align:center;font-size:16px;font-weight:800;margin-bottom:6px}
+    .modal-message{text-align:center;font-size:13px;color:#64748b;margin-bottom:16px;line-height:1.5}
+    .modal-input{width:100%;padding:12px 14px;border:1.5px solid #e2e8f0;border-radius:12px;font-size:14px;margin-bottom:14px;font-family:'Cairo';background:#f8fafc}
+    .modal-input:focus{outline:none;border-color:#00b894;box-shadow:0 0 0 3px rgba(0,184,148,0.12);background:white}
+    .modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .modal-btn{padding:12px;border:none;border-radius:12px;font-weight:700;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:all 0.2s}
+    .modal-btn:active{transform:scale(0.96)}
+    .modal-btn-cancel{background:#f1f5f9;color:#475569;border:1px solid #e2e8f0}
+    .modal-btn-confirm{background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);color:white;box-shadow:0 4px 12px rgba(0,184,148,0.25)}
+    .modal-btn-danger{background:#ef4444;color:white}
 </style>
 </head>
 <body>
 <div class="header">
-    <button class="back-btn" id="backBtn">⬅️</button>
-    <h1>📒 Karni Pro</h1>
+    <button class="back-btn" id="backBtn"><i class="fas fa-arrow-right"></i></button>
+    <h1><i class="fas fa-book" style="margin-left:8px"></i>Karni Pro</h1>
 </div>
 <div class="container">
-    <div id="loading" class="loading">جاري التحقق من تسجيل الدخول...</div>
+    <div id="loading" class="loading"><i class="fas fa-spinner fa-spin"></i> جاري التحقق من تسجيل الدخول...</div>
     <div id="content" style="display:none">
     <div class="card">
         <div class="avatar" id="avatar">B</div>
         <div class="name" id="name">...</div>
         <div class="phone" id="phone">...</div>
         <div class="total-box">
-            <div class="total-label">المبلغ الإجمالي</div>
+            <div class="total-label"><i class="fas fa-wallet"></i> المبلغ الإجمالي</div>
             <div class="total-value" id="totalAmount">0 درهم</div>
         </div>
 
-        <label class="label">📍 المدينة</label>
-        <select id="city" class="input">
-            <option value="">اختر المدينة</option>
-        </select>
-        <!-- المبلغ الأساسي مخفي للحفاظ على حساب المبلغ الإجمالي بدون كسر المنطق -->
-        <input type="number" id="amount" class="input" placeholder="0" readonly style="display:none">
+        <label class="label"><i class="fas fa-map-marker-alt"></i> المدينة</label>
+        <select id="city" class="input"><option value="">اختر المدينة</option></select>
+        <input type="number" id="amount" style="display:none">
 
-        <label class="label">📅 تاريخ الأداء</label>
+        <label class="label"><i class="fas fa-calendar-alt"></i> تاريخ الأداء</label>
         <input type="date" id="date" class="input">
 
         <div class="row">
             <div>
-                <label class="label">📤 استلام </label>
-                <input type="number" id="received" class="input received-input" placeholder="">
-                <div class="date-label" id="paidDate">تاريخ الدفع: --</div>
+                <label class="label"><i class="fas fa-arrow-down" style="color:#00b894"></i> استلام</label>
+                <input type="number" id="received" class="input received-input" placeholder="0">
+                <div class="date-label" id="paidDate"><i class="far fa-clock"></i> تاريخ الدفع: --</div>
             </div>
             <div>
-                <label class="label">📥 دفع </label>
-                <input type="number" id="paid" class="input paid-input" placeholder="">
-                <div class="date-label" id="receivedDate">تاريخ الاستلام: --</div>
+                <label class="label"><i class="fas fa-arrow-up" style="color:#ff6b6b"></i> دفع</label>
+                <input type="number" id="paid" class="input paid-input" placeholder="0">
+                <div class="date-label" id="receivedDate"><i class="far fa-clock"></i> تاريخ الاستلام: --</div>
             </div>
         </div>
 
-        <button class="save-btn" id="saveBtn">💾 حفظ التغييرات</button>
+        <button class="save-btn" id="saveBtn"><i class="fas fa-save"></i> حفظ التغييرات</button>
 
-        <div class="history-title">📋 سجل العمليات</div>
-        <div id="historyList" style="max-height:350px;overflow-y:auto;padding-left:5px;"></div>
+        <div class="history-title"><i class="fas fa-history" style="color:#00b894"></i> سجل العمليات</div>
+        <div id="historyList" style="max-height:420px;overflow-y:auto;padding:2px"></div>
         </div>
     </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- Professional Modal -->
+<div class="modal-overlay" id="customModal">
+    <div class="modal-box">
+        <div class="modal-icon info" id="modalIcon"><i class="fas fa-info"></i></div>
+        <div class="modal-title" id="modalTitle">تأكيد</div>
+        <div class="modal-message" id="modalMessage">هل أنت متأكد؟</div>
+        <input type="text" class="modal-input" id="modalInput" style="display:none">
+        <input type="date" class="modal-input" id="modalDateInput" style="display:none">
+        <div class="modal-actions">
+            <button class="modal-btn modal-btn-cancel" id="modalCancel"><i class="fas fa-times"></i> إلغاء</button>
+            <button class="modal-btn modal-btn-confirm" id="modalConfirm"><i class="fas fa-check"></i> حفظ</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><div class="toast-icon"><i class="fas fa-check"></i></div><div class="toast-msg" id="toastMsg">تم</div><div class="toast-progress"></div></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
@@ -138,37 +187,64 @@ const customerId = urlParams.get('id');
 const loading = document.getElementById('loading');
 const content = document.getElementById('content');
 
-if(!customerId){
-    alert('خطأ: ما كاينش id');
-    window.location.href = 'index.html';
-}
+if(!customerId){ showToast('خطأ: ما كاينش id', 'error'); setTimeout(()=>window.location.href='index.html',800); }
 
 const customerRef = ref(db, 'customers/' + customerId);
 const allCustomersRef = ref(db, 'customers');
 
 let customerOperations = [];
 let customerDataCache = null;
+let baseAmount = 0;
 
-// 1- إصلاح Permission denied: انتظار تسجيل الدخول قبل أي قراءة
+// Modal System - بدل prompt/confirm/alert
+let modalResolve = null;
+function showModal({title='تنبيه', message='', icon='info', iconClass='info', hasInput=false, inputValue='', hasDate=false, dateValue='', confirmText='حفظ', cancelText='إلغاء', confirmClass='confirm', danger=false}){
+    return new Promise((resolve)=>{
+        modalResolve = resolve;
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalMessage').textContent = message;
+        const iconEl = document.getElementById('modalIcon');
+        iconEl.className = 'modal-icon ' + iconClass;
+        iconEl.innerHTML = `<i class="fas fa-${icon}"></i>`;
+        const inputEl = document.getElementById('modalInput');
+        const dateEl = document.getElementById('modalDateInput');
+        inputEl.style.display = hasInput ? 'block' : 'none';
+        dateEl.style.display = hasDate ? 'block' : 'none';
+        if(hasInput){ inputEl.value = inputValue; setTimeout(()=>inputEl.focus(),100); }
+        if(hasDate) dateEl.value = dateValue;
+        document.getElementById('modalConfirm').innerHTML = `<i class="fas fa-${danger?'trash':'check'}"></i> ${confirmText}`;
+        document.getElementById('modalConfirm').className = 'modal-btn ' + (danger ? 'modal-btn-danger' : 'modal-btn-confirm');
+        document.getElementById('modalCancel').innerHTML = `<i class="fas fa-times"></i> ${cancelText}`;
+        document.getElementById('customModal').classList.add('active');
+    });
+}
+function closeModal(result){
+    document.getElementById('customModal').classList.remove('active');
+    if(modalResolve){ modalResolve(result); modalResolve=null; }
+}
+document.getElementById('modalCancel').onclick = ()=> closeModal(null);
+document.getElementById('modalConfirm').onclick = ()=>{
+    const hasInput = document.getElementById('modalInput').style.display !== 'none';
+    const hasDate = document.getElementById('modalDateInput').style.display !== 'none';
+    if(hasInput && hasDate){
+        closeModal({amount: document.getElementById('modalInput').value, date: document.getElementById('modalDateInput').value});
+    } else if(hasInput){
+        closeModal(document.getElementById('modalInput').value);
+    } else if(hasDate){
+        closeModal(document.getElementById('modalDateInput').value);
+    } else {
+        closeModal(true);
+    }
+};
+document.getElementById('customModal').onclick = (e)=>{ if(e.target===e.currentTarget) closeModal(null); };
+
 onAuthStateChanged(auth, async (user)=>{
     if(!user){
-        // التحقق من localStorage للتوافق مع النظام الحالي
-        if(!localStorage.getItem('loggedIn')){
-            window.location.href = 'login.html';
-            return;
-        }
-        // إذا localStorage موجود لكن auth لم يجهز بعد، ننتظر قليلاً
-        // لكن القاعدة تطلب auth != null، لذا نحول إذا لا يوجد user
-        // لتجنب Permission denied، نتحقق أن auth جاهز
-        setTimeout(()=>{
-            if(!auth.currentUser){
-                window.location.href = 'login.html';
-            }
-        }, 1500);
+        if(!localStorage.getItem('loggedIn')){ window.location.href='login.html'; return; }
+        setTimeout(()=>{ if(!auth.currentUser) window.location.href='login.html'; },1500);
         return;
     }
-    // المستخدم مسجل دخول - نحمل البيانات بأمان
-    loading.textContent = 'جاري تحميل بيانات الزبون...';
+    loading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
     await loadAllCities();
     await loadCustomer();
 });
@@ -178,130 +254,107 @@ async function loadAllCities(){
         const snap = await get(allCustomersRef);
         const citiesSet = new Set();
         if(snap.exists()){
-            const all = snap.val();
-            Object.values(all).forEach(c=>{
+            Object.values(snap.val()).forEach(c=>{
                 if(c.city && c.city.trim()) citiesSet.add(c.city.trim());
                 if(c.ville && c.ville.trim()) citiesSet.add(c.ville.trim());
             });
         }
         const citySelect = document.getElementById('city');
-        // احتفظ بخيار "اختر المدينة"
         citySelect.innerHTML = '<option value="">اختر المدينة</option>';
         Array.from(citiesSet).sort().forEach(city=>{
-            const opt = document.createElement('option');
-            opt.value = city;
-            opt.textContent = city;
-            citySelect.appendChild(opt);
+            const opt = document.createElement('option'); opt.value=city; opt.textContent=city; citySelect.appendChild(opt);
         });
-        return citiesSet;
-    }catch(e){
-        console.error('خطأ تحميل المدن:', e);
-        showToast('خطأ في تحميل المدن');
-        return new Set();
-    }
+    }catch(e){ console.error(e); }
 }
 
 async function loadCustomer(){
     try{
         const snapshot = await get(customerRef);
-        loading.style.display = 'none';
-        content.style.display = 'block';
-        if(!snapshot.exists()){
-            alert('الزبون غير موجود');
-            window.location.href = 'index.html';
-            return;
-        }
+        loading.style.display='none'; content.style.display='block';
+        if(!snapshot.exists()){ await showModal({title:'غير موجود', message:'الزبون غير موجود', icon:'exclamation', iconClass:'danger', confirmText:'رجوع'}); window.location.href='index.html'; return; }
         const data = snapshot.val();
         customerDataCache = data;
+        baseAmount = parseFloat(data.amount) || 0;
         const name = data.name || 'بدون اسم';
         document.getElementById('name').textContent = name;
         document.getElementById('phone').textContent = data.phone || 'لا يوجد هاتف';
         document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();
-        document.getElementById('amount').value = data.amount || 0;
+        document.getElementById('amount').value = baseAmount;
 
-        // المدينة الديناميكية
         const cityValue = (data.city || data.ville || '').trim();
         const citySelect = document.getElementById('city');
         if(cityValue){
-            let found = Array.from(citySelect.options).some(opt=>opt.value===cityValue);
-            if(!found){
-                const newOpt = document.createElement('option');
-                newOpt.value = cityValue;
-                newOpt.textContent = cityValue;
-                citySelect.appendChild(newOpt);
+            if(!Array.from(citySelect.options).some(o=>o.value===cityValue)){
+                const opt = document.createElement('option'); opt.value=cityValue; opt.textContent=cityValue; citySelect.appendChild(opt);
             }
             citySelect.value = cityValue;
-        } else {
-            citySelect.value = '';
         }
 
         document.getElementById('date').value = data.paymentDate || data.date || '';
         document.getElementById('paid').value = '';
         document.getElementById('received').value = '';
-        if(data.paidDate) document.getElementById('paidDate').textContent = 'تاريخ الدفع: ' + data.paidDate;
-        if(data.receivedDate) document.getElementById('receivedDate').textContent = 'تاريخ الاستلام: ' + data.receivedDate;
+        if(data.paidDate) document.getElementById('paidDate').innerHTML = `<i class="far fa-clock"></i> تاريخ الدفع: ${data.paidDate}`;
+        if(data.receivedDate) document.getElementById('receivedDate').innerHTML = `<i class="far fa-clock"></i> تاريخ الاستلام: ${data.receivedDate}`;
 
         customerOperations = data.operations || [];
         calculateTotal();
         showHistory(data);
-
     }catch(error){
         console.error(error);
-        if(error.message && error.message.includes('Permission denied')){
-            window.location.href = 'login.html';
-        } else {
-            alert('خطأ: ' + error.message);
-            window.location.href = 'index.html';
-        }
+        if(error.message?.includes('Permission denied')) window.location.href='login.html';
+        else { await showModal({title:'خطأ', message:error.message, icon:'times', iconClass:'danger'}); window.location.href='index.html'; }
     }
 }
 
-// 4- المبلغ الإجمالي يحسب بنفس طريقة الصفحة الرئيسية + العمليات
 function calculateTotal(){
-    const amount = parseFloat(document.getElementById('amount').value) || 0;
-    let totalPaid = 0;
-    let totalReceived = 0;
+    let totalPaid = 0, totalReceived = 0;
     customerOperations.forEach(op=>{
-        if(op.type === 'paid') totalPaid += Number(op.amount) || 0;
-        if(op.type === 'received') totalReceived += Number(op.amount) || 0;
+        if(op.type==='paid') totalPaid += Number(op.amount)||0;
+        if(op.type==='received') totalReceived += Number(op.amount)||0;
     });
-    // القاعدة الصحيحة: الأصلي + دفع - استلام
-    const total = amount + totalPaid - totalReceived;
+    const total = baseAmount + totalPaid - totalReceived;
     document.getElementById('totalAmount').textContent = Math.round(total) + ' درهم';
     return total;
 }
 
 function showHistory(data){
-    const historyList = document.getElementById('historyList');
-    historyList.innerHTML = '';
+    const list = document.getElementById('historyList');
+    list.innerHTML = '';
     customerOperations = data.operations || [];
-    if(customerOperations.length === 0){
-        historyList.innerHTML = '<div style="text-align:center;color:#999;padding:20px">لا توجد عمليات بعد</div>';
+    if(customerOperations.length===0){
+        list.innerHTML = '<div style="text-align:center;color:#94a3b8;padding:24px;font-size:13px"><i class="fas fa-inbox" style="font-size:28px;display:block;margin-bottom:8px;opacity:0.3"></i>لا توجد عمليات بعد</div>';
         return;
     }
     customerOperations.slice().reverse().forEach((op,index)=>{
         const realIndex = customerOperations.length-1-index;
+        const isPaid = op.type==='paid';
         const div = document.createElement('div');
-        div.className = 'history-item ' + (op.type === 'paid' ? 'history-paid' : 'history-received');
+        div.className = 'history-item ' + (isPaid ? 'history-paid' : 'history-received');
+        div.style.animationDelay = (index*0.04)+'s';
         div.innerHTML = `
-<div>
-    <div class="history-amount">${op.amount} درهم - ${op.type === 'paid' ? 'دفع' : 'استلام'}</div>
-    <div class="history-date">📅 ${op.date || '--'} ${op.time ? '⏰ '+op.time : ''}</div>
+<div style="flex:1;min-width:0">
+    <div class="history-amount"><i class="fas fa-${isPaid?'arrow-up':'arrow-down'}"></i> ${op.amount} درهم - ${isPaid?'دفع':'استلام'}</div>
+    <div class="history-date"><i class="far fa-calendar"></i> ${op.date||'--'} ${op.time?`<i class="far fa-clock" style="margin-right:6px"></i>${op.time}`:''}</div>
 </div>
-<div style="display:flex;gap:6px">
-<button class="whatsapp-btn" onclick="sendReminderWhatsapp(${realIndex})">📱</button>
-<button class="confirm-btn" onclick="sendConfirmWhatsapp(${realIndex})">✅</button>
-<button onclick="editOperation(${realIndex})">✏️</button>
-<button onclick="deleteOperation(${realIndex})">🗑️</button>
+<div class="history-actions">
+    <button class="h-btn h-btn-wa" onclick="sendReminderWhatsapp(${realIndex})" title="واتساب"><i class="fab fa-whatsapp"></i></button>
+    <button class="h-btn h-btn-ok" onclick="sendConfirmWhatsapp(${realIndex})" title="تأكيد"><i class="fas fa-circle-check"></i></button>
+    <button class="h-btn h-btn-edit" onclick="editOperation(${realIndex})" title="تعديل"><i class="fas fa-pen"></i></button>
+    <button class="h-btn h-btn-del" onclick="deleteOperation(${realIndex})" title="حذف"><i class="fas fa-trash"></i></button>
 </div>`;
-        historyList.appendChild(div);
+        list.appendChild(div);
     });
 }
 
-function showToast(msg){
+function showToast(msg, type='success'){
     const toast = document.getElementById('toast');
-    toast.textContent = msg;
-    toast.classList.add('show');
+    const icon = toast.querySelector('.toast-icon');
+    toast.className = 'toast '+type+' show';
+    icon.innerHTML = type==='error' ? '<i class="fas fa-times"></i>' : '<i class="fas fa-check"></i>';
+    document.getElementById('toastMsg').textContent = msg;
+    // restart progress animation
+    const prog = toast.querySelector('.toast-progress');
+    prog.style.animation='none'; prog.offsetHeight; prog.style.animation='progress 2.8s linear forwards';
     setTimeout(()=>toast.classList.remove('show'), 2800);
 }
 window.showToast = showToast;
@@ -311,29 +364,30 @@ document.getElementById('received').addEventListener('input', calculateTotal);
 
 document.getElementById('saveBtn').addEventListener('click', async ()=>{
     const btn = document.getElementById('saveBtn');
-    const originalText = btn.textContent;
-    btn.textContent = '⏳ جاري الحفظ...';
-    btn.disabled = true;
+    const original = btn.innerHTML;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; btn.disabled=true;
 
     const date = document.getElementById('date').value;
     const paid = parseFloat(document.getElementById('paid').value) || 0;
     const received = parseFloat(document.getElementById('received').value) || 0;
     const city = document.getElementById('city').value.trim();
-
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const currentTime = now.toTimeString().slice(0,5);
+    const now = new Date(); const today = now.toISOString().split('T')[0]; const currentTime = now.toTimeString().slice(0,5);
 
     let operations = [...customerOperations];
-    if(received > 0) operations.push({type:'received', amount: received, date: today, time: currentTime});
-    if(paid > 0) operations.push({type:'paid', amount: paid, date: today, time: currentTime});
+    if(received>0) operations.push({type:'received', amount:received, date:today, time:currentTime});
+    if(paid>0) operations.push({type:'paid', amount:paid, date:today, time:currentTime});
 
+    const newTotal = (()=>{ let p=0,r=0; operations.forEach(o=>{ if(o.type==='paid') p+=Number(o.amount)||0; else r+=Number(o.amount)||0; }); return baseAmount + p - r; })();
+
+    // الحل لمشكلة اختلاف index و person: نحفظ الرصيد الحقيقي في حقل amount الحالي وفي currentBalance
     const updateData = {
         date: date,
         paymentDate: date,
         city: city,
         ville: city,
         operations: operations,
+        currentBalance: newTotal, // للتوافق مع index الجديد
+        // إذا الرصيد 0 نحتفظ بالمبلغ الأصلي في amount الأصلي لكن index سيقرأ currentBalance
         updatedAt: new Date().toISOString()
     };
 
@@ -341,102 +395,80 @@ document.getElementById('saveBtn').addEventListener('click', async ()=>{
         await update(customerRef, updateData);
         customerOperations = operations;
         customerDataCache = {...customerDataCache, ...updateData};
-        document.getElementById('paid').value = '';
-        document.getElementById('received').value = '';
+        document.getElementById('paid').value=''; document.getElementById('received').value='';
         calculateTotal();
-        showHistory({operations: customerOperations});
-        btn.textContent = '✅ تم الحفظ';
-        showToast('تم حفظ التغييرات بنجاح');
-        // لا location.reload() - تحديث مباشر
-        setTimeout(()=>{ btn.textContent = originalText; btn.disabled = false; }, 1200);
-        // تحديث قائمة المدن إذا أضيفت مدينة جديدة
-        if(city){
-            const citySelect = document.getElementById('city');
-            if(!Array.from(citySelect.options).some(o=>o.value===city)){
-                const opt = document.createElement('option');
-                opt.value = city; opt.textContent = city;
-                citySelect.appendChild(opt);
-            }
+        showHistory({operations});
+        btn.innerHTML = '<i class="fas fa-check"></i> تم الحفظ'; showToast('تم حفظ التغييرات بنجاح');
+        setTimeout(()=>{ btn.innerHTML=original; btn.disabled=false; },1200);
+        if(city && !Array.from(document.getElementById('city').options).some(o=>o.value===city)){
+            const opt=document.createElement('option'); opt.value=city; opt.textContent=city; document.getElementById('city').appendChild(opt);
         }
-    }catch(error){
-        console.error(error);
-        if(error.message && error.message.includes('Permission denied')){
-            showToast('انتهت الجلسة - سيتم تحويلك لتسجيل الدخول');
-            setTimeout(()=>window.location.href='login.html', 1200);
-        } else {
-            alert('خطأ: ' + error.message);
-        }
-        btn.textContent = originalText;
-        btn.disabled = false;
+    }catch(e){
+        console.error(e);
+        showToast('خطأ: '+e.message, 'error');
+        btn.innerHTML=original; btn.disabled=false;
     }
 });
 
 window.deleteOperation = async function(index){
-    if(!confirm('حذف العملية؟')) return;
+    const ok = await showModal({title:'حذف العملية', message:'هل أنت متأكد من حذف هذه العملية؟ لا يمكن التراجع.', icon:'trash', iconClass:'danger', confirmText:'حذف', cancelText:'إلغاء', danger:true});
+    if(!ok) return;
     customerOperations.splice(index,1);
+    const newTotal = (()=>{ let p=0,r=0; customerOperations.forEach(o=>{ if(o.type==='paid') p+=Number(o.amount)||0; else r+=Number(o.amount)||0; }); return baseAmount + p - r; })();
     try{
-        await update(customerRef,{operations: customerOperations, updatedAt: new Date().toISOString()});
-        calculateTotal();
-        showHistory({operations: customerOperations});
-        showToast('تم حذف العملية');
-    }catch(e){ alert('خطأ: '+e.message); }
+        await update(customerRef,{operations: customerOperations, currentBalance: newTotal, updatedAt: new Date().toISOString()});
+        calculateTotal(); showHistory({operations: customerOperations}); showToast('تم حذف العملية');
+    }catch(e){ showToast('خطأ: '+e.message,'error'); }
 }
 
 window.editOperation = async function(index){
-    let amount = prompt('المبلغ الجديد', customerOperations[index].amount);
-    if(amount === null) return;
-    let date = prompt('التاريخ الجديد', customerOperations[index].date);
-    if(date === null) return;
-    customerOperations[index].amount = Number(amount);
-    customerOperations[index].date = date;
+    const op = customerOperations[index];
+    const result = await showModal({
+        title:'تعديل العملية',
+        message:`تعديل ${op.type==='paid'?'الدفع':'الاستلام'} - ${op.amount} درهم`,
+        icon:'pen', iconClass:'info',
+        hasInput:true, inputValue:op.amount,
+        hasDate:true, dateValue:op.date,
+        confirmText:'حفظ التعديل'
+    });
+    if(!result) return;
+    const newAmount = parseFloat(result.amount);
+    if(isNaN(newAmount) || newAmount<=0){ showToast('المبلغ غير صحيح','error'); return; }
+    customerOperations[index].amount = newAmount;
+    customerOperations[index].date = result.date;
+    const newTotal = (()=>{ let p=0,r=0; customerOperations.forEach(o=>{ if(o.type==='paid') p+=Number(o.amount)||0; else r+=Number(o.amount)||0; }); return baseAmount + p - r; })();
     try{
-        await update(customerRef,{operations: customerOperations, updatedAt: new Date().toISOString()});
-        calculateTotal();
-        showHistory({operations: customerOperations});
-        showToast('تم تعديل العملية');
-    }catch(e){ alert('خطأ: '+e.message); }
+        await update(customerRef,{operations: customerOperations, currentBalance: newTotal, updatedAt: new Date().toISOString()});
+        calculateTotal(); showHistory({operations: customerOperations}); showToast('تم تعديل العملية');
+    }catch(e){ showToast('خطأ: '+e.message,'error'); }
 }
 
 window.sendReminderWhatsapp = function(index){
     const phone = document.getElementById('phone').textContent.trim();
     const customerName = document.getElementById('name').textContent;
     const total = document.getElementById('totalAmount').textContent;
-    if(!phone || phone === 'لا يوجد هاتف'){ alert('أضف رقم هاتف ' + customerName + ' أولاً'); return; }
+    if(!phone || phone==='لا يوجد هاتف'){ showModal({title:'تنبيه', message:'أضف رقم هاتف '+customerName+' أولاً', icon:'phone', iconClass:'warning', confirmText:'حسناً'}); return; }
     const cleanPhone = phone.replace(/\D/g,'');
     const message = `📌 إشعار أداء\n\nالسلام عليكم ${customerName}\n\n🔔 هذا تذكير بموعد أداء المبلغ المستحق عليكم.\n\n💵 المبلغ الواجب أداؤه:\n${total}\n\n🕕 موعد الأداء:\nبعد الساعة التاسعة مساءً.\n\n✅ المرجو تسوية المبلغ في الوقت المحدد.\n\n🤝 شكراً لتعاونكم.\n\n👤 مصطفى`;
-    window.open('https://wa.me/212' + cleanPhone.replace(/^0/,'') + '?text=' + encodeURIComponent(message), '_blank');
+    window.open('https://wa.me/212'+cleanPhone.replace(/^0/,'')+'?text='+encodeURIComponent(message),'_blank');
 }
 
 window.sendConfirmWhatsapp = function(index){
     const phone = document.getElementById('phone').textContent.trim();
     const customerName = document.getElementById('name').textContent;
-    if(!phone || phone === 'لا يوجد هاتف'){ alert('أضف رقم هاتف ' + customerName + ' أولاً'); return; }
+    if(!phone || phone==='لا يوجد هاتف'){ showModal({title:'تنبيه', message:'أضف رقم هاتف '+customerName+' أولاً', icon:'phone', iconClass:'warning'}); return; }
     const op = customerOperations[index];
     const total = document.getElementById('totalAmount').textContent;
     const cleanPhone = phone.replace(/\D/g,'');
     const message = `✅ إشعار استلام دفعة\n\nالسلام عليكم ${customerName}\n\nتم تسجيل استلام مبلغ قدره:\n\n💵 ${op.amount} درهم\n\n📌 المبلغ المتبقي الواجب أداؤه:\n${total}\n\n🙏 شكراً لكم على حسن تعاونكم.\n\n👤 مصطفى`;
-    window.open('https://wa.me/212' + cleanPhone.replace(/^0/,'') + '?text=' + encodeURIComponent(message), '_blank');
+    window.open('https://wa.me/212'+cleanPhone.replace(/^0/,'')+'?text='+encodeURIComponent(message),'_blank');
 }
 
-document.getElementById('backBtn').addEventListener('click', ()=>{ window.location.href = 'index.html'; });
+document.getElementById('backBtn').addEventListener('click', ()=>{ window.location.href='index.html'; });
 </script>
-
 <script>
-// حماية الصفحة - نفس منطق index.html لكن بدون تعارض مع Firebase Auth
-const appVersion = "10";
-if(localStorage.getItem("appVersion") && localStorage.getItem("appVersion") !== appVersion){
-    localStorage.clear();
-    window.location.href = "login.html";
-}
-if(!localStorage.getItem("loggedIn")){
-    // سيتم التحقق الحقيقي عبر onAuthStateChanged أيضاً
-    // نترك الصفحة تحاول Auth أولاً لتجنب التحويل المبكر
-    setTimeout(()=>{
-        if(!localStorage.getItem('loggedIn')){
-            window.location.href = "login.html";
-        }
-    }, 2000);
-}
+const appVersion="10";
+if(localStorage.getItem("appVersion") && localStorage.getItem("appVersion")!==appVersion){ localStorage.clear(); window.location.href="login.html"; }
 </script>
 </body>
 </html>
