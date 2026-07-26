@@ -591,12 +591,23 @@
             }
             let totalAmount = 0; let customersCount = 0; let todayCount = 0; let overdueCount = 0;
             const today = new Date().toISOString().split('T')[0];
+            // دالة حساب الرصيد الحقيقي - نفس person.html
+            function getRealBalance(c){
+                if(typeof c.currentBalance !== 'undefined' && c.currentBalance !== null) return parseFloat(c.currentBalance)||0;
+                let p=0,r=0;
+                if(c.operations && Array.isArray(c.operations)){
+                    c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; });
+                }
+                return (parseFloat(c.amount)||0) + p - r;
+            }
             Object.keys(customers).forEach((key, index) => {
                 const customer = customers[key];
-                customersCount++; totalAmount += parseInt(customer.amount) || 0;
+                const realBalance = getRealBalance(customer);
+                customersCount++; totalAmount += realBalance;
                 if(customer.date === today) todayCount++; else if(customer.date < today) overdueCount++;
                 const overdueClass = customer.date < today? 'overdue' : '';
-                const card = `<div class="customer-card ${overdueClass}" data-customer-id="${key}" onclick="openDetails('${key}')" style="animation-delay:${index*0.04}s"><div class="customer-header"><div class="customer-avatar">${customer.name.charAt(0)}</div><div class="customer-info"><div class="customer-name">${customer.name}</div><div class="customer-amount">${customer.amount} درهم</div><div class="customer-meta"><span><i class="fas fa-phone"></i> ${customer.phone || '-'}</span><span><i class="fas fa-calendar"></i> ${customer.date}</span></div></div></div><div class="customer-actions"><button class="btn btn-profile" onclick="event.stopPropagation(); openDetails('${key}')"><i class="fas fa-user"></i> التفاصيل</button><button class="btn btn-edit-phone" onclick="event.stopPropagation(); editCustomerPhone('${key}')"><i class="fas fa-phone"></i></button><button class="btn btn-edit-amount" onclick="event.stopPropagation(); editCustomerAmount('${key}')"><i class="fas fa-money-bill-wave"></i></button><button class="btn btn-calendar" onclick="event.stopPropagation(); setPaymentDate('${key}')"><i class="fas fa-calendar-alt"></i></button><button class="btn btn-delete" onclick="event.stopPropagation(); confirmDelete('${key}')"><i class="fas fa-trash"></i></button></div></div>`;
+                const realBalanceForCard = getRealBalance(customer);
+                const card = `<div class="customer-card ${overdueClass}" data-customer-id="${key}" onclick="openDetails('${key}')" style="animation-delay:${index*0.04}s"><div class="customer-header"><div class="customer-avatar">${customer.name.charAt(0)}</div><div class="customer-info"><div class="customer-name">${customer.name}</div><div class="customer-amount">${realBalanceForCard} درهم</div><div class="customer-meta"><span><i class="fas fa-phone"></i> ${customer.phone || '-'}</span><span><i class="fas fa-calendar"></i> ${customer.date}</span></div></div></div><div class="customer-actions"><button class="btn btn-profile" onclick="event.stopPropagation(); openDetails('${key}')"><i class="fas fa-user"></i> التفاصيل</button><button class="btn btn-edit-phone" onclick="event.stopPropagation(); editCustomerPhone('${key}')"><i class="fas fa-phone"></i></button><button class="btn btn-edit-amount" onclick="event.stopPropagation(); editCustomerAmount('${key}')"><i class="fas fa-money-bill-wave"></i></button><button class="btn btn-calendar" onclick="event.stopPropagation(); setPaymentDate('${key}')"><i class="fas fa-calendar-alt"></i></button><button class="btn btn-delete" onclick="event.stopPropagation(); confirmDelete('${key}')"><i class="fas fa-trash"></i></button></div></div>`;
                 list.innerHTML += card;
             });
             updateStats({totalAmount, customersCount, todayCount, overdueCount});
