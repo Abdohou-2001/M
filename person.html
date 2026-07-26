@@ -1,4 +1,5 @@
-<!DOCTYPE html>  <html lang="ar" dir="rtl">  
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
 <head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
 (function() {
   if (window.__playableTouchPatchInstalled) return;
@@ -18,12 +19,12 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
-</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>  
-<meta charset="UTF-8">  
-<meta name="viewport" content="width=device-width, initial-scale=1.0">  
-<title>تفاصيل الزبون - Karni Pro</title>  
-<style>  
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Tahoma',sans-serif}  
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تفاصيل الزبون - Karni Pro</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Tahoma',sans-serif}
     body{background:#f5f7fa;min-height:100vh}  .header{background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);padding:30px 20px 60px;border-radius:0 0 30px 30px;box-shadow:0 4px 20px rgba(0,184,148,0.3);position:relative}
 .header h1{color:white;font-size:28px;text-align:center;margin-bottom:10px}
 .back-btn{position:absolute;top:20px;right:20px;width:45px;height:45px;border-radius:15px;background:rgba(255,255,255,0.2);border:none;color:white;font-size:22px;cursor:pointer;backdrop-filter:blur(10px)}
@@ -44,6 +45,7 @@
 .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .save-btn{width:100%;padding:18px;border:none;border-radius:15px;background:linear-gradient(135deg, #00b894 0%, #00cec9 100%);color:white;font-size:18px;font-weight:bold;cursor:pointer;margin-top:25px;box-shadow:0 4px 15px rgba(0,184,148,0.3);transition:0.2s}
 .save-btn:active{transform:scale(0.97);box-shadow:0 2px 8px rgba(0,184,148,0.2)}
+.save-btn:disabled{opacity:0.6;cursor:not-allowed}
 .loading{text-align:center;padding:50px;color:#636e72;font-size:18px}
 .date-label{font-size:12px;color:#74b9ff;margin-top:5px;font-weight:normal}
 .paid-input{border:2px solid #ff7675!important;background:#fff5f5!important}
@@ -57,297 +59,384 @@
 .history-date{font-size:13px;color:#636e72}
 .whatsapp-btn{background:#25D366;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
 .confirm-btn{background:#2563eb;color:white;border:none;padding:6px 10px;border-radius:8px;cursor:pointer;}
+.toast{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-100px);background:#2d3436;color:white;padding:12px 20px;border-radius:12px;box-shadow:0 6px 20px rgba(0,0,0,0.2);font-size:14px;font-weight:bold;z-index:3000;transition:all 0.35s;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
 </style>
-</head>  
-<body>  <div class="header">  
-    <button class="back-btn" id="backBtn">⬅️</button>  
-    <h1>📒 Karni Pro</h1>  
-</div>  <div class="container">  
-    <div id="loading" class="loading">جاري التحميل...</div>  <div id="content" style="display:none">  
-    <div class="card">  
-        <div class="avatar" id="avatar">B</div>  
-        <div class="name" id="name">...</div>  
-        <div class="phone" id="phone">...</div>  
+</head>
+<body>
+<div class="header">
+    <button class="back-btn" id="backBtn">⬅️</button>
+    <h1>📒 Karni Pro</h1>
+</div>
+<div class="container">
+    <div id="loading" class="loading">جاري التحقق من تسجيل الدخول...</div>
+    <div id="content" style="display:none">
+    <div class="card">
+        <div class="avatar" id="avatar">B</div>
+        <div class="name" id="name">...</div>
+        <div class="phone" id="phone">...</div>
+        <div class="total-box">
+            <div class="total-label">المبلغ الإجمالي</div>
+            <div class="total-value" id="totalAmount">0 درهم</div>
+        </div>
 
-        <div class="total-box">  
-            <div class="total-label">المبلغ الإجمالي</div>  
-            <div class="total-value" id="totalAmount">0 درهم</div>  
-        </div>  
-
-        <!-- تم استبدال المبلغ الأساسي بخانة المدينة بنفس التصميم -->
-        <label class="label">📍 المدينة</label>  
+        <label class="label">📍 المدينة</label>
         <select id="city" class="input">
             <option value="">اختر المدينة</option>
-            <option value="أكادير">أكادير</option>
-            <option value="أولاد تايمة">أولاد تايمة</option>
-            <option value="أيت ملول">أيت ملول</option>
-            <option value="إنزكان">إنزكان</option>
-            <option value="تارودانت">تارودانت</option>
-            <option value="تزنيت">تزنيت</option>
-            <option value="الدار البيضاء">الدار البيضاء</option>
-            <option value="مراكش">مراكش</option>
-            <option value="الرباط">الرباط</option>
-            <option value="فاس">فاس</option>
-            <option value="طنجة">طنجة</option>
-            <option value="وجدة">وجدة</option>
-            <option value="القنيطرة">القنيطرة</option>
-            <option value="آسفي">آسفي</option>
-            <option value="مكناس">مكناس</option>
-            <option value="العيون">العيون</option>
-            <option value="خريبكة">خريبكة</option>
-            <option value="بني ملال">بني ملال</option>
-            <option value="ورزازات">ورزازات</option>
-            <option value="كلميم">كلميم</option>
-            <option value="الناظور">الناظور</option>
-            <option value="سطات">سطات</option>
-            <option value="برشيد">برشيد</option>
-            <option value="المحمدية">المحمدية</option>
         </select>
-        <!-- حقل المبلغ الأساسي مخفي للحفاظ على حساب المبلغ -->
+        <!-- المبلغ الأساسي مخفي للحفاظ على حساب المبلغ الإجمالي بدون كسر المنطق -->
         <input type="number" id="amount" class="input" placeholder="0" readonly style="display:none">
 
-        <label class="label">📅 تاريخ الأداء</label>  
-        <input type="date" id="date" class="input">  
+        <label class="label">📅 تاريخ الأداء</label>
+        <input type="date" id="date" class="input">
 
-        <div class="row">  
-            <div>  
-                <label class="label">📤 استلام </label>  
-                <input type="number" id="received" class="input received-input" placeholder="">  
-                <div class="date-label" id="paidDate">تاريخ الدفع: --</div>  
-            </div>  
-            <div>  
-                <label class="label">📥 دفع </label>  
-                <input type="number" id="paid" class="input paid-input" placeholder="">  
-                <div class="date-label" id="receivedDate">تاريخ الاستلام: --</div>  
-            </div>  
-        </div>  
+        <div class="row">
+            <div>
+                <label class="label">📤 استلام </label>
+                <input type="number" id="received" class="input received-input" placeholder="">
+                <div class="date-label" id="paidDate">تاريخ الدفع: --</div>
+            </div>
+            <div>
+                <label class="label">📥 دفع </label>
+                <input type="number" id="paid" class="input paid-input" placeholder="">
+                <div class="date-label" id="receivedDate">تاريخ الاستلام: --</div>
+            </div>
+        </div>
 
-        <button class="save-btn" id="saveBtn">💾 حفظ التغييرات</button>  
+        <button class="save-btn" id="saveBtn">💾 حفظ التغييرات</button>
 
-        <div class="history-title">📋 سجل العمليات</div>  
-        <div id="historyList"
-style="
-max-height:350px;
-overflow-y:auto;
-padding-left:5px;
-">
-</div>  
-        </div>  
-    </div>  
-</div>  <script type="module">  
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";  
-import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";  
-  
+        <div class="history-title">📋 سجل العمليات</div>
+        <div id="historyList" style="max-height:350px;overflow-y:auto;padding-left:5px;"></div>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
 const firebaseConfig = {
-          apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-          authDomain: "karnipromaroc.firebaseapp.com",
-          databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "karnipromaroc",
-          storageBucket: "karnipromaroc.firebasestorage.app",
-          messagingSenderId: "6746147726",
-          appId: "1:6746147726:web:6e3a2d29941ab93ef432df",
-          measurementId: "G-3Q1L0LC9TE"
-        };  
-  
-const app = initializeApp(firebaseConfig);  
-const db = getDatabase(app);  
-  
-const urlParams = new URLSearchParams(window.location.search);  
-const id = urlParams.get('id');  
-const loading = document.getElementById('loading');  
-const content = document.getElementById('content');  
-  
-if(!id){alert('خطأ: ما كاينش id');window.location.href = 'index.html';}  
-const customerRef = ref(db, 'customers/' + id);  
-  
-let customerOperations = [];  
-  
-function calculateTotal(){  
-    const amount = parseFloat(document.getElementById('amount').value) || 0;  
-    let totalPaid = 0;  
-    let totalReceived = 0;  
-    customerOperations.forEach(op=>{  
-        if(op.type === 'paid'){ totalPaid += Number(op.amount); }  
-        if(op.type === 'received'){ totalReceived += Number(op.amount); }  
-    });  
-    const total = amount + totalPaid - totalReceived;  
-    document.getElementById('totalAmount').textContent = Math.round(total) + ' درهم';  
-}  
-  
-function showHistory(data){  
-    const historyList = document.getElementById('historyList');  
-    historyList.innerHTML = '';  
-    customerOperations = data.operations || [];  
-    if(customerOperations.length === 0){  
-        historyList.innerHTML = '<div style="text-align:center;color:#999;padding:20px">لا توجد عمليات بعد</div>';  
-        return;  
-    }  
-    customerOperations.slice().reverse().forEach((op,index)=>{  
-        const div = document.createElement('div');  
-        div.className = 'history-item ' + (op.type === 'paid' ? 'history-paid' : 'history-received');  
-        div.innerHTML = `  
-<div>  
-    <div class="history-amount">  
-        ${op.amount} درهم -  
-        ${op.type === 'paid' ? 'دفع' : 'استلام'}  
-    </div>  
-    <div class="history-date">  
-        📅 ${op.date || '--'}  
-    </div>  
-</div>  
-<div style="display:flex;gap:6px">  
-<button class="whatsapp-btn" onclick="sendReminderWhatsapp(${customerOperations.length-1-index})">📱</button>  
-<button class="confirm-btn" onclick="sendConfirmWhatsapp(${customerOperations.length-1-index})">✅</button>  
-<button onclick="editOperation(${customerOperations.length-1-index})">✏️</button>  
-<button onclick="deleteOperation(${customerOperations.length-1-index})">🗑️</button>  
-</div>  
-`;  
-        historyList.appendChild(div);  
-    });  
-}  
-  
-get(customerRef).then((snapshot)=>{  
-    loading.style.display = 'none';  
-    content.style.display = 'block';  
-    if(snapshot.exists()){  
-        const data = snapshot.val();  
-        const name = data.name || 'بدون اسم';  
-        document.getElementById('name').textContent = name;  
-        document.getElementById('phone').textContent = data.phone || 'لا يوجد هاتف';  
-        document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();  
-        document.getElementById('amount').value = data.amount || 0;  
-        // قراءة المدينة من Firebase - الميزة الجديدة
-        const cityValue = data.city || data.ville || '';
+  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
+  authDomain: "karnipromaroc.firebaseapp.com",
+  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "karnipromaroc",
+  storageBucket: "karnipromaroc.firebasestorage.app",
+  messagingSenderId: "6746147726",
+  appId: "1:6746147726:web:6e3a2d29941ab93ef432df",
+  measurementId: "G-3Q1L0LC9TE"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+const urlParams = new URLSearchParams(window.location.search);
+const customerId = urlParams.get('id');
+const loading = document.getElementById('loading');
+const content = document.getElementById('content');
+
+if(!customerId){
+    alert('خطأ: ما كاينش id');
+    window.location.href = 'index.html';
+}
+
+const customerRef = ref(db, 'customers/' + customerId);
+const allCustomersRef = ref(db, 'customers');
+
+let customerOperations = [];
+let customerDataCache = null;
+
+// 1- إصلاح Permission denied: انتظار تسجيل الدخول قبل أي قراءة
+onAuthStateChanged(auth, async (user)=>{
+    if(!user){
+        // التحقق من localStorage للتوافق مع النظام الحالي
+        if(!localStorage.getItem('loggedIn')){
+            window.location.href = 'login.html';
+            return;
+        }
+        // إذا localStorage موجود لكن auth لم يجهز بعد، ننتظر قليلاً
+        // لكن القاعدة تطلب auth != null، لذا نحول إذا لا يوجد user
+        // لتجنب Permission denied، نتحقق أن auth جاهز
+        setTimeout(()=>{
+            if(!auth.currentUser){
+                window.location.href = 'login.html';
+            }
+        }, 1500);
+        return;
+    }
+    // المستخدم مسجل دخول - نحمل البيانات بأمان
+    loading.textContent = 'جاري تحميل بيانات الزبون...';
+    await loadAllCities();
+    await loadCustomer();
+});
+
+async function loadAllCities(){
+    try{
+        const snap = await get(allCustomersRef);
+        const citiesSet = new Set();
+        if(snap.exists()){
+            const all = snap.val();
+            Object.values(all).forEach(c=>{
+                if(c.city && c.city.trim()) citiesSet.add(c.city.trim());
+                if(c.ville && c.ville.trim()) citiesSet.add(c.ville.trim());
+            });
+        }
+        const citySelect = document.getElementById('city');
+        // احتفظ بخيار "اختر المدينة"
+        citySelect.innerHTML = '<option value="">اختر المدينة</option>';
+        Array.from(citiesSet).sort().forEach(city=>{
+            const opt = document.createElement('option');
+            opt.value = city;
+            opt.textContent = city;
+            citySelect.appendChild(opt);
+        });
+        return citiesSet;
+    }catch(e){
+        console.error('خطأ تحميل المدن:', e);
+        showToast('خطأ في تحميل المدن');
+        return new Set();
+    }
+}
+
+async function loadCustomer(){
+    try{
+        const snapshot = await get(customerRef);
+        loading.style.display = 'none';
+        content.style.display = 'block';
+        if(!snapshot.exists()){
+            alert('الزبون غير موجود');
+            window.location.href = 'index.html';
+            return;
+        }
+        const data = snapshot.val();
+        customerDataCache = data;
+        const name = data.name || 'بدون اسم';
+        document.getElementById('name').textContent = name;
+        document.getElementById('phone').textContent = data.phone || 'لا يوجد هاتف';
+        document.getElementById('avatar').textContent = name.charAt(0).toUpperCase();
+        document.getElementById('amount').value = data.amount || 0;
+
+        // المدينة الديناميكية
+        const cityValue = (data.city || data.ville || '').trim();
         const citySelect = document.getElementById('city');
         if(cityValue){
-            // إذا المدينة موجودة في القائمة
-            let found = false;
-            for(let opt of citySelect.options){
-                if(opt.value === cityValue){ opt.selected = true; found = true; break; }
-            }
-            // إذا المدينة غير موجودة في القائمة (مدينة مخصصة قديمة)
-            if(!found && cityValue){
+            let found = Array.from(citySelect.options).some(opt=>opt.value===cityValue);
+            if(!found){
                 const newOpt = document.createElement('option');
                 newOpt.value = cityValue;
                 newOpt.textContent = cityValue;
-                newOpt.selected = true;
                 citySelect.appendChild(newOpt);
             }
+            citySelect.value = cityValue;
         } else {
             citySelect.value = '';
         }
-        document.getElementById('date').value = data.paymentDate || data.date || '';  
-        document.getElementById('paid').value = data.paid || '';  
-        document.getElementById('received').value = data.received || '';  
-        if(data.paidDate) document.getElementById('paidDate').textContent = 'تاريخ الدفع: ' + data.paidDate;  
-        if(data.receivedDate) document.getElementById('receivedDate').textContent = 'تاريخ الاستلام: ' + data.receivedDate;  
-        calculateTotal();  
-        showHistory(data);  
-        customerOperations = data.operations || [];  
-        calculateTotal();  
-    }else{  
-        alert('الزبون غير موجود');  
-        window.location.href = 'index.html';  
-    }  
-}).catch((error)=>{  
-    alert('خطأ: ' + error.message);  
-    window.location.href = 'index.html';  
-});  
-  
-document.getElementById('paid').addEventListener('input', calculateTotal);  
-document.getElementById('received').addEventListener('input', calculateTotal);  
-  
-document.getElementById('saveBtn').addEventListener('click', ()=>{  
-    const btn = document.getElementById('saveBtn');  
-    btn.textContent = '⏳ جاري الحفظ...';  
-    btn.disabled = true;  
-    const amount = parseFloat(document.getElementById('amount').value) || 0;  
-    const date = document.getElementById('date').value;  
-    const paid = parseFloat(document.getElementById('paid').value) || 0;  
-    const received = parseFloat(document.getElementById('received').value) || 0;  
+
+        document.getElementById('date').value = data.paymentDate || data.date || '';
+        document.getElementById('paid').value = '';
+        document.getElementById('received').value = '';
+        if(data.paidDate) document.getElementById('paidDate').textContent = 'تاريخ الدفع: ' + data.paidDate;
+        if(data.receivedDate) document.getElementById('receivedDate').textContent = 'تاريخ الاستلام: ' + data.receivedDate;
+
+        customerOperations = data.operations || [];
+        calculateTotal();
+        showHistory(data);
+
+    }catch(error){
+        console.error(error);
+        if(error.message && error.message.includes('Permission denied')){
+            window.location.href = 'login.html';
+        } else {
+            alert('خطأ: ' + error.message);
+            window.location.href = 'index.html';
+        }
+    }
+}
+
+// 4- المبلغ الإجمالي يحسب بنفس طريقة الصفحة الرئيسية + العمليات
+function calculateTotal(){
+    const amount = parseFloat(document.getElementById('amount').value) || 0;
+    let totalPaid = 0;
+    let totalReceived = 0;
+    customerOperations.forEach(op=>{
+        if(op.type === 'paid') totalPaid += Number(op.amount) || 0;
+        if(op.type === 'received') totalReceived += Number(op.amount) || 0;
+    });
+    // القاعدة الصحيحة: الأصلي + دفع - استلام
+    const total = amount + totalPaid - totalReceived;
+    document.getElementById('totalAmount').textContent = Math.round(total) + ' درهم';
+    return total;
+}
+
+function showHistory(data){
+    const historyList = document.getElementById('historyList');
+    historyList.innerHTML = '';
+    customerOperations = data.operations || [];
+    if(customerOperations.length === 0){
+        historyList.innerHTML = '<div style="text-align:center;color:#999;padding:20px">لا توجد عمليات بعد</div>';
+        return;
+    }
+    customerOperations.slice().reverse().forEach((op,index)=>{
+        const realIndex = customerOperations.length-1-index;
+        const div = document.createElement('div');
+        div.className = 'history-item ' + (op.type === 'paid' ? 'history-paid' : 'history-received');
+        div.innerHTML = `
+<div>
+    <div class="history-amount">${op.amount} درهم - ${op.type === 'paid' ? 'دفع' : 'استلام'}</div>
+    <div class="history-date">📅 ${op.date || '--'} ${op.time ? '⏰ '+op.time : ''}</div>
+</div>
+<div style="display:flex;gap:6px">
+<button class="whatsapp-btn" onclick="sendReminderWhatsapp(${realIndex})">📱</button>
+<button class="confirm-btn" onclick="sendConfirmWhatsapp(${realIndex})">✅</button>
+<button onclick="editOperation(${realIndex})">✏️</button>
+<button onclick="deleteOperation(${realIndex})">🗑️</button>
+</div>`;
+        historyList.appendChild(div);
+    });
+}
+
+function showToast(msg){
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 2800);
+}
+window.showToast = showToast;
+
+document.getElementById('paid').addEventListener('input', calculateTotal);
+document.getElementById('received').addEventListener('input', calculateTotal);
+
+document.getElementById('saveBtn').addEventListener('click', async ()=>{
+    const btn = document.getElementById('saveBtn');
+    const originalText = btn.textContent;
+    btn.textContent = '⏳ جاري الحفظ...';
+    btn.disabled = true;
+
+    const date = document.getElementById('date').value;
+    const paid = parseFloat(document.getElementById('paid').value) || 0;
+    const received = parseFloat(document.getElementById('received').value) || 0;
     const city = document.getElementById('city').value.trim();
-    const newTotal = amount + paid - received;  
-    const now = new Date();  
-    const today = now.toISOString().split('T')[0];  
-    const currentTime = now.toTimeString().slice(0,5);  
-    let operations = [...customerOperations];  
-    if(received > 0){  
-        operations.push({ type:'received', amount: received, date: today, time: currentTime });  
-    }  
-    if(paid > 0){  
-        operations.push({ type:'paid', amount: paid, date: today, time: currentTime });  
-    }  
-    const updateData = {  
-        date: date,  
-        paymentDate: date,  
+
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const currentTime = now.toTimeString().slice(0,5);
+
+    let operations = [...customerOperations];
+    if(received > 0) operations.push({type:'received', amount: received, date: today, time: currentTime});
+    if(paid > 0) operations.push({type:'paid', amount: paid, date: today, time: currentTime});
+
+    const updateData = {
+        date: date,
+        paymentDate: date,
         city: city,
         ville: city,
-        operations: operations,  
-        paid: 0,  
-        received: 0,  
-        updatedAt: new Date().toISOString()  
-    };;  
-    customerOperations = operations;  
-    calculateTotal();  
-    update(customerRef, updateData).then(()=>{  
-        btn.textContent = '✅ تم الحفظ';  
-        document.getElementById('paid').value = '';  
-        document.getElementById('received').value = '';  
-        showHistory({ operations: customerOperations });  
-        btn.textContent = '✅ تم الحفظ';  
-        setTimeout(()=>{ location.reload(); },800);  
-    }).catch((error)=>{  
-        alert('خطأ: ' + error.message);  
-        btn.textContent = '💾 حفظ التغييرات';  
-        btn.disabled = false;  
-    });  
-});  
-  
-window.deleteOperation = function(index){  
-    if(!confirm('حذف العملية؟')) return;  
-    customerOperations.splice(index,1);  
-    update(customerRef,{ operations: customerOperations }).then(()=>{  
-        calculateTotal();  
-        showHistory({ operations: customerOperations });  
-    });  
-}  
-  
-window.editOperation = function(index){  
-    let amount = prompt('المبلغ الجديد', customerOperations[index].amount);  
-    if(amount === null) return;  
-    let date = prompt('التاريخ الجديد', customerOperations[index].date);  
-    if(date === null) return;  
-    customerOperations[index].amount = Number(amount);  
-    customerOperations[index].date = date;  
-    update(customerRef,{ operations: customerOperations }).then(()=>{  
-        calculateTotal();  
-        showHistory({ operations: customerOperations });  
-    });  
-}  
-  
-window.sendReminderWhatsapp = function(index){  
-    const phone = document.getElementById('phone').textContent.trim();  
-    const customerName = document.getElementById('name').textContent;  
-    const total = document.getElementById('totalAmount').textContent;  
-    if(!phone || phone === 'لا يوجد هاتف'){ alert('أضف رقم هاتف ' + customerName + ' أولاً'); return; }  
-    const cleanPhone = phone.replace(/\D/g,'');  
-    const message = `📌 إشعار أداء\n\nالسلام عليكم ${customerName}\n\n🔔 هذا تذكير بموعد أداء المبلغ المستحق عليكم.\n\n💵 المبلغ الواجب أداؤه:\n${total}\n\n🕕 موعد الأداء:\nبعد الساعة التاسعة مساءً.\n\n✅ المرجو تسوية المبلغ في الوقت المحدد.\n\n🤝 شكراً لتعاونكم.\n\n👤 مصطفى`;  
-    window.open('https://wa.me/212' + cleanPhone.replace(/^0/,'') + '?text=' + encodeURIComponent(message), '_blank');  
-}  
-  
-window.sendConfirmWhatsapp = function(index){  
-    const phone = document.getElementById('phone').textContent.trim();  
-    const customerName = document.getElementById('name').textContent;  
-    if(!phone || phone === 'لا يوجد هاتف'){ alert('أضف رقم هاتف ' + customerName + ' أولاً'); return; }  
-    const op = customerOperations[index];  
-    const total = document.getElementById('totalAmount').textContent;  
-    const cleanPhone = phone.replace(/\D/g,'');  
-    const message = `✅ إشعار استلام دفعة\n\nالسلام عليكم ${customerName}\n\nتم تسجيل استلام مبلغ قدره:\n\n💵 ${op.amount} درهم\n\n📌 المبلغ المتبقي الواجب أداؤه:\n${total}\n\n🙏 شكراً لكم على حسن تعاونكم.\n\n👤 مصطفى`;  
-    window.open('https://wa.me/212' + cleanPhone.replace(/^0/,'') + '?text=' + encodeURIComponent(message), '_blank');  
-}  
-  
-document.getElementById('backBtn').addEventListener('click', ()=>{  
-    window.location.href = 'index.html';  
-});  
-</script>  </body>  
+        operations: operations,
+        updatedAt: new Date().toISOString()
+    };
+
+    try{
+        await update(customerRef, updateData);
+        customerOperations = operations;
+        customerDataCache = {...customerDataCache, ...updateData};
+        document.getElementById('paid').value = '';
+        document.getElementById('received').value = '';
+        calculateTotal();
+        showHistory({operations: customerOperations});
+        btn.textContent = '✅ تم الحفظ';
+        showToast('تم حفظ التغييرات بنجاح');
+        // لا location.reload() - تحديث مباشر
+        setTimeout(()=>{ btn.textContent = originalText; btn.disabled = false; }, 1200);
+        // تحديث قائمة المدن إذا أضيفت مدينة جديدة
+        if(city){
+            const citySelect = document.getElementById('city');
+            if(!Array.from(citySelect.options).some(o=>o.value===city)){
+                const opt = document.createElement('option');
+                opt.value = city; opt.textContent = city;
+                citySelect.appendChild(opt);
+            }
+        }
+    }catch(error){
+        console.error(error);
+        if(error.message && error.message.includes('Permission denied')){
+            showToast('انتهت الجلسة - سيتم تحويلك لتسجيل الدخول');
+            setTimeout(()=>window.location.href='login.html', 1200);
+        } else {
+            alert('خطأ: ' + error.message);
+        }
+        btn.textContent = originalText;
+        btn.disabled = false;
+    }
+});
+
+window.deleteOperation = async function(index){
+    if(!confirm('حذف العملية؟')) return;
+    customerOperations.splice(index,1);
+    try{
+        await update(customerRef,{operations: customerOperations, updatedAt: new Date().toISOString()});
+        calculateTotal();
+        showHistory({operations: customerOperations});
+        showToast('تم حذف العملية');
+    }catch(e){ alert('خطأ: '+e.message); }
+}
+
+window.editOperation = async function(index){
+    let amount = prompt('المبلغ الجديد', customerOperations[index].amount);
+    if(amount === null) return;
+    let date = prompt('التاريخ الجديد', customerOperations[index].date);
+    if(date === null) return;
+    customerOperations[index].amount = Number(amount);
+    customerOperations[index].date = date;
+    try{
+        await update(customerRef,{operations: customerOperations, updatedAt: new Date().toISOString()});
+        calculateTotal();
+        showHistory({operations: customerOperations});
+        showToast('تم تعديل العملية');
+    }catch(e){ alert('خطأ: '+e.message); }
+}
+
+window.sendReminderWhatsapp = function(index){
+    const phone = document.getElementById('phone').textContent.trim();
+    const customerName = document.getElementById('name').textContent;
+    const total = document.getElementById('totalAmount').textContent;
+    if(!phone || phone === 'لا يوجد هاتف'){ alert('أضف رقم هاتف ' + customerName + ' أولاً'); return; }
+    const cleanPhone = phone.replace(/\D/g,'');
+    const message = `📌 إشعار أداء\n\nالسلام عليكم ${customerName}\n\n🔔 هذا تذكير بموعد أداء المبلغ المستحق عليكم.\n\n💵 المبلغ الواجب أداؤه:\n${total}\n\n🕕 موعد الأداء:\nبعد الساعة التاسعة مساءً.\n\n✅ المرجو تسوية المبلغ في الوقت المحدد.\n\n🤝 شكراً لتعاونكم.\n\n👤 مصطفى`;
+    window.open('https://wa.me/212' + cleanPhone.replace(/^0/,'') + '?text=' + encodeURIComponent(message), '_blank');
+}
+
+window.sendConfirmWhatsapp = function(index){
+    const phone = document.getElementById('phone').textContent.trim();
+    const customerName = document.getElementById('name').textContent;
+    if(!phone || phone === 'لا يوجد هاتف'){ alert('أضف رقم هاتف ' + customerName + ' أولاً'); return; }
+    const op = customerOperations[index];
+    const total = document.getElementById('totalAmount').textContent;
+    const cleanPhone = phone.replace(/\D/g,'');
+    const message = `✅ إشعار استلام دفعة\n\nالسلام عليكم ${customerName}\n\nتم تسجيل استلام مبلغ قدره:\n\n💵 ${op.amount} درهم\n\n📌 المبلغ المتبقي الواجب أداؤه:\n${total}\n\n🙏 شكراً لكم على حسن تعاونكم.\n\n👤 مصطفى`;
+    window.open('https://wa.me/212' + cleanPhone.replace(/^0/,'') + '?text=' + encodeURIComponent(message), '_blank');
+}
+
+document.getElementById('backBtn').addEventListener('click', ()=>{ window.location.href = 'index.html'; });
+</script>
+
+<script>
+// حماية الصفحة - نفس منطق index.html لكن بدون تعارض مع Firebase Auth
+const appVersion = "10";
+if(localStorage.getItem("appVersion") && localStorage.getItem("appVersion") !== appVersion){
+    localStorage.clear();
+    window.location.href = "login.html";
+}
+if(!localStorage.getItem("loggedIn")){
+    // سيتم التحقق الحقيقي عبر onAuthStateChanged أيضاً
+    // نترك الصفحة تحاول Auth أولاً لتجنب التحويل المبكر
+    setTimeout(()=>{
+        if(!localStorage.getItem('loggedIn')){
+            window.location.href = "login.html";
+        }
+    }, 2000);
+}
+</script>
+</body>
 </html>
