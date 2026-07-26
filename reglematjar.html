@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>إعدادات المتجر - Karni Pro</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');*{font-family:'Cairo',sans-serif} body{background:#f8fafc}</style>
+</head>
+<body class="pb-24">
+<header class="bg-gradient-to-r from-emerald-600 to-teal-500 text-white p-5 rounded-b-3xl shadow-lg sticky top-0 z-40">
+  <div class="max-w-4xl mx-auto flex justify-between items-center">
+    <div class="flex items-center gap-3"><button onclick="window.history.back()" class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center"><i class="fa-solid fa-arrow-right"></i></button><h1 class="text-xl font-bold">إعدادات المتجر</h1></div>
+    <button onclick="openAddCategoryModal()" class="bg-white text-emerald-700 px-4 py-2 rounded-xl font-bold text-sm shadow"><i class="fa-solid fa-plus ml-2"></i>إضافة فئة</button>
+  </div>
+</header>
+
+<main class="max-w-4xl mx-auto px-4 pt-6">
+  <div class="bg-white rounded-2xl shadow-sm p-5 border border-gray-100 mb-6">
+    <h2 class="font-bold text-gray-800 mb-2 flex items-center gap-2"><i class="fa-solid fa-layer-group text-emerald-600"></i> إدارة الفئات</h2>
+    <p class="text-sm text-gray-500">الفئات التي تضيفها هنا ستظهر مباشرة في صفحة المنتجات عند إضافة منتج جديد.</p>
+  </div>
+
+  <div id="categoriesContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3"></div>
+  <div id="emptyCategories" class="hidden text-center py-16"><div class="w-20 h-20 mx-auto bg-emerald-50 rounded-full flex items-center justify-center mb-4"><i class="fa-solid fa-tags text-2xl text-emerald-600"></i></div><h3 class="font-bold">لا توجد فئات بعد</h3><p class="text-sm text-gray-500 mt-1">اضغط إضافة فئة لإنشاء أول فئة</p></div>
+</main>
+
+<!-- Add Category Modal -->
+<div id="categoryModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeAddCategoryModal()"></div>
+  <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md animate-[slideUp_0.3s]">
+    <div class="p-6">
+      <div class="flex justify-between items-center mb-5"><h3 id="catModalTitle" class="text-lg font-bold">إضافة فئة جديدة</h3><button onclick="closeAddCategoryModal()" class="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
+      <form id="categoryForm" onsubmit="handleCategorySubmit(event)" class="space-y-4">
+        <input type="hidden" id="categoryId">
+        <div><label class="block text-sm font-semibold mb-2">اسم الفئة *</label><input type="text" id="categoryName" required placeholder="مثال: منظفات" class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none"></div>
+        <div><label class="block text-sm font-semibold mb-2">أيقونة (اختياري) - Font Awesome class</label><div class="flex gap-2"><input type="text" id="categoryIcon" placeholder="fa-soap أو fa-box" class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 focus:border-emerald-500 outline-none"><div class="w-12 h-11 bg-gray-50 rounded-xl flex items-center justify-center border"><i id="iconPreview" class="fa-solid fa-tag text-gray-600"></i></div></div><p class="text-xs text-gray-400 mt-1">مثال: fa-soap, fa-bottle-water, fa-apple-whole</p></div>
+        <div><label class="block text-sm font-semibold mb-2">لون الفئة (اختياري)</label><div class="flex gap-2 items-center"><input type="color" id="categoryColor" value="#10b981" class="w-12 h-11 rounded-xl border border-gray-200 p-1"><input type="text" id="categoryColorText" value="#10b981" placeholder="#10b981" class="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 outline-none"><div id="colorPreview" class="w-12 h-11 rounded-xl border" style="background:#10b981"></div></div></div>
+        <div class="flex gap-3 pt-2"><button type="submit" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-xl font-bold"><i class="fa-solid fa-check ml-2"></i> حفظ الفئة</button><button type="button" onclick="closeAddCategoryModal()" class="px-6 py-3 bg-gray-100 rounded-xl font-bold">إلغاء</button></div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Category Modal -->
+<div id="deleteCatModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"><div class="absolute inset-0 bg-black/50" onclick="closeDeleteCatModal()"></div><div class="relative bg-white rounded-2xl p-6 w-full max-w-sm text-center"><div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4"><i class="fa-solid fa-trash text-2xl text-red-600"></i></div><h3 class="font-bold text-lg mb-2">حذف الفئة</h3><p class="text-sm text-gray-500 mb-6">هل أنت متأكد من حذف هذه الفئة؟</p><div class="flex gap-3"><button id="confirmDeleteCatBtn" class="flex-1 bg-red-600 text-white py-3 rounded-xl font-bold">حذف</button><button onclick="closeDeleteCatModal()" class="flex-1 bg-gray-100 py-3 rounded-xl font-bold">إلغاء</button></div></div></div>
+
+<div id="toast" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-50"><div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3"><i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400"></i><span id="toastMessage"></span></div></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, get, set, push, remove, update } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
+  authDomain: "karnipromaroc.firebaseapp.com",
+  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "karnipromaroc",
+  storageBucket: "karnipromaroc.firebasestorage.app",
+  messagingSenderId: "6746147726",
+  appId: "1:6746147726:web:6e3a2d29941ab93ef432df",
+  measurementId: "G-3Q1L0LC9TE"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+let categories = [];
+let editingCatId = null;
+let deletingCatId = null;
+
+document.addEventListener('DOMContentLoaded', async ()=>{
+  await loadCategories();
+  document.getElementById('categoryIcon').addEventListener('input', (e)=>{
+    const icon = e.target.value.trim() || 'fa-tag';
+    document.getElementById('iconPreview').className = `fa-solid ${icon} text-gray-600`;
+  });
+  document.getElementById('categoryColor').addEventListener('input', (e)=>{
+    document.getElementById('categoryColorText').value = e.target.value;
+    document.getElementById('colorPreview').style.background = e.target.value;
+  });
+  document.getElementById('categoryColorText').addEventListener('input', (e)=>{
+    if(/^#[0-9A-F]{6}$/i.test(e.target.value)){
+      document.getElementById('categoryColor').value = e.target.value;
+      document.getElementById('colorPreview').style.background = e.target.value;
+    }
+  });
+});
+
+async function loadCategories(){
+  const snap = await get(ref(db, "storeSettings/categories"));
+  if(snap.exists()){
+    const data = snap.val();
+    categories = Object.entries(data).map(([id, val])=>({id, ...val}));
+  } else {
+    categories = [];
+  }
+  renderCategories();
+}
+
+function renderCategories(){
+  const container = document.getElementById('categoriesContainer');
+  const empty = document.getElementById('emptyCategories');
+  if(categories.length===0){
+    container.innerHTML=''; empty.classList.remove('hidden'); return;
+  }
+  empty.classList.add('hidden');
+  container.innerHTML = categories.map(cat=>`
+    <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex items-center justify-between hover:shadow-md transition">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white" style="background:${cat.color||'#10b981'}">
+          <i class="fa-solid ${cat.icon||'fa-tag'}"></i>
+        </div>
+        <div>
+          <p class="font-bold text-gray-800">${cat.name}</p>
+          <p class="text-xs text-gray-400">${cat.icon||'fa-tag'} • ${cat.color||'#10b981'}</p>
+        </div>
+      </div>
+      <div class="flex gap-2">
+        <button onclick="editCategory('${cat.id}')" class="w-9 h-9 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center hover:bg-blue-100"><i class="fa-solid fa-pen text-xs"></i></button>
+        <button onclick="deleteCategory('${cat.id}')" class="w-9 h-9 bg-red-50 text-red-600 rounded-lg flex items-center justify-center hover:bg-red-100"><i class="fa-solid fa-trash text-xs"></i></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.openAddCategoryModal = function(){
+  editingCatId=null;
+  document.getElementById('catModalTitle').textContent='إضافة فئة جديدة';
+  document.getElementById('categoryForm').reset();
+  document.getElementById('categoryId').value='';
+  document.getElementById('categoryColor').value='#10b981';
+  document.getElementById('categoryColorText').value='#10b981';
+  document.getElementById('colorPreview').style.background='#10b981';
+  document.getElementById('iconPreview').className='fa-solid fa-tag text-gray-600';
+  document.getElementById('categoryModal').classList.remove('hidden');
+}
+
+window.closeAddCategoryModal = function(){ document.getElementById('categoryModal').classList.add('hidden'); }
+
+window.editCategory = function(id){
+  const cat = categories.find(c=>c.id===id); if(!cat) return;
+  editingCatId=id;
+  document.getElementById('catModalTitle').textContent='تعديل الفئة';
+  document.getElementById('categoryId').value=cat.id;
+  document.getElementById('categoryName').value=cat.name;
+  document.getElementById('categoryIcon').value=cat.icon||'';
+  document.getElementById('categoryColor').value=cat.color||'#10b981';
+  document.getElementById('categoryColorText').value=cat.color||'#10b981';
+  document.getElementById('colorPreview').style.background=cat.color||'#10b981';
+  document.getElementById('iconPreview').className=`fa-solid ${cat.icon||'fa-tag'} text-gray-600`;
+  document.getElementById('categoryModal').classList.remove('hidden');
+}
+
+window.handleCategorySubmit = async function(e){
+  e.preventDefault();
+  const name=document.getElementById('categoryName').value.trim();
+  const icon=document.getElementById('categoryIcon').value.trim()||'fa-tag';
+  const color=document.getElementById('categoryColorText').value.trim()||'#10b981';
+  if(!name){ showToast('اسم الفئة مطلوب','error'); return; }
+
+  try{
+    if(editingCatId){
+      await update(ref(db, `storeSettings/categories/${editingCatId}`), {name, icon, color, updatedAt:new Date().toISOString()});
+      showToast('تم تعديل الفئة بنجاح');
+    } else {
+      const newRef = push(ref(db, 'storeSettings/categories'));
+      await set(newRef, {id:newRef.key, name, icon, color, createdAt:new Date().toISOString()});
+      showToast('تم إضافة الفئة بنجاح');
+    }
+    closeAddCategoryModal();
+    await loadCategories();
+  } catch(err){ showToast('خطأ: '+err.message,'error'); }
+}
+
+window.deleteCategory = function(id){ deletingCatId=id; document.getElementById('deleteCatModal').classList.remove('hidden'); }
+window.closeDeleteCatModal = function(){ document.getElementById('deleteCatModal').classList.add('hidden'); deletingCatId=null; }
+document.getElementById('confirmDeleteCatBtn').addEventListener('click', async ()=>{
+  if(!deletingCatId) return;
+  try{
+    await remove(ref(db, `storeSettings/categories/${deletingCatId}`));
+    showToast('تم حذف الفئة');
+    closeDeleteCatModal();
+    await loadCategories();
+  } catch(e){ showToast('خطأ: '+e.message,'error'); }
+});
+
+function showToast(msg, type='success'){
+  const toast=document.getElementById('toast'); const icon=document.getElementById('toastIcon'); const m=document.getElementById('toastMessage');
+  m.textContent=msg; icon.className= type==='success'?'fa-solid fa-check-circle text-emerald-400':'fa-solid fa-circle-exclamation text-red-400';
+  toast.classList.remove('hidden'); setTimeout(()=>toast.classList.add('hidden'),3000);
+}
+window.closeAddCategoryModal=closeAddCategoryModal; window.closeDeleteCatModal=closeDeleteCatModal;
+</script>
+</body>
+</html>
