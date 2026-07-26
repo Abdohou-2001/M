@@ -31,93 +31,115 @@
         :root {
             --primary: #0f766e; --primary-dark: #0d5c56; --primary-light: #14b8a6;
             --gradient: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
-            --danger: #ef4444; --success: #22c55e; --bg: #f0fdfd; --card: #ffffff;
-            --text: #0f172a; --text-muted: #64748b; --border: #ccfbf1;
-            --shadow-sm: 0 2px 8px rgba(15,118,110,0.06); --shadow-md: 0 6px 20px rgba(15,118,110,0.10); --shadow-lg: 0 12px 32px rgba(15,118,110,0.16);
-            --radius: 20px; --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+            --gradient-soft: linear-gradient(135deg, rgba(15,118,110,0.08) 0%, rgba(20,184,166,0.12) 100%);
+            --danger: #ef4444; --success: #22c55e; --info: #3b82f6; --warning: #f59e0b;
+            --bg: #f6fcfb; --card: #ffffff; --card-glass: rgba(255,255,255,0.92);
+            --text: #0f172a; --text-muted: #64748b; --border: #dff8f1;
+            --shadow-xs: 0 1px 4px rgba(15,118,110,0.05); --shadow-sm: 0 4px 12px rgba(15,118,110,0.07); --shadow-md: 0 8px 24px rgba(15,118,110,0.11); --shadow-lg: 0 16px 40px rgba(15,118,110,0.16);
+            --radius: 22px; --radius-sm: 14px; --radius-lg: 28px; --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
         }
-        [data-theme="dark"] { --bg: #0f172a; --card: #1e293b; --text: #f1f5f9; --text-muted: #94a3b8; --border: #1e3a3a; --shadow-sm: 0 2px 8px rgba(0,0,0,0.3); --shadow-md: 0 6px 20px rgba(0,0,0,0.4); --shadow-lg: 0 12px 32px rgba(0,0,0,0.5); }
+        [data-theme="dark"] { --bg: #0b1215; --card: #162024; --card-glass: rgba(22,32,36,0.9); --text: #e8f5f3; --text-muted: #8aa39e; --border: #1e3330; }
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:100px;overflow-x:hidden}
+        body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:100px;overflow-x:hidden;transition:var(--transition)}
 
-        .header{background:var(--gradient);color:white;padding:20px 16px 22px;text-align:center;border-radius:0 0 32px 32px;box-shadow:var(--shadow-lg);position:sticky;top:0;z-index:100;overflow:hidden}
-        .header::before{content:'';position:absolute;top:-50%;left:-20%;width:140%;height:200%;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.15) 0%, transparent 60%);pointer-events:none}
+        /* Header */
+        .header{background:var(--gradient);color:white;padding:20px 16px 24px;text-align:center;border-radius:0 0 34px 34px;box-shadow:var(--shadow-lg);position:sticky;top:0;z-index:100;overflow:hidden}
+        .header::before{content:'';position:absolute;top:-50%;left:-15%;width:130%;height:200%;background:radial-gradient(circle at 30% 20%, rgba(255,255,255,0.18) 0%, transparent 60%);pointer-events:none}
         .header-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;position:relative;z-index:1}
-        .header h1{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px}
-        .icon-btn{width:42px;height:42px;border-radius:14px;background:rgba(255,255,255,0.18);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.25);color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+        .header h1{font-size:26px;font-weight:900;display:flex;align-items:center;gap:10px;letter-spacing:-0.3px}
+        .icon-btn{width:44px;height:44px;border-radius:15px;background:rgba(255,255,255,0.16);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,0.22);color:white;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);box-shadow:0 4px 12px rgba(0,0,0,0.08)}
         .icon-btn:active{transform:scale(0.92)}
-        .sync-pill{background:rgba(255,255,255,0.22);backdrop-filter:blur(12px);padding:7px 16px;border-radius:100px;font-size:12px;font-weight:700;display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,0.18);position:relative;z-index:1}
-        .sync-dot{width:8px;height:8px;border-radius:50%}
-        .sync-dot.online{background:#4ade80;box-shadow:0 0 0 4px rgba(74,222,128,0.25);animation:pulse 2s infinite}
-        .sync-dot.offline{background:#f87171} .sync-dot.checking{background:#fbbf24;animation:pulse 1s infinite}
-        @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+        .sync-pill{background:rgba(255,255,255,0.20);backdrop-filter:blur(12px);padding:7px 14px;border-radius:100px;font-size:11.5px;font-weight:700;display:inline-flex;align-items:center;gap:7px;border:1px solid rgba(255,255,255,0.18);position:relative;z-index:1}
 
-        .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:18px 14px 10px}
-        .stat-card{background:var(--card);padding:20px 14px;border-radius:var(--radius);text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border);animation:cardIn 0.5s backwards}
-        @keyframes cardIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-        .stat-number{font-size:22px;font-weight:900;color:var(--primary)} .stat-label{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:4px}
+        /* Stats - 5 Cards Pro */
+        .stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;padding:16px 14px 8px}
+        .stats-grid .stat-card:nth-child(1){grid-column:span 2}
+        .stat-card{background:var(--card-glass);backdrop-filter:blur(16px);padding:16px 14px;border-radius:20px;text-align:center;box-shadow:var(--shadow-sm);border:1px solid var(--border);position:relative;overflow:hidden;transition:var(--transition);animation:cardIn 0.5s backwards}
+        .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0.7}
+        .stat-card:active{transform:scale(0.97)}
+        .stat-card.total-card{display:flex;align-items:center;justify-content:space-between;text-align:right;padding:18px 18px}
+        .stat-card.total-card .stat-left{display:flex;flex-direction:column}
+        .stat-card.total-card .stat-number{font-size:24px}
+        .stat-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:8px;margin-left:auto;margin-right:auto}
+        .stat-card.total-card .stat-icon{margin:0}
+        .stat-card .icon-total{background:linear-gradient(135deg, #0f766e15, #14b8a615);color:var(--primary)}
+        .stat-card .icon-customers{background:#eef2ff;color:#6366f1} .stat-card .icon-today{background:#dcfce7;color:#16a34a}
+        .stat-card .icon-overdue{background:#fee2e2;color:#ef4444} .stat-card .icon-upcoming{background:#dbeafe;color:#2563eb}
+        .stat-number{font-size:20px;font-weight:900;color:var(--primary);display:flex;align-items:center;gap:8px;justify-content:center}
+        .stat-card.total-card .stat-number{justify-content:flex-start}
+        .stat-label{font-size:11.5px;color:var(--text-muted);font-weight:600;margin-top:3px}
+        .eye-btn{width:36px;height:36px;border-radius:11px;background:rgba(15,118,110,0.08);border:1px solid var(--border);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition)}
+        .eye-btn:active{transform:scale(0.9)}
+        @keyframes cardIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 
-        .actions-row{padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
-        .action-btn{background:var(--card);border:1.5px solid var(--border);padding:15px 12px;border-radius:var(--radius);font-family:'Cairo';font-weight:800;font-size:13.5px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text);box-shadow:var(--shadow-sm)}
-        .action-btn.primary{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 8px 20px rgba(15,118,110,0.25)}
+        .actions-row{padding:10px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+        .action-btn{background:var(--card);border:1.5px solid var(--border);padding:14px 12px;border-radius:18px;font-family:'Cairo';font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--text);box-shadow:var(--shadow-xs);transition:var(--transition)}
+        .action-btn.primary{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 8px 20px rgba(15,118,110,0.22)}
 
-        .search-wrapper{position:relative;margin:0 14px 12px;z-index:90}
-        .search-wrapper.sticky{position:sticky;top:88px;z-index:95;margin:0;padding:8px 14px 12px;background:var(--bg);backdrop-filter:blur(12px);box-shadow:0 4px 20px rgba(0,0,0,0.06)}
-        .search-box{margin:0;background:var(--card);padding:13px 16px;border-radius:var(--radius);box-shadow:var(--shadow-sm);display:flex;align-items:center;gap:10px;border:1.5px solid var(--border)}
-        .search-box input{border:none;outline:none;flex:1;font-family:'Cairo';font-size:14px;background:transparent;color:var(--text)}
-        .autocomplete-list{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--card);border-radius:16px;box-shadow:var(--shadow-lg);border:1px solid var(--border);max-height:320px;overflow-y:auto;z-index:96;display:none}
+        .search-wrapper{position:relative;margin:0 14px 10px;z-index:90}
+        .search-wrapper.sticky{position:sticky;top:88px;z-index:95;margin:0;padding:8px 14px 12px;background:var(--bg);backdrop-filter:blur(12px)}
+        .search-box{background:var(--card);padding:13px 16px;border-radius:18px;box-shadow:var(--shadow-xs);display:flex;align-items:center;gap:10px;border:1.5px solid var(--border)}
+        .search-box input{border:none;outline:none;flex:1;font-family:'Cairo';font-size:13.5px;background:transparent;color:var(--text)}
+        .autocomplete-list{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--card);border-radius:18px;box-shadow:var(--shadow-lg);border:1px solid var(--border);max-height:320px;overflow-y:auto;z-index:96;display:none}
         .autocomplete-list.active{display:block}
-        .autocomplete-item{display:flex;align-items:center;gap:12px;padding:12px 14px;cursor:pointer;border-bottom:1px solid var(--border)}
-        .autocomplete-avatar{width:38px;height:38px;border-radius:11px;background:#e0f2f1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary)}
-        .autocomplete-no{padding:18px;text-align:center;font-size:13px;color:var(--text-muted)}
+        .autocomplete-item{padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);cursor:pointer}
+        .autocomplete-no{padding:16px;text-align:center;color:var(--text-muted);font-size:13px}
 
-        .filter-tabs{display:flex;gap:8px;padding:10px 14px 14px;overflow-x:auto;scrollbar-width:none}
+        .filter-tabs{display:flex;gap:8px;padding:8px 14px 12px;overflow-x:auto;scrollbar-width:none}
         .filter-tabs::-webkit-scrollbar{display:none}
-        .filter-tab{background:var(--card);border:1.5px solid var(--border);padding:9px 16px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;color:var(--text-muted);box-shadow:var(--shadow-sm)}
-        .filter-tab.active{background:var(--primary);color:white;border-color:var(--primary)}
+        .filter-tab{background:var(--card);border:1.5px solid var(--border);padding:8px 14px;border-radius:100px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;color:var(--text-muted);box-shadow:var(--shadow-xs);transition:var(--transition)}
+        .filter-tab.active{background:var(--primary);color:white;border-color:var(--primary);box-shadow:0 6px 16px rgba(15,118,110,0.22)}
 
+        /* Customer Card - New Design per requirements */
         .customers-list{padding:0 14px;display:flex;flex-direction:column;gap:12px}
-        .customer-card{background:var(--card);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow-sm);border:1px solid var(--border);transition:var(--transition);animation:cardIn 0.4s backwards;position:relative}
-        .customer-card.overdue{border-right:4px solid var(--danger)}
-        .customer-header{display:flex;gap:12px;margin-bottom:10px}
-        .customer-avatar{width:50px;height:50px;border-radius:14px;background:linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:var(--primary);flex-shrink:0}
-        .customer-info{flex:1;min-width:0}
-        .customer-name{font-size:14.5px;font-weight:800;display:flex;align-items:center;gap:6px}
-        .customer-name .edit-name-btn{width:22px;height:22px;border-radius:6px;background:var(--bg);border:1px solid var(--border);display:inline-flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;color:var(--text-muted)}
-        .customer-amount{font-size:16px;font-weight:900;color:var(--primary);margin-top:2px}
-        .customer-meta{display:flex;gap:10px;font-size:11px;color:var(--text-muted);margin-top:4px}
-        /* أزرار احترافية متساوية */
-        .customer-actions{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}
-        .btn{height:42px;border:none;border-radius:12px;font-family:'Cairo';font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:var(--transition);box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-        .btn:active{transform:scale(0.93)}
-        .btn i{font-size:14px}
-        .btn-view{background:#eef2ff;color:#4f46e5} .btn-edit-amount{background:#f0fdf4;color:#16a34a} .btn-wa{background:#dcfce7;color:#16a34a} .btn-date{background:#f0fdfd;color:#0f766e} .btn-del{background:#fef2f2;color:#dc2626}
+        .customer-card{background:var(--card-glass);backdrop-filter:blur(20px);border-radius:22px;padding:16px 16px 14px;box-shadow:var(--shadow-sm);border:1px solid var(--border);transition:var(--transition);animation:cardIn 0.4s backwards;position:relative;overflow:hidden}
+        .customer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);pointer-events:none}
+        .customer-card:active{transform:scale(0.985)}
+        .customer-card.overdue{border-right:3px solid #ef4444}
+        .badge{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid rgba(255,255,255,0.6);backdrop-filter:blur(8px)}
+        .badge.overdue{background:#fee2e2;color:#dc2626} .badge.today{background:#dcfce7;color:#16a34a} .badge.upcoming{background:#dbeafe;color:#2563eb}
+        .customer-header{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+        .customer-avatar{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--primary);flex-shrink:0;box-shadow:inset 0 1px 2px rgba(0,0,0,0.06)}
+        .customer-info{flex:1;min-width:0;padding-top:2px}
+        .customer-name{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:10px}
+        .customer-details{display:flex;flex-direction:column;gap:7px}
+        .detail-line{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--text)}
+        .detail-line i{width:16px;text-align:center;font-size:12px;color:var(--text-muted)}
+        .detail-line.amount{font-weight:800;font-size:14px;color:var(--primary)}
+        .detail-line.amount i{color:var(--primary)}
+        .customer-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px}
+        .btn{height:42px;border:none;border-radius:13px;font-family:'Cairo';font-weight:700;font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:var(--transition);box-shadow:0 2px 8px rgba(0,0,0,0.04);border:1px solid transparent}
+        .btn:active{transform:scale(0.94)}
+        .btn-view{background:#eef2ff;color:#4f46e5;border-color:#e0e7ff} .btn-date{background:#f0fdfa;color:#0f766e;border-color:#ccfbf1} .btn-del{background:#fef2f2;color:#dc2626;border-color:#fee2e2}
 
         .fab{position:fixed;bottom:24px;left:20px;width:58px;height:58px;border-radius:18px;background:var(--gradient);color:white;border:none;font-size:26px;cursor:pointer;box-shadow:0 10px 28px rgba(15,118,110,0.35);display:flex;align-items:center;justify-content:center;z-index:999}
 
-        /* Drawer Pro with Cards */
+        /* Drawer */
         .drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.42);backdrop-filter:blur(6px);z-index:1500;opacity:0;visibility:hidden;transition:all 0.35s}
         .drawer-overlay.active{opacity:1;visibility:visible}
-        .drawer{position:fixed;top:0;right:0;width:330px;max-width:88vw;height:100%;background:#f8fafc;z-index:1600;transform:translateX(104%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;box-shadow:-16px 0 48px rgba(0,0,0,0.18);display:flex;flex-direction:column}
+        .drawer{position:fixed;top:0;right:0;width:330px;max-width:88vw;height:100%;background:#f8fafc;z-index:1600;transform:translateX(104%);transition:transform 0.4s cubic-bezier(0.4,0,0.2,1);overflow-y:auto;display:flex;flex-direction:column}
         .drawer.active{transform:translateX(0)}
-        .drawer-header{background:var(--gradient);color:white;padding:22px 18px 18px;position:relative}
-        .drawer-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-        .drawer-close{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.2);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center}
-        .drawer-user{display:flex;gap:14px;align-items:center;margin-bottom:14px}
-        .drawer-avatar{width:58px;height:58px;border-radius:18px;background:rgba(255,255,255,0.22);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:900;border:2px solid rgba(255,255,255,0.28)}
-        .drawer-user-name{font-size:15px;font-weight:800} .drawer-user-email{font-size:11.5px;opacity:0.92}
-        .drawer-badge{background:rgba(255,255,255,0.22);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;display:inline-block;margin-top:6px}
-        .drawer-meta{background:rgba(0,0,0,0.14);border-radius:12px;padding:10px 12px;margin-top:14px;font-size:11px;line-height:1.8}
+        .drawer-header{background:var(--gradient);color:white;padding:24px 18px 20px;position:relative;overflow:hidden}
+        .drawer-header::before{content:'';position:absolute;top:-20%;right:-10%;width:80%;height:140%;background:radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);pointer-events:none}
+        .drawer-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;position:relative;z-index:1}
+        .drawer-close{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.22);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center}
+        .drawer-user{display:flex;gap:14px;align-items:center;position:relative;z-index:1}
+        .drawer-avatar{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,0.22);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;border:2px solid rgba(255,255,255,0.28);box-shadow:0 6px 20px rgba(0,0,0,0.15)}
+        .drawer-user-info{flex:1;min-width:0}
+        .drawer-user-name{font-size:16px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .drawer-user-email{font-size:12px;opacity:0.9;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+        .drawer-badge{background:rgba(255,255,255,0.22);padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;display:inline-block;margin-top:6px;border:1px solid rgba(255,255,255,0.2)}
+        .drawer-protection{background:rgba(255,255,255,0.15);backdrop-filter:blur(12px);border-radius:14px;padding:12px 14px;margin-top:16px;border:1px solid rgba(255,255,255,0.18);position:relative;z-index:1}
+        .drawer-protection-title{font-size:12.5px;font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:4px}
+        .drawer-protection-sub{font-size:11px;opacity:0.9;line-height:1.4}
         .drawer-menu{flex:1;padding:12px}
-        .drawer-card{background:var(--card);border-radius:16px;padding:8px;margin-bottom:10px;box-shadow:var(--shadow-sm);border:1px solid var(--border)}
-        .drawer-section-title{font-size:11px;font-weight:800;color:var(--text-muted);padding:6px 8px 6px;display:flex;align-items:center;gap:6px}
-        .drawer-item{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;transition:var(--transition);color:var(--text)}
-        .drawer-item:hover{background:var(--bg)} .drawer-item:active{transform:scale(0.97)}
-        .drawer-item i{width:18px;text-align:center;color:var(--primary)}
-        .drawer-item.danger{color:var(--danger)} .drawer-item.danger i{color:var(--danger)}
-        .drawer-footer{padding:14px 16px 22px;text-align:center;font-size:10.5px;color:var(--text-muted)}
+        .drawer-card{background:var(--card);border-radius:18px;padding:8px;margin-bottom:10px;box-shadow:var(--shadow-xs);border:1px solid var(--border)}
+        .drawer-section-title{font-size:11px;font-weight:800;color:var(--text-muted);padding:6px 8px;display:flex;align-items:center;gap:6px}
+        .drawer-item{display:flex;align-items:center;gap:12px;padding:11px 10px;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;transition:var(--transition);color:var(--text)}
+        .drawer-item:hover{background:var(--bg)} .drawer-item i{width:18px;color:var(--primary)} .drawer-item.danger{color:var(--danger)} .drawer-item.danger i{color:var(--danger)}
+        .drawer-footer{padding:14px;text-align:center;font-size:10.5px;color:var(--text-muted)}
 
-        /* Professional Dialog */
+        /* Dialog */
         .dialog-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(14px);z-index:5000;display:none;align-items:center;justify-content:center;padding:16px}
         .dialog-overlay.active{display:flex;animation:fadeIn 0.2s}
         @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -126,22 +148,18 @@
         .dialog-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:20px}
         .dialog-icon.edit{background:#e0f2f1;color:#0f766e} .dialog-icon.danger{background:#fee2e2;color:#dc2626} .dialog-icon.info{background:#e0f7ff;color:#0284c7}
         .dialog-title{text-align:center;font-size:16px;font-weight:800;margin-bottom:6px}
-        .dialog-msg{text-align:center;font-size:12.5px;color:var(--text-muted);margin-bottom:16px;line-height:1.5}
-        .dialog-input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:'Cairo';font-size:14px;background:var(--bg);margin-bottom:14px;transition:var(--transition)}
-        .dialog-input:focus{outline:none;border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(20,184,166,0.12);background:var(--card)}
+        .dialog-msg{text-align:center;font-size:12.5px;color:var(--text-muted);margin-bottom:16px}
+        .dialog-input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:'Cairo';font-size:14px;background:var(--bg);margin-bottom:14px}
+        .dialog-input:focus{outline:none;border-color:var(--primary-light);background:var(--card)}
         .dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
         .dialog-btn{padding:12px;border:none;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Cairo'}
-        .dialog-btn-cancel{background:var(--bg);color:var(--text-muted);border:1px solid var(--border)}
-        .dialog-btn-confirm{background:var(--gradient);color:white;box-shadow:0 6px 16px rgba(15,118,110,0.25)}
-        .dialog-btn-danger{background:#ef4444;color:white}
+        .dialog-btn-cancel{background:var(--bg);color:var(--text-muted);border:1px solid var(--border)} .dialog-btn-confirm{background:var(--gradient);color:white} .dialog-btn-danger{background:#ef4444;color:white}
 
-        /* Toast Pro Android 15 */
-        .toast-pro{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-140px);background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 16px 40px rgba(0,0,0,0.16), 0 4px 12px rgba(0,0,0,0.08);border:1px solid rgba(0,0,0,0.06);z-index:6000;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);opacity:0;min-width:300px;max-width:90vw;overflow:hidden}
+        /* Toast */
+        .toast-pro{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-140px);background:rgba(255,255,255,0.96);backdrop-filter:blur(20px);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 16px 40px rgba(0,0,0,0.16);border:1px solid rgba(0,0,0,0.06);z-index:6000;transition:all 0.5s cubic-bezier(0.4,0,0.2,1);opacity:0;min-width:300px;max-width:90vw;overflow:hidden}
         .toast-pro.show{transform:translateX(-50%) translateY(0);opacity:1}
-        .toast-pro-icon{width:36px;height:36px;border-radius:12px;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px}
-        .toast-pro.success .toast-pro-icon{background:#16a34a} .toast-pro.error .toast-pro-icon{background:#dc2626}
-        .toast-pro-msg{flex:1;font-size:13px;font-weight:700;line-height:1.4;color:var(--text)}
-        .toast-pro-progress{position:absolute;bottom:0;left:0;height:3px;background:var(--primary);width:100%;animation:toastProgress 2.8s linear forwards}
+        .toast-pro-icon{width:36px;height:36px;border-radius:12px;background:var(--primary);color:white;display:flex;align-items:center;justify-content:center;font-size:16px}
+        .toast-pro-msg{flex:1;font-size:13px;font-weight:700;color:var(--text)} .toast-pro-progress{position:absolute;bottom:0;left:0;height:3px;background:var(--primary);width:100%;animation:toastProgress 2.8s linear forwards}
         @keyframes toastProgress{from{width:100%}to{width:0%}}
 
         .city-modal{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(12px);z-index:1100;display:none;align-items:center;justify-content:center;padding:16px}
@@ -155,48 +173,41 @@
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <div class="drawer" id="drawer">
         <div class="drawer-header">
-            <div class="drawer-top"><span style="font-weight:800;font-size:13px">القائمة الرئيسية</span><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div>
-            <div class="drawer-user"><div class="drawer-avatar" id="drawerUserAvatar">K</div><div><div class="drawer-user-name" id="drawerUserName">مستخدم</div><div class="drawer-user-email" id="drawerUserEmail">...</div><span class="drawer-badge" id="drawerUserRole">User</span></div></div>
-            <div class="drawer-meta"><div><i class="fas fa-code-branch"></i> الإصدار: <span id="drawerAppVersion">10</span> • <span id="drawerLastLogin">الآن</span></div><div><i class="fas fa-shield-alt"></i> محمي بـ Firebase</div></div>
+            <div class="drawer-top"><span style="font-weight:800;font-size:13px;letter-spacing:0.3px">القائمة الرئيسية</span><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div>
+            <div class="drawer-user">
+                <div class="drawer-avatar" id="drawerUserAvatar">K</div>
+                <div class="drawer-user-info">
+                    <div class="drawer-user-name" id="drawerUserName">مستخدم</div>
+                    <div class="drawer-user-email" id="drawerUserEmail">...</div>
+                    <span class="drawer-badge" id="drawerUserRole">User</span>
+                </div>
+            </div>
+            <div class="drawer-protection">
+                <div class="drawer-protection-title"><i class="fas fa-shield-halved"></i> التطبيق محمي بالكامل</div>
+                <div class="drawer-protection-sub">جميع بياناتك محفوظة بأمان ومشفرة.</div>
+            </div>
         </div>
         <div class="drawer-menu">
-            <div class="drawer-card">
-                <div class="drawer-section-title"><i class="fas fa-user"></i> الحساب</div>
-                <div class="drawer-item" onclick="openDialog({title:'إعدادات الحساب', message:'قريباً - إعدادات الحساب المتقدمة', icon:'user-cog', confirmText:'حسناً', hideCancel:true})"><i class="fas fa-user-cog"></i> إعدادات الحساب</div>
-                <div class="drawer-item" onclick="changePassword()"><i class="fas fa-key"></i> تغيير كلمة المرور</div>
-                <div class="drawer-item" onclick="toggleTheme(); toggleDrawer();"><i class="fas fa-moon" id="drawerThemeIcon"></i> الوضع الليلي</div>
-            </div>
-            <div class="drawer-card">
-                <div class="drawer-section-title"><i class="fas fa-store"></i> المتجر</div>
-                <div class="drawer-item" onclick="openStore()"><i class="fas fa-store"></i> متجري</div>
-                <div class="drawer-item" onclick="openStoreSettings()"><i class="fas fa-cogs"></i> إعدادات المتجر</div>
-                <div class="drawer-item" onclick="openReportsWithAuth()"><i class="fas fa-chart-bar"></i> التقارير</div>
-            </div>
-            <div class="drawer-card">
-                <div class="drawer-section-title"><i class="fas fa-database"></i> البيانات</div>
-                <div class="drawer-item" onclick="backupSimple()"><i class="fas fa-cloud-arrow-up"></i> النسخ الاحتياطي</div>
-            </div>
-            <div class="drawer-card">
-                <div class="drawer-section-title"><i class="fas fa-headset"></i> الدعم</div>
-                <div class="drawer-item" onclick="openDialog({title:'Karni Pro v10', message:'نظام إدارة الكرني الذكي - صنع بحب في المغرب', icon:'info-circle', hideCancel:true})"><i class="fas fa-circle-info"></i> حول التطبيق</div>
-                <div class="drawer-item" onclick="openDialog({title:'سياسة الخصوصية', message:'بياناتك محمية ومشفرة بالكامل', icon:'shield-halved', hideCancel:true})"><i class="fas fa-shield-halved"></i> سياسة الخصوصية</div>
-                <div class="drawer-item" onclick="contactUs()"><i class="fas fa-headset"></i> تواصل معنا</div>
-            </div>
+            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-user"></i> الحساب</div><div class="drawer-item" onclick="openDialog({title:'إعدادات الحساب', message:'قريباً', icon:'user-gear', hideCancel:true})"><i class="fas fa-user-gear"></i> إعدادات الحساب</div><div class="drawer-item" onclick="changePassword()"><i class="fas fa-key"></i> تغيير كلمة المرور</div><div class="drawer-item" onclick="toggleTheme(); toggleDrawer();"><i class="fas fa-moon" id="drawerThemeIcon"></i> الوضع الليلي</div></div>
+            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-store"></i> المتجر</div><div class="drawer-item" onclick="openStore()"><i class="fas fa-store"></i> متجري</div><div class="drawer-item" onclick="openStoreSettings()"><i class="fas fa-gears"></i> إعدادات المتجر</div><div class="drawer-item" onclick="openReportsWithAuth()"><i class="fas fa-chart-column"></i> التقارير</div></div>
+            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-database"></i> البيانات</div><div class="drawer-item" onclick="backupSimple()"><i class="fas fa-cloud-arrow-up"></i> النسخ الاحتياطي</div></div>
+            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-headset"></i> الدعم</div><div class="drawer-item" onclick="openDialog({title:'Karni Pro v10', message:'نظام إدارة الكرني الذكي', icon:'circle-info', hideCancel:true})"><i class="fas fa-circle-info"></i> حول التطبيق</div><div class="drawer-item" onclick="openDialog({title:'سياسة الخصوصية', message:'بياناتك محمية ومشفرة', icon:'shield-halved', hideCancel:true})"><i class="fas fa-shield-halved"></i> سياسة الخصوصية</div><div class="drawer-item" onclick="contactUs()"><i class="fas fa-headset"></i> تواصل معنا</div></div>
             <div class="drawer-card"><div class="drawer-item danger" onclick="logoutKarni()"><i class="fas fa-right-from-bracket"></i> تسجيل الخروج</div></div>
         </div>
         <div class="drawer-footer">Karni Pro © 2025 • صنع بحب في المغرب</div>
     </div>
 
     <header class="header">
-        <div class="header-top"><button class="icon-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button><h1><i class="fas fa-book" style="margin-left:8px"></i>Karni Pro</h1><button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button></div>
-        <div class="sync-pill" id="syncPill"><span class="sync-dot checking" id="syncDot"></span><span id="syncText">جارٍ التحقق...</span></div>
+        <div class="header-top"><button class="icon-btn" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button><h1><i class="fas fa-book"></i> Karni Pro</h1><button class="icon-btn" onclick="toggleTheme()"><i class="fas fa-moon" id="themeIcon"></i></button></div>
+        <div class="sync-pill" id="syncPill"><span class="sync-dot checking" id="syncDot" style="width:8px;height:8px;border-radius:50%;display:inline-block"></span><span id="syncText">جارٍ التحقق...</span></div>
     </header>
 
     <div class="stats-grid">
-        <div class="stat-card"><div class="stat-number"><span id="totalAmount">0</span> درهم</div><div class="stat-label">المبلغ الإجمالي</div></div>
-        <div class="stat-card"><div class="stat-number" id="totalCustomers">0</div><div class="stat-label">الزبناء</div></div>
-        <div class="stat-card"><div class="stat-number" id="overdueCount">0</div><div class="stat-label">متأخر</div></div>
-        <div class="stat-card"><div class="stat-number" id="todayCount">0</div><div class="stat-label">اليوم</div></div>
+        <div class="stat-card total-card"><div class="stat-left"><div style="display:flex;align-items:center;gap:10px"><div class="stat-icon icon-total"><i class="fas fa-wallet"></i></div><div><div class="stat-number"><span id="totalAmount">0</span> درهم <button class="eye-btn" id="eyeBtn" onclick="toggleAmountVisibility()"><i class="fas fa-eye" id="eyeIcon"></i></button></div><div class="stat-label">المبلغ الإجمالي</div></div></div></div><div style="opacity:0.15"><i class="fas fa-coins" style="font-size:28px"></i></div></div>
+        <div class="stat-card"><div class="stat-icon icon-customers"><i class="fas fa-users"></i></div><div class="stat-number" id="totalCustomers">0</div><div class="stat-label">الزبناء</div></div>
+        <div class="stat-card"><div class="stat-icon icon-today"><i class="fas fa-calendar-day"></i></div><div class="stat-number" id="todayCount">0</div><div class="stat-label">اليوم</div></div>
+        <div class="stat-card"><div class="stat-icon icon-overdue"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-number" id="overdueCount">0</div><div class="stat-label">متأخر</div></div>
+        <div class="stat-card"><div class="stat-icon icon-upcoming"><i class="fas fa-clock"></i></div><div class="stat-number" id="upcomingCount">0</div><div class="stat-label">قادم</div></div>
     </div>
 
     <div class="actions-row"><button class="action-btn primary" onclick="openCalendar()"><i class="fas fa-calendar-days"></i> المواعيد</button><button class="action-btn" onclick="openRoute()"><i class="fas fa-route"></i> المسار</button></div>
@@ -209,15 +220,12 @@
 
     <button class="fab" onclick="showAddModal()"><i class="fas fa-plus"></i></button>
 
-    <!-- Add Modal -->
     <div class="dialog-overlay" id="customerModal"><div class="dialog-box" style="max-width:420px"><div class="dialog-icon edit"><i class="fas fa-user-plus"></i></div><div class="dialog-title">إضافة زبون جديد</div><form id="customerForm" onsubmit="saveCustomer(event)"><input type="hidden" id="customerId"><input type="text" class="dialog-input" id="customerName" placeholder="اسم الزبون *" required><input type="number" class="dialog-input" id="customerAmount" placeholder="المبلغ *" required><input type="tel" class="dialog-input" id="customerPhone" placeholder="رقم الهاتف"><input type="text" class="dialog-input" id="customerCity" placeholder="المدينة"><input type="date" class="dialog-input" id="customerDate" required><div class="dialog-actions"><button type="button" class="dialog-btn dialog-btn-cancel" onclick="closeModal()"><i class="fas fa-xmark"></i> إلغاء</button><button type="submit" class="dialog-btn dialog-btn-confirm"><i class="fas fa-check"></i> حفظ</button></div></form></div></div>
 
     <div class="city-modal" id="cityModal" onclick="if(event.target===this) closeCityFilter()"><div class="city-modal-content"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><b><i class="fas fa-city"></i> المدينة</b><button class="icon-btn" style="width:32px;height:32px;background:var(--bg);color:var(--text)" onclick="closeCityFilter()"><i class="fas fa-times" style="font-size:12px"></i></button></div><div id="cityList"></div><button class="dialog-btn dialog-btn-confirm" style="width:100%;margin-top:12px" onclick="clearCityFilter()"><i class="fas fa-rotate"></i> عرض الكل</button></div></div>
 
-    <!-- Professional Dialog System -->
     <div class="dialog-overlay" id="customDialog"><div class="dialog-box"><div class="dialog-icon edit" id="dialogIcon"><i class="fas fa-pen"></i></div><div class="dialog-title" id="dialogTitle">تعديل</div><div class="dialog-msg" id="dialogMsg">أدخل القيمة الجديدة</div><input type="text" class="dialog-input" id="dialogInput" style="display:none"><div class="dialog-actions"><button class="dialog-btn dialog-btn-cancel" id="dialogCancel"><i class="fas fa-xmark"></i> إلغاء</button><button class="dialog-btn dialog-btn-confirm" id="dialogConfirm"><i class="fas fa-check"></i> حفظ</button></div></div></div>
 
-    <!-- Toast Pro -->
     <div class="toast-pro" id="toastPro"><div class="toast-pro-icon"><i class="fas fa-check"></i></div><div class="toast-pro-msg" id="toastProMsg">تم</div><div class="toast-pro-progress"></div></div>
 
     <script type="module">
@@ -244,7 +252,7 @@
         let currentFilter = 'all';
         let currentCityFilter = null;
 
-        // ===== Dialog System بدل alert/confirm/prompt =====
+        // Dialog System
         let dialogResolve = null;
         window.openDialog = function({title='تنبيه', message='', icon='pen-to-square', iconType='edit', inputValue='', inputType='text', placeholder='', showInput=false, confirmText='حفظ', cancelText='إلغاء', hideCancel=false, danger=false}){
             return new Promise((resolve)=>{
@@ -268,45 +276,59 @@
                 document.getElementById('dialogConfirm').innerHTML = `<i class="fas fa-${danger?'trash':'check'}"></i> ${confirmText}`;
                 document.getElementById('dialogConfirm').className = 'dialog-btn ' + (danger ? 'dialog-btn-danger' : 'dialog-btn-confirm');
                 document.getElementById('dialogCancel').style.display = hideCancel ? 'none' : 'flex';
-                document.getElementById('dialogCancel').innerHTML = `<i class="fas fa-xmark"></i> ${cancelText}`;
                 document.getElementById('customDialog').classList.add('active');
             });
         }
-        function closeDialog(result){
-            document.getElementById('customDialog').classList.remove('active');
-            if(dialogResolve){ dialogResolve(result); dialogResolve=null; }
-        }
+        function closeDialog(result){ document.getElementById('customDialog').classList.remove('active'); if(dialogResolve){ dialogResolve(result); dialogResolve=null; } }
         document.getElementById('dialogCancel').onclick = ()=> closeDialog(null);
-        document.getElementById('dialogConfirm').onclick = ()=>{
-            const inputEl = document.getElementById('dialogInput');
-            if(inputEl.style.display !== 'none') closeDialog(inputEl.value);
-            else closeDialog(true);
-        };
+        document.getElementById('dialogConfirm').onclick = ()=>{ const inputEl=document.getElementById('dialogInput'); if(inputEl.style.display!=='none') closeDialog(inputEl.value); else closeDialog(true); };
         document.getElementById('customDialog').addEventListener('click', (e)=>{ if(e.target===e.currentTarget) closeDialog(null); });
 
-        // Toast Pro
         window.showToastPro = function(msg, type='success'){
-            const toast = document.getElementById('toastPro');
-            toast.className = 'toast-pro ' + type + ' show';
-            toast.querySelector('.toast-pro-icon').innerHTML = type==='error' ? '<i class="fas fa-xmark"></i>' : type==='info' ? '<i class="fas fa-info"></i>' : '<i class="fas fa-check"></i>';
-            document.getElementById('toastProMsg').textContent = msg;
-            const prog = toast.querySelector('.toast-pro-progress');
-            prog.style.animation='none'; prog.offsetHeight; prog.style.animation='toastProgress 2.8s linear forwards';
-            setTimeout(()=>toast.classList.remove('show'), 2800);
+            const toast=document.getElementById('toastPro'); toast.className='toast-pro '+type+' show';
+            toast.querySelector('.toast-pro-icon').innerHTML= type==='error'?'<i class="fas fa-xmark"></i>':'<i class="fas fa-check"></i>';
+            document.getElementById('toastProMsg').textContent=msg;
+            const prog=toast.querySelector('.toast-pro-progress'); prog.style.animation='none'; prog.offsetHeight; prog.style.animation='toastProgress 2.8s linear forwards';
+            setTimeout(()=>toast.classList.remove('show'),2800);
         }
-        window.showToast = showToastPro; // للتوافق
+        window.showToast = showToastPro;
 
         document.addEventListener('DOMContentLoaded', ()=>{
-            loadTheme(); setTodayDate(); initFirebase(); initConnectionListener(); initUserProfile();
+            loadTheme(); setTodayDate(); initFirebase(); initConnectionListener(); initUserProfile(); initEyeState();
             document.getElementById('searchInput').addEventListener('input', ()=>{ showAutocomplete(); searchCustomer(); });
             document.getElementById('searchInput').addEventListener('focus', onSearchFocus);
         });
 
+        // Eye Toggle - يحفظ في LocalStorage
+        function initEyeState(){
+            const hidden = localStorage.getItem('karni_amount_hidden') === 'true';
+            applyEyeState(hidden);
+        }
+        window.toggleAmountVisibility = function(){
+            const current = localStorage.getItem('karni_amount_hidden') === 'true';
+            const newState = !current;
+            localStorage.setItem('karni_amount_hidden', newState);
+            applyEyeState(newState);
+        }
+        function applyEyeState(hidden){
+            const amountEl = document.getElementById('totalAmount');
+            const icon = document.getElementById('eyeIcon');
+            if(!amountEl || !icon) return;
+            if(hidden){
+                amountEl.dataset.real = amountEl.textContent;
+                amountEl.textContent = '••••••';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                if(amountEl.dataset.real) amountEl.textContent = amountEl.dataset.real;
+                icon.className = 'fas fa-eye';
+            }
+        }
+
         function setConnectionUI(state){
             const dot=document.getElementById('syncDot'), text=document.getElementById('syncText'), pill=document.getElementById('syncPill');
-            if(state==='online'){ dot.className='sync-dot online'; text.textContent='متصل بالإنترنت'; pill.style.background='rgba(74,222,128,0.18)'; }
-            else if(state==='offline'){ dot.className='sync-dot offline'; text.textContent='لا يوجد اتصال'; pill.style.background='rgba(248,113,113,0.18)'; }
-            else { dot.className='sync-dot checking'; text.textContent='جارٍ التحقق...'; pill.style.background='rgba(251,191,36,0.18)'; }
+            if(state==='online'){ dot.className='sync-dot online'; dot.style.background='#4ade80'; text.textContent='متصل بالإنترنت'; pill.style.background='rgba(74,222,128,0.18)'; }
+            else if(state==='offline'){ dot.className='sync-dot offline'; dot.style.background='#f87171'; text.textContent='لا يوجد اتصال'; pill.style.background='rgba(248,113,113,0.18)'; }
+            else { dot.className='sync-dot checking'; dot.style.background='#fbbf24'; text.textContent='جارٍ التحقق...'; pill.style.background='rgba(251,191,36,0.18)'; }
         }
         function initConnectionListener(){ setConnectionUI(navigator.onLine?'checking':'offline'); window.addEventListener('online',()=>setConnectionUI('online')); window.addEventListener('offline',()=>setConnectionUI('offline')); }
         function initFirebase(){
@@ -327,91 +349,41 @@
                     document.getElementById('drawerUserName').textContent=name;
                     document.getElementById('drawerUserEmail').textContent=user.email||'';
                     document.getElementById('drawerUserRole').textContent=user.email.includes('admin')?'Administrator':'User';
-                    document.getElementById('drawerAppVersion').textContent=localStorage.getItem('appVersion')||'10';
-                    const last=localStorage.getItem('lastLoginTime'); document.getElementById('drawerLastLogin').textContent= last? new Date(parseInt(last)).toLocaleString('ar-MA'):'الآن';
                     localStorage.setItem('lastLoginTime', Date.now().toString());
                 }
             });
         }
-        window.logoutKarni = async ()=>{
-            const ok = await openDialog({title:'تسجيل الخروج', message:'هل تريد تسجيل الخروج؟', icon:'right-from-bracket', iconType:'danger', confirmText:'خروج', danger:true});
-            if(!ok) return;
-            localStorage.clear(); try{await signOut(auth);}catch(e){} window.location.href='login.html';
-        }
-        window.changePassword = async ()=>{
-            const user=auth.currentUser; if(!user?.email){ showToastPro('البريد غير متوفر','error'); return; }
-            try{ await sendPasswordResetEmail(auth, user.email); showToastPro('تم إرسال رابط تغيير كلمة المرور'); toggleDrawer(); }catch(e){ showToastPro('فشل الإرسال','error'); }
-        }
-        window.openStore = ()=> openDialog({title:'متجري', message:'صفحة المتجر قريباً - سيتم عرض منتجاتك ومبيعاتك هنا', icon:'store', hideCancel:true, confirmText:'حسناً'});
-        window.openStoreSettings = ()=> openDialog({title:'إعدادات المتجر', message:'إعدادات المتجر: الاسم، العنوان، العملة، الضرائب - قريباً', icon:'cogs', hideCancel:true});
-        window.openReportsWithAuth = async ()=>{
-            const pwd = await openDialog({title:'التقارير - حماية', message:'أدخل كلمة مرور المسؤول', icon:'lock', iconType:'info', showInput:true, inputType:'password', placeholder:'كلمة المرور', confirmText:'دخول'});
-            if(pwd==='1234@1234'){ window.location.href='products.html'; } else if(pwd!==null){ showToastPro('كلمة المرور غير صحيحة','error'); }
-        }
+        window.logoutKarni = async ()=>{ const ok=await openDialog({title:'تسجيل الخروج', message:'هل تريد تسجيل الخروج؟', icon:'right-from-bracket', iconType:'danger', confirmText:'خروج', danger:true}); if(!ok) return; localStorage.removeItem('loggedIn'); try{await signOut(auth);}catch(e){} window.location.href='login.html'; }
+        window.changePassword = async ()=>{ const user=auth.currentUser; if(!user?.email){ showToastPro('البريد غير متوفر','error'); return; } try{ await sendPasswordResetEmail(auth, user.email); showToastPro('تم إرسال رابط تغيير كلمة المرور'); toggleDrawer(); }catch(e){ showToastPro('فشل الإرسال','error'); } }
+        window.openStore = ()=> openDialog({title:'متجري', message:'صفحة المتجر قريباً', icon:'store', hideCancel:true});
+        window.openStoreSettings = ()=> openDialog({title:'إعدادات المتجر', message:'إعدادات المتجر قريباً', icon:'gears', hideCancel:true});
+        window.openReportsWithAuth = async ()=>{ const pwd=await openDialog({title:'التقارير - حماية', message:'أدخل كلمة مرور المسؤول', icon:'lock', iconType:'info', showInput:true, inputType:'password', placeholder:'كلمة المرور', confirmText:'دخول'}); if(pwd==='1234@1234'){ window.location.href='products.html'; } else if(pwd!==null){ showToastPro('كلمة المرور غير صحيحة','error'); } }
         window.backupSimple = ()=>{
-            // حساب الرصيد الحقيقي
-            function getRealBalance(c){
-                if(typeof c.currentBalance!=='undefined' && c.currentBalance!==null) return parseFloat(c.currentBalance)||0;
-                let p=0,r=0; if(c.operations){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); }
-                return (parseFloat(c.amount)||0)+p-r;
-            }
-            let txt = '';
-            Object.values(allCustomers).forEach(c=>{
-                const name = (c.name||'بدون اسم').trim();
-                const bal = Math.round(getRealBalance(c));
-                txt += `${name}\n${bal}\n\n`;
-            });
-            if(!txt.trim()){ showToastPro('لا توجد بيانات للنسخ','error'); return; }
-            const blob = new Blob([txt.trim()], {type:'text/plain;charset=utf-8'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a'); a.href=url; a.download=`karni-backup-${new Date().toISOString().split('T')[0]}.txt`; a.click();
-            URL.revokeObjectURL(url);
-            showToastPro(`تم إنشاء نسخة احتياطية - ${Object.keys(allCustomers).length} زبون`);
+            function getRealBalance(c){ if(typeof c.currentBalance!=='undefined'&&c.currentBalance!==null) return parseFloat(c.currentBalance)||0; let p=0,r=0; if(c.operations){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); } return (parseFloat(c.amount)||0)+p-r; }
+            let txt=''; Object.values(allCustomers).forEach(c=>{ txt+=`${(c.name||'بدون اسم').trim()}\n${Math.round(getRealBalance(c))}\n\n`; });
+            if(!txt.trim()){ showToastPro('لا توجد بيانات','error'); return; }
+            const blob=new Blob([txt.trim()],{type:'text/plain;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`karni-backup-${new Date().toISOString().split('T')[0]}.txt`; a.click(); URL.revokeObjectURL(url); showToastPro(`تم النسخ - ${Object.keys(allCustomers).length} زبون`);
         }
         window.contactUs = ()=> window.open('mailto:karnipro@gmail.com?subject=Karni Pro');
 
-        // City Filter
-        function getAllCities(){
-            const set = new Set();
-            Object.values(allCustomers).forEach(c=>{ if(c.city?.trim()) set.add(c.city.trim()); if(c.ville?.trim()) set.add(c.ville.trim()); });
-            return Array.from(set).sort();
-        }
-        window.openCityFilter = ()=>{
-            const cities=getAllCities(); const list=document.getElementById('cityList');
-            if(cities.length===0){ list.innerHTML='<div class="autocomplete-no">لا توجد مدن</div>'; }
-            else {
-                list.innerHTML=cities.map(city=>{
-                    const count=Object.values(allCustomers).filter(c=>c.city===city||c.ville===city).length;
-                    const active=currentCityFilter===city?'active':'';
-                    return `<div class="city-item ${active}" onclick="filterByCity('${city.replace(/'/g,"\\'")}')"><span>${city}</span><span>${count}</span></div>`;
-                }).join('');
-            }
-            document.getElementById('cityModal').classList.add('active');
-        }
+        function getAllCities(){ const set=new Set(); Object.values(allCustomers).forEach(c=>{ if(c.city?.trim()) set.add(c.city.trim()); if(c.ville?.trim()) set.add(c.ville.trim()); }); return Array.from(set).sort(); }
+        window.openCityFilter = ()=>{ const cities=getAllCities(); const list=document.getElementById('cityList'); if(cities.length===0){ list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text-muted)">لا توجد مدن</div>'; } else { list.innerHTML=cities.map(city=>{ const count=Object.values(allCustomers).filter(c=>c.city===city||c.ville===city).length; const active=currentCityFilter===city?'active':''; return `<div class="city-item ${active}" onclick="filterByCity('${city.replace(/'/g,"\\'")}')"><span>${city}</span><span>${count}</span></div>`; }).join(''); } document.getElementById('cityModal').classList.add('active'); }
         window.closeCityFilter = ()=> document.getElementById('cityModal').classList.remove('active');
         window.clearCityFilter = ()=>{ currentCityFilter=null; document.getElementById('cityFilterBtn').classList.remove('active'); document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.querySelector('[data-filter="all"]').classList.add('active'); applyFilter('all'); closeCityFilter(); showToastPro('تم عرض جميع المدن'); }
-        window.filterByCity = (city, silent=false)=>{
-            currentCityFilter=city;
-            document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.getElementById('cityFilterBtn').classList.add('active');
-            const filtered={}; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(c.city===city||c.ville===city) filtered[k]=c; });
-            renderCustomers(filtered); closeCityFilter(); if(!silent) showToastPro(`مدينة: ${city} - ${Object.keys(filtered).length} زبون`);
-        }
+        window.filterByCity = (city, silent=false)=>{ currentCityFilter=city; document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.getElementById('cityFilterBtn').classList.add('active'); const filtered={}; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(c.city===city||c.ville===city) filtered[k]=c; }); renderCustomers(filtered); closeCityFilter(); if(!silent) showToastPro(`مدينة: ${city}`); }
 
-        // Search
         window.onSearchFocus = ()=>{ document.getElementById('searchWrapper').classList.add('sticky'); }
         function showAutocomplete(){
             const q=document.getElementById('searchInput').value.toLowerCase().trim(); const list=document.getElementById('autocompleteList'); const clearBtn=document.getElementById('clearSearchBtn');
-            if(!q){ list.classList.remove('active'); clearBtn.style.display='none'; return; }
-            clearBtn.style.display='flex';
+            if(!q){ list.classList.remove('active'); clearBtn.style.display='none'; return; } clearBtn.style.display='flex';
             const matches=[]; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(c.name?.toLowerCase().includes(q)) matches.push({id:k,...c}); });
-            if(matches.length===0){ list.innerHTML=`<div class="autocomplete-no">لا توجد نتائج</div>`; list.classList.add('active'); return; }
-            list.innerHTML=matches.slice(0,8).map(m=>`<div class="autocomplete-item" onclick="selectAutocomplete('${m.id}')"><div class="autocomplete-avatar">${m.name.charAt(0)}</div><div><div style="font-weight:700;font-size:13px">${m.name}</div><div style="font-size:11px;color:var(--text-muted)">${m.amount||0} درهم</div></div></div>`).join('');
+            if(matches.length===0){ list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text-muted)">لا توجد نتائج</div>'; list.classList.add('active'); return; }
+            list.innerHTML=matches.slice(0,8).map(m=>`<div class="autocomplete-item" onclick="selectAutocomplete('${m.id}')"><div style="width:36px;height:36px;border-radius:10px;background:#e0f2f1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary)">${m.name.charAt(0)}</div><div><div style="font-weight:700;font-size:13px">${m.name}</div><div style="font-size:11px;color:var(--text-muted)">${m.amount||0} درهم</div></div></div>`).join('');
             list.classList.add('active');
         }
         window.selectAutocomplete = (id)=>{ document.getElementById('autocompleteList').classList.remove('active'); const f={}; f[id]=allCustomers[id]; renderCustomers(f); document.getElementById('searchWrapper').classList.remove('sticky'); }
         window.clearSearch = ()=>{ document.getElementById('searchInput').value=''; document.getElementById('autocompleteList').classList.remove('active'); document.getElementById('clearSearchBtn').style.display='none'; document.getElementById('searchWrapper').classList.remove('sticky'); applyFilter(currentFilter); }
 
-        // Core
         window.openCalendar = ()=>{ currentFilter='today'; applyFilter('today'); document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.querySelector('[data-filter="today"]').classList.add('active'); showToastPro('عرض زبناء اليوم'); }
         window.openRoute = ()=> window.location.href='route.html';
         window.openDetails = (id)=> window.location.href='person.html?id='+id;
@@ -428,109 +400,71 @@
 
         function renderCustomers(customers){
             const list=document.getElementById('customersList'); list.innerHTML='';
-            if(!customers || Object.keys(customers).length===0){ list.innerHTML='<div style="text-align:center;padding:48px;color:var(--text-muted)"><i class="fas fa-users" style="font-size:32px;opacity:0.2;display:block;margin-bottom:8px"></i>لا توجد زبناء</div>'; updateStats({}); return; }
-            let totalAmount=0, customersCount=0, todayCount=0, overdueCount=0;
+            if(!customers || Object.keys(customers).length===0){ list.innerHTML='<div style="text-align:center;padding:48px;color:var(--text-muted)"><i class="fas fa-users" style="font-size:32px;opacity:0.2;display:block;margin-bottom:8px"></i>لا توجد زبناء</div>'; updateStats({totalAmount:0,customersCount:0,todayCount:0,overdueCount:0,upcomingCount:0}); return; }
+            let totalAmount=0, customersCount=0, todayCount=0, overdueCount=0, upcomingCount=0;
             const today=new Date().toISOString().split('T')[0];
             Object.keys(customers).forEach((key, idx)=>{
                 const customer=customers[key]; const realBalance=getRealBalance(customer);
                 customersCount++; totalAmount+=realBalance;
-                if(customer.date===today) todayCount++; else if(customer.date && customer.date<today) overdueCount++;
+                if(customer.date===today) todayCount++; else if(customer.date && customer.date<today) overdueCount++; else if(customer.date && customer.date>today) upcomingCount++;
                 const overdueClass = customer.date && customer.date<today ? 'overdue' : '';
+                // Badge
+                let badgeHtml='';
+                if(customer.date===today) badgeHtml='<div class="badge today"><i class="fas fa-circle" style="font-size:6px"></i> اليوم</div>';
+                else if(customer.date && customer.date<today) badgeHtml='<div class="badge overdue"><i class="fas fa-circle" style="font-size:6px"></i> متأخر</div>';
+                else if(customer.date && customer.date>today) badgeHtml='<div class="badge upcoming"><i class="fas fa-circle" style="font-size:6px"></i> قادم</div>';
+
                 const card = `
                 <div class="customer-card ${overdueClass}" data-customer-id="${key}" style="animation-delay:${idx*0.03}s">
+                    ${badgeHtml}
                     <div class="customer-header">
                         <div class="customer-avatar">${customer.name.charAt(0).toUpperCase()}</div>
                         <div class="customer-info">
-                            <div class="customer-name" onmousedown="startLongPress('${key}')" onmouseup="cancelLongPress()" ontouchstart="startLongPress('${key}')" ontouchend="cancelLongPress()">
-                                ${customer.name}
-                                <span class="edit-name-btn" onclick="event.stopPropagation(); editCustomerName('${key}')"><i class="fas fa-pen" style="font-size:10px"></i></span>
+                            <div class="customer-name">${customer.name}</div>
+                            <div class="customer-details">
+                                <div class="detail-line amount"><i class="fas fa-wallet"></i> ${Math.round(realBalance)} درهم</div>
+                                <div class="detail-line"><i class="fas fa-phone"></i> ${customer.phone||'لا يوجد هاتف'}</div>
+                                <div class="detail-line"><i class="fas fa-calendar"></i> ${customer.date||'-'}</div>
+                                ${customer.city?`<div class="detail-line"><i class="fas fa-city"></i> ${customer.city}</div>`:''}
                             </div>
-                            <div class="customer-amount">${Math.round(realBalance)} درهم</div>
-                            <div class="customer-meta"><span><i class="fas fa-phone"></i> ${customer.phone||'-'}</span><span><i class="fas fa-calendar"></i> ${customer.date||'-'}</span>${customer.city?`<span><i class="fas fa-city"></i> ${customer.city}</span>`:''}</div>
                         </div>
                     </div>
                     <div class="customer-actions">
-                        <button class="btn btn-view" onclick="event.stopPropagation(); openDetails('${key}')" title="عرض"><i class="fas fa-eye"></i></button>
-                        <button class="btn btn-edit-amount" onclick="event.stopPropagation(); editCustomerAmount('${key}')" title="تعديل المبلغ"><i class="fas fa-pen-to-square"></i></button>
-                        <button class="btn btn-wa" onclick="event.stopPropagation(); openWhatsApp('${key}')" title="واتساب"><i class="fab fa-whatsapp"></i></button>
-                        <button class="btn btn-date" onclick="event.stopPropagation(); setPaymentDate('${key}')" title="التاريخ"><i class="fas fa-calendar-days"></i></button>
-                        <button class="btn btn-del" onclick="event.stopPropagation(); confirmDelete('${key}')" title="حذف"><i class="fas fa-trash"></i></button>
+                        <button class="btn btn-view" onclick="event.stopPropagation(); openDetails('${key}')"><i class="fas fa-eye"></i> عرض</button>
+                        <button class="btn btn-date" onclick="event.stopPropagation(); setPaymentDate('${key}')"><i class="fas fa-calendar-days"></i> التاريخ</button>
+                        <button class="btn btn-del" onclick="event.stopPropagation(); confirmDelete('${key}')"><i class="fas fa-trash"></i> حذف</button>
                     </div>
                 </div>`;
                 list.innerHTML+=card;
             });
-            updateStats({totalAmount, customersCount, todayCount, overdueCount});
+            updateStats({totalAmount, customersCount, todayCount, overdueCount, upcomingCount});
+            // حفظ حالة العين بعد إعادة الرسم
+            const hidden = localStorage.getItem('karni_amount_hidden')==='true';
+            if(hidden){ const el=document.getElementById('totalAmount'); if(el){ el.dataset.real=el.textContent; el.textContent='••••••'; const ic=document.getElementById('eyeIcon'); if(ic) ic.className='fas fa-eye-slash'; } }
         }
 
-        function updateStats(s){ document.getElementById('totalAmount').textContent=Math.round(s.totalAmount||0); document.getElementById('totalCustomers').textContent=s.customersCount||0; document.getElementById('todayCount').textContent=s.todayCount||0; document.getElementById('overdueCount').textContent=s.overdueCount||0; }
+        function updateStats(s){
+            document.getElementById('totalAmount').textContent=Math.round(s.totalAmount||0);
+            document.getElementById('totalCustomers').textContent=s.customersCount||0;
+            document.getElementById('todayCount').textContent=s.todayCount||0;
+            document.getElementById('overdueCount').textContent=s.overdueCount||0;
+            const upEl=document.getElementById('upcomingCount'); if(upEl) upEl.textContent=s.upcomingCount||0;
+            // إعادة تطبيق حالة العين
+            const hidden = localStorage.getItem('karni_amount_hidden')==='true';
+            if(hidden){ const el=document.getElementById('totalAmount'); if(el && !el.dataset.real){ el.dataset.real=el.textContent; el.textContent='••••••'; } }
+        }
 
         window.showAddModal = ()=>{ document.getElementById('customerId').value=''; document.getElementById('customerName').value=''; document.getElementById('customerAmount').value=''; document.getElementById('customerPhone').value=''; document.getElementById('customerCity').value=''; setTodayDate(); document.getElementById('customerModal').classList.add('active'); }
         window.closeModal = ()=> document.getElementById('customerModal').classList.remove('active');
-
-        window.saveCustomer = async (e)=>{
-            e.preventDefault();
-            const cityVal=document.getElementById('customerCity').value.trim();
-            const data={ name:document.getElementById('customerName').value.trim(), amount:parseFloat(document.getElementById('customerAmount').value)||0, phone:document.getElementById('customerPhone').value.trim(), city:cityVal, ville:cityVal, date:document.getElementById('customerDate').value, updatedAt:new Date().toISOString() };
-            await addCustomer(data); closeModal();
-        }
-
-        window.confirmDelete = async (id)=>{
-            const ok = await openDialog({title:'حذف الزبون', message:`هل أنت متأكد من حذف ${allCustomers[id]?.name||'هذا الزبون'}؟`, icon:'trash', iconType:'danger', confirmText:'حذف', danger:true});
-            if(ok) deleteCustomer(id);
-        }
-
+        window.saveCustomer = async (e)=>{ e.preventDefault(); const cityVal=document.getElementById('customerCity').value.trim(); const data={ name:document.getElementById('customerName').value.trim(), amount:parseFloat(document.getElementById('customerAmount').value)||0, phone:document.getElementById('customerPhone').value.trim(), city:cityVal, ville:cityVal, date:document.getElementById('customerDate').value, updatedAt:new Date().toISOString() }; await addCustomer(data); closeModal(); }
+        window.confirmDelete = async (id)=>{ const ok=await openDialog({title:'حذف الزبون', message:`هل أنت متأكد من حذف ${allCustomers[id]?.name||'هذا الزبون'}؟`, icon:'trash', iconType:'danger', confirmText:'حذف', danger:true}); if(ok) deleteCustomer(id); }
         window.filterBy = (filter)=>{ currentFilter=filter; currentCityFilter=null; document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); event.target.closest('.filter-tab').classList.add('active'); applyFilter(filter); }
-        function applyFilter(filter){
-            const filtered={}; const today=new Date().toISOString().split('T')[0];
-            Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(filter==='all') filtered[k]=c; else if(filter==='today' && c.date===today) filtered[k]=c; else if(filter==='overdue' && c.date && c.date<today) filtered[k]=c; else if(filter==='upcoming' && c.date && c.date>today) filtered[k]=c; });
-            renderCustomers(filtered);
-        }
-        window.searchCustomer = ()=>{
-            const s=document.getElementById('searchInput').value.toLowerCase().trim();
-            if(!s){ applyFilter(currentFilter); return; }
-            const f={}; Object.keys(allCustomers).forEach(k=>{ if(allCustomers[k].name?.toLowerCase().includes(s)) f[k]=allCustomers[k]; });
-            renderCustomers(f);
-        }
-
+        function applyFilter(filter){ const filtered={}; const today=new Date().toISOString().split('T')[0]; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(filter==='all') filtered[k]=c; else if(filter==='today' && c.date===today) filtered[k]=c; else if(filter==='overdue' && c.date && c.date<today) filtered[k]=c; else if(filter==='upcoming' && c.date && c.date>today) filtered[k]=c; }); renderCustomers(filtered); }
+        window.searchCustomer = ()=>{ const s=document.getElementById('searchInput').value.toLowerCase().trim(); if(!s){ applyFilter(currentFilter); return; } const f={}; Object.keys(allCustomers).forEach(k=>{ if(allCustomers[k].name?.toLowerCase().includes(s)) f[k]=allCustomers[k]; }); renderCustomers(f); }
         function loadTheme(){ const t=localStorage.getItem('theme')||'light'; document.documentElement.setAttribute('data-theme',t); document.getElementById('themeIcon').className=t==='dark'?'fas fa-sun':'fas fa-moon'; const d=document.getElementById('drawerThemeIcon'); if(d) d.className=t==='dark'?'fas fa-sun':'fas fa-moon'; }
         window.toggleTheme = ()=>{ const cur=document.documentElement.getAttribute('data-theme'); const nt=cur==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',nt); localStorage.setItem('theme',nt); loadTheme(); }
         function setTodayDate(){ const el=document.getElementById('customerDate'); if(el) el.value=new Date().toISOString().split('T')[0]; }
-
-        window.openWhatsApp = (id)=>{
-            const c=allCustomers[id]; if(!c?.phone){ showToastPro('لا يوجد رقم هاتف','error'); return; }
-            const clean=c.phone.replace(/\D/g,''); window.open('https://wa.me/212'+clean.replace(/^0/,'')+'?text='+encodeURIComponent(`السلام عليكم ${c.name} - المبلغ المستحق: ${Math.round(getRealBalance(c))} درهم`),'_blank');
-        }
-
-        window.setPaymentDate = async (id)=>{
-            const current = allCustomers[id]?.date||'';
-            const newDate = await openDialog({title:'تعديل تاريخ الأداء', message:'اختر التاريخ الجديد', icon:'calendar-days', showInput:true, inputType:'date', inputValue:current, confirmText:'حفظ التاريخ'});
-            if(newDate){ await updateCustomer(id, {date:newDate, updatedAt:new Date().toISOString()}); }
-        }
-
-        window.editCustomerName = async (id)=>{
-            const current = allCustomers[id]?.name||'';
-            const newName = await openDialog({title:'تعديل الاسم', message:'أدخل الاسم الجديد', icon:'pen', showInput:true, inputValue:current, placeholder:'اسم الزبون', confirmText:'حفظ الاسم'});
-            if(newName && newName.trim()){ await updateCustomer(id, {name:newName.trim(), updatedAt:new Date().toISOString()}); }
-        }
-
-        window.editCustomerAmount = async (id)=>{
-            const current = getRealBalance(allCustomers[id]);
-            const newAmount = await openDialog({title:'تعديل المبلغ', message:'أدخل المبلغ المستحق الجديد', icon:'wallet', showInput:true, inputType:'number', inputValue:current, placeholder:'0', confirmText:'حفظ المبلغ'});
-            if(newAmount===null) return;
-            const val = parseFloat(newAmount); if(isNaN(val)){ showToastPro('المبلغ غير صحيح','error'); return; }
-            // نحسب الفرق ونحدث currentBalance مباشرة للحفاظ على التزامن مع person.html
-            const oldBase = parseFloat(allCustomers[id].amount)||0;
-            let p=0,r=0; if(allCustomers[id].operations){ allCustomers[id].operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); }
-            // نحفظ الفرق كـ تعديل في amount أو نحدث currentBalance
-            const newBase = val - p + r;
-            await updateCustomer(id, {amount:newBase, currentBalance:val, updatedAt:new Date().toISOString()});
-        }
-
-        // Long press for name
-        let longPressTimer=null;
-        window.startLongPress = (id)=>{ longPressTimer=setTimeout(()=>editCustomerName(id), 600); }
-        window.cancelLongPress = ()=>{ clearTimeout(longPressTimer); }
-
+        window.setPaymentDate = async (id)=>{ const current=allCustomers[id]?.date||''; const newDate=await openDialog({title:'تعديل تاريخ الأداء', message:'اختر التاريخ الجديد', icon:'calendar-days', showInput:true, inputType:'date', inputValue:current, confirmText:'حفظ التاريخ'}); if(newDate){ await updateCustomer(id, {date:newDate, updatedAt:new Date().toISOString()}); } }
         document.getElementById('customerModal').addEventListener('click', (e)=>{ if(e.target===e.currentTarget) closeModal(); });
     </script>
 
