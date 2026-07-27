@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجري - الطلبات</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+*{font-family:'Cairo',sans-serif} body{background:#f8fafc}
+.product-card{transition:.2s;contain:layout}
+.product-card:hover{transform:translateY(-3px);box-shadow:0 10px 20px rgba(0,0,0,.08)}
+.slider-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:none;align-items:center;justify-content:center}
+.slider-modal.active{display:flex}
+.order-modal{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;display:none;align-items:end;justify-content:center}
+.order-modal.active{display:flex}
+.order-sheet{max-height:92vh;overflow-y:auto}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4)}
+.dot.active{background:#fff;width:24px}
+.thumb.active{border-color:#10b981;box-shadow:0 0 0 2px rgba(16,185,129,.2)}
+</style>
+</head>
+<body class="pb-24">
+
+<!-- Header -->
+<header class="bg-white shadow-sm sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <button id="menuBtn" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100"><i class="fa-solid fa-bars text-gray-700 text-lg"></i></button>
+      <div class="w-12 h-12 bg-emerald-600 rounded-xl flex items-center justify-center"><i class="fa-solid fa-broom text-white"></i></div>
+      <div>
+        <h1 id="storeName" class="font-bold text-gray-900 text-[15px]">متجري</h1>
+        <p class="text-xs text-gray-500">متجر المنظفات</p>
+      </div>
+    </div>
+    <button id="reportsBtn" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100 relative">
+      <i class="fa-solid fa-chart-bar text-gray-700 text-xl"></i>
+      <span id="orderCount" class="hidden absolute -top-1 -right-1 bg-emerald-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+    </button>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 pt-4">
+  <!-- Welcome -->
+  <div class="text-center py-6">
+    <h2 id="welcomeTitle" class="text-2xl md:text-3xl font-extrabold text-gray-900 mb-2">أهلاً بك في متجرك</h2>
+    <p class="text-gray-500 text-sm">تصفح أفضل منتجات المنظفات والمواد المنزلية</p>
+  </div>
+
+  <!-- Client Selector - خاص بصاحب المتجر -->
+  <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-4 mb-4">
+    <div class="flex items-center gap-2 mb-3">
+      <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-user text-emerald-600 text-sm"></i></div>
+      <h3 class="font-bold text-gray-900 text-sm">اختيار العميل</h3>
+      <span class="text-[11px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">خاص بصاحب المتجر</span>
+    </div>
+    <div class="flex gap-2">
+      <div class="flex-1 relative">
+        <input type="text" id="clientNameInput" list="clientsList" placeholder="اكتب اسم العميل..." class="w-full pr-10 pl-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none text-sm font-semibold">
+        <i class="fa-solid fa-user-pen absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+        <datalist id="clientsList"></datalist>
+      </div>
+      <button id="confirmClientBtn" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-bold text-sm">تأكيد</button>
+    </div>
+    <div id="activeClientBar" class="hidden mt-3 bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
+      <div class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-600"></i><span class="text-sm font-bold">العميل الحالي: <span id="activeClientName" class="text-emerald-700"></span></span></div>
+      <button id="changeClientBtn" class="text-xs text-gray-600 underline">تغيير</button>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4">
+    <div class="relative">
+      <input type="text" id="searchInput" placeholder="البحث عن منتج..." class="w-full pr-10 pl-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none text-sm">
+      <i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+    </div>
+  </div>
+
+  <!-- Order Progress -->
+  <div id="orderProgress" class="hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-4">
+    <div class="flex justify-between items-center mb-2"><span class="text-sm font-bold">تقدم الطلب</span><span id="progressText" class="text-xs bg-gray-100 px-2 py-1 rounded-full">0 / 0</span></div>
+    <div class="w-full bg-gray-100 rounded-full h-2"><div id="progressBar" class="bg-emerald-600 h-2 rounded-full transition-all" style="width:0%"></div></div>
+    <div class="flex gap-2 mt-3">
+      <button id="finishOrderBtn" class="flex-1 bg-emerald-600 text-white py-2.5 rounded-xl font-bold text-sm"><i class="fa-solid fa-check ml-2"></i>إنهاء الطلب وإرساله</button>
+      <button id="clearOrderBtn" class="px-4 py-2.5 bg-gray-100 rounded-xl text-sm">مسح</button>
+    </div>
+    <div id="orderSummary" class="mt-3 grid grid-cols-2 gap-2 text-xs"></div>
+  </div>
+
+  <!-- Products Grid -->
+  <div id="productsContainer" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+  <div id="emptyState" class="hidden text-center py-16"><i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i><p class="text-gray-500">لا توجد منتجات</p></div>
+</main>
+
+<!-- Bottom Nav - تم تغيير السلة إلى التقارير -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 z-40">
+  <div class="max-w-7xl mx-auto flex justify-around items-center py-2">
+    <a href="index.html" class="flex flex-col items-center gap-1 px-3 py-1 text-emerald-600"><i class="fa-solid fa-house text-lg"></i><span class="text-[11px] font-bold">الرئيسية</span></a>
+    <a href="index.html" class="flex flex-col items-center gap-1 px-3 py-1 text-gray-400"><i class="fa-solid fa-users text-lg"></i><span class="text-[11px]">العملاء</span></a>
+    <a href="reglematjar.html" class="flex flex-col items-center gap-1 px-3 py-1 text-gray-400"><i class="fa-solid fa-box text-lg"></i><span class="text-[11px]">المنتجات</span></a>
+    <a href="#" class="flex flex-col items-center gap-1 px-3 py-1 text-gray-400"><i class="fa-solid fa-cart-shopping text-lg"></i><span class="text-[11px]">المبيعات</span></a>
+    <a href="reports.html" id="navReports" class="flex flex-col items-center gap-1 px-3 py-1 text-gray-400"><i class="fa-solid fa-chart-simple text-lg"></i><span class="text-[11px]">التقارير</span></a>
+  </div>
+</nav>
+
+<!-- Order Quantity Modal -->
+<div id="orderModal" class="order-modal">
+  <div class="absolute inset-0 bg-black/50" onclick="closeOrderModal()"></div>
+  <div class="order-sheet relative bg-white rounded-t-[24px] w-full max-w-lg animate-slide-up">
+    <div class="p-4">
+      <div class="w-12 h-1.5 bg-gray-200 rounded-full mx-auto mb-4"></div>
+      <!-- Main Image Big -->
+      <div class="relative bg-gray-50 rounded-2xl overflow-hidden mb-4">
+        <img id="orderMainImage" src="" class="w-full h-[280px] object-contain cursor-zoom-in" onclick="openGalleryFromOrder()">
+        <span id="orderStockBadge" class="absolute top-3 right-3 bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full font-bold">متوفر</span>
+        <span id="orderImagesCount" class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded-full hidden"><i class="fa-solid fa-images ml-1"></i><span>0</span></span>
+      </div>
+      <!-- Thumbnails -->
+      <div id="orderThumbs" class="flex gap-2 overflow-x-auto pb-2 mb-4"></div>
+
+      <h3 id="orderProductName" class="font-bold text-lg mb-1">اسم المنتج</h3>
+      <div class="flex items-center justify-between mb-4">
+        <p class="text-emerald-600 font-bold text-xl"><span id="orderPrice">0.00</span> <span class="text-xs font-normal text-gray-500">درهم</span></p>
+        <p class="text-xs text-gray-500">المخزون: <span id="orderStock">0</span></p>
+      </div>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-3 mb-4">
+        <label class="text-sm font-bold mb-2 block">الكمية المطلوبة للعميل <span id="orderClientLabel" class="text-emerald-700"></span></label>
+        <div class="flex items-center gap-3">
+          <button type="button" onclick="changeQty(-1)" class="w-12 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-xl font-bold hover:bg-gray-50">-</button>
+          <input type="number" id="orderQty" min="0" value="1" class="flex-1 h-12 text-center border border-gray-200 rounded-xl text-lg font-bold outline-none focus:border-emerald-500">
+          <button type="button" onclick="changeQty(1)" class="w-12 h-12 bg-white border border-gray-200 rounded-xl flex items-center justify-center text-xl font-bold hover:bg-gray-50">+</button>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="skipProduct()" class="px-6 py-3.5 bg-gray-100 rounded-xl font-bold text-sm">تخطي</button>
+        <button onclick="confirmAndNext()" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3.5 rounded-xl font-bold text-sm"><i class="fa-solid fa-check ml-2"></i>تم - التالي</button>
+      </div>
+      <p class="text-[11px] text-gray-400 text-center mt-3">سيتم الانتقال تلقائياً للمنتج التالي</p>
+    </div>
+  </div>
+</div>
+
+<!-- Gallery Modal Professional -->
+<div id="galleryModal" class="slider-modal">
+  <button onclick="closeGallery()" class="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-xmark"></i></button>
+  <button onclick="prevGallery()" class="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-left"></i></button>
+  <button onclick="nextGallery()" class="absolute right-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-right"></i></button>
+  <div class="flex flex-col items-center w-full max-w-5xl px-4">
+    <img id="galleryImage" src="" class="max-w-full max-h-[70vh] object-contain rounded-xl shadow-2xl">
+    <div id="galleryThumbs" class="mt-4 flex gap-2 overflow-x-auto max-w-full pb-2"></div>
+    <div class="mt-3 flex items-center gap-2"><div id="galleryDots" class="flex gap-2"></div><span id="galleryCounter" class="bg-black/50 text-white px-3 py-1 rounded-full text-xs mr-3">1 / 1</span></div>
+  </div>
+</div>
+
+<div id="toast" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-50"><div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3"><i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400"></i><span id="toastMessage" class="text-sm"></span></div></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getDatabase, ref, get, set, push } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
+  authDomain: "karnipromaroc.firebaseapp.com",
+  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "karnipromaroc",
+  storageBucket: "karnipromaroc.firebasestorage.app",
+  messagingSenderId: "6746147726",
+  appId: "1:6746147726:web:6e3a2d29941ab93ef432df"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getDatabase(fbApp);
+
+let products = [];
+let filteredProducts = [];
+let currentOrder = []; // {productId, name, qty, price, mainImage}
+let currentProductIndex = -1;
+let activeClient = localStorage.getItem('activeClient') || '';
+let storeOwnerName = localStorage.getItem('ownerName') || localStorage.getItem('storeOwner') || localStorage.getItem('userName') || '';
+let galleryImages = [];
+let galleryIndex = 0;
+
+// حاول جلب اسم صاحب الحساب من Firebase أو localStorage من index.html
+async function loadOwnerName(){
+  // من localStorage (يأتي من index.html)
+  let owner = localStorage.getItem('ownerName') || localStorage.getItem('storeName') || localStorage.getItem('userName') || localStorage.getItem('clientName') || '';
+  // جرب من Firebase config
+  try{
+    const snap = await get(ref(db, "settings/storeName"));
+    if(snap.exists()) owner = snap.val();
+    const snap2 = await get(ref(db, "storeInfo/name"));
+    if(snap2.exists()) owner = snap2.val();
+  } catch(e){}
+
+  if(!owner) owner = "متجري";
+  storeOwnerName = owner;
+  document.getElementById('storeName').textContent = owner;
+  document.getElementById('welcomeTitle').textContent = `أهلاً بك في متجر ${owner}`;
+}
+
+async function loadClients(){
+  const datalist = document.getElementById('clientsList');
+  try{
+    // جلب العملاء من Firebase إذا موجودين
+    const paths = ["clients", "customers", "users"];
+    let clients = [];
+    for(const p of paths){
+      const snap = await get(ref(db, p));
+      if(snap.exists()){
+        const val = snap.val();
+        Object.values(val).forEach(c=>{
+          if(c.name) clients.push(c.name);
+          else if(typeof c === 'string') clients.push(c);
+        });
+      }
+    }
+    // إضافة من localStorage
+    const localClients = JSON.parse(localStorage.getItem('clients')||'[]');
+    clients = [...clients, ...localClients];
+    // إزالة التكرار
+    clients = [...new Set(clients)].filter(Boolean);
+    datalist.innerHTML = clients.map(n=>`<option value="${n}">`).join('');
+  } catch(e){}
+}
+
+async function loadProducts(){
+  try{
+    const snap = await get(ref(db, "products"));
+    if(snap.exists()){
+      const val = snap.val();
+      products = Object.values(val).map(p=>{
+        if(p.image && !p.mainImage) p.mainImage = p.image;
+        if(p.mainImage && (!p.images || p.images.length===0)) p.images=[p.mainImage];
+        if(!p.images) p.images = p.mainImage ? [p.mainImage] : [];
+        if(!p.mainImage && p.images.length>0) p.mainImage = p.images[0];
+        return {hidden:false, ...p};
+      }).filter(p=>!p.hidden);
+    }
+  } catch(e){ console.error(e); }
+  filteredProducts = [...products];
+  renderProducts();
+}
+
+function renderProducts(){
+  const container = document.getElementById('productsContainer');
+  const empty = document.getElementById('emptyState');
+  let list = filteredProducts;
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  if(q) list = list.filter(p=>(p.name||'').toLowerCase().includes(q));
+
+  if(list.length===0){ container.innerHTML=''; empty.classList.remove('hidden'); return; }
+  empty.classList.add('hidden');
+  container.innerHTML = list.map((p, idx)=>{
+    const mainImg = p.mainImage || p.images?.[0] || 'https://via.placeholder.com/300';
+    const inOrder = currentOrder.find(o=>o.productId==p.id);
+    const qtyBadge = inOrder ? `<span class="absolute top-2 left-2 bg-emerald-600 text-white text-xs px-2 py-1 rounded-full font-bold">${inOrder.qty} مطلوب</span>` : '';
+    return `<div class="product-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden cursor-pointer" onclick="openOrderModal(${products.indexOf(p)})">
+      <div class="relative bg-gray-50">
+        <img src="${mainImg}" alt="${p.name}" class="w-full h-48 object-cover" loading="lazy" decoding="async">
+        <span class="absolute top-2 right-2 bg-emerald-100 text-emerald-700 text-[11px] px-2.5 py-1 rounded-full font-bold">متوفر</span>
+        ${qtyBadge}
+      </div>
+      <div class="p-3">
+        <h3 class="font-semibold text-sm text-gray-900 line-clamp-1 mb-2 text-center">${p.name||'بدون اسم'}</h3>
+        <div class="flex items-center justify-between">
+          <button class="w-9 h-9 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl flex items-center justify-center"><i class="fa-solid fa-cart-plus text-xs"></i></button>
+          <div class="text-left">
+            <p class="font-bold text-emerald-600 text-[15px]">${parseFloat(p.price||0).toFixed(2)} <span class="text-[10px] font-normal text-gray-500">درهم</span></p>
+            <p class="text-[11px] text-gray-500">المخزون: ${p.stock||0}</p>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// Client handling
+function setActiveClient(name){
+  if(!name) { showToast('اكتب اسم العميل','error'); return; }
+  activeClient = name;
+  localStorage.setItem('activeClient', name);
+  document.getElementById('activeClientName').textContent = name;
+  document.getElementById('activeClientBar').classList.remove('hidden');
+  document.getElementById('orderClientLabel').textContent = `(${name})`;
+  document.getElementById('clientNameInput').value = '';
+  // حفظ العميل
+  let clients = JSON.parse(localStorage.getItem('clients')||'[]');
+  if(!clients.includes(name)){ clients.push(name); localStorage.setItem('clients', JSON.stringify(clients)); loadClients(); }
+  showToast(`تم اختيار العميل: ${name}`,'success');
+  updateProgress();
+}
+
+// Order flow
+window.openOrderModal = function(globalIndex){
+  if(!activeClient){ showToast('اختر العميل أولاً','error'); document.getElementById('clientNameInput').focus(); return; }
+  currentProductIndex = globalIndex;
+  const p = products[globalIndex];
+  if(!p) return;
+  const mainImg = p.mainImage || p.images?.[0] || '';
+  document.getElementById('orderMainImage').src = mainImg;
+  document.getElementById('orderProductName').textContent = p.name;
+  document.getElementById('orderPrice').textContent = parseFloat(p.price||0).toFixed(2);
+  document.getElementById('orderStock').textContent = p.stock||0;
+  document.getElementById('orderStockBadge').textContent = (p.stock||0)>0 ? 'متوفر' : 'غير متوفر';
+  const count = p.images?.length||0;
+  document.getElementById('orderImagesCount').classList.toggle('hidden', count<=1);
+  document.getElementById('orderImagesCount').querySelector('span').textContent = count;
+  // thumbs
+  const thumbs = document.getElementById('orderThumbs');
+  thumbs.innerHTML = (p.images||[]).map((img,i)=>`<img src="${img}" class="thumb w-16 h-16 rounded-xl object-cover border-2 ${i===0?'active':''} border-transparent cursor-pointer" onclick="setOrderMain('${img}',${i})">`).join('');
+  // qty existing
+  const existing = currentOrder.find(o=>o.productId==p.id);
+  document.getElementById('orderQty').value = existing ? existing.qty : 1;
+  document.getElementById('orderModal').classList.add('active');
+  galleryImages = p.images||[mainImg];
+  galleryIndex = 0;
+}
+
+function setOrderMain(src, idx){
+  document.getElementById('orderMainImage').src = src;
+  document.querySelectorAll('.thumb').forEach((t,i)=>t.classList.toggle('active', i===idx));
+  galleryIndex = idx;
+}
+window.setOrderMain = setOrderMain;
+
+window.changeQty = function(d){
+  const input = document.getElementById('orderQty');
+  let v = parseInt(input.value)||0;
+  v+=d;
+  if(v<0) v=0;
+  input.value=v;
+}
+
+window.closeOrderModal = function(){
+  document.getElementById('orderModal').classList.remove('active');
+}
+
+window.skipProduct = function(){
+  // انتقل للمنتج التالي بدون حفظ
+  closeOrderModal();
+  nextProductAuto();
+}
+
+window.confirmAndNext = function(){
+  const qty = parseInt(document.getElementById('orderQty').value)||0;
+  if(qty<=0){ showToast('أدخل كمية صحيحة','error'); return; }
+  const p = products[currentProductIndex];
+  if(!p) return;
+  const existingIdx = currentOrder.findIndex(o=>o.productId==p.id);
+  if(existingIdx>-1) currentOrder[existingIdx].qty = qty;
+  else currentOrder.push({productId:p.id, name:p.name, qty, price:p.price, mainImage:p.mainImage||p.images?.[0]});
+  
+  updateProgress();
+  renderProducts();
+  closeOrderModal();
+  // انتقل تلقائياً للمنتج التالي
+  setTimeout(()=>{ nextProductAuto(); }, 300);
+}
+
+function nextProductAuto(){
+  // ابحث عن المنتج التالي الذي لم يتم طلبه بعد
+  let nextIdx = -1;
+  for(let i=currentProductIndex+1;i<products.length;i++){
+    if(!currentOrder.find(o=>o.productId==products[i].id)){
+      nextIdx = i;
+      break;
+    }
+  }
+  // إذا لم يوجد، ابدأ من الأول
+  if(nextIdx===-1){
+    for(let i=0;i<products.length;i++){
+      if(!currentOrder.find(o=>o.productId==products[i].id)){
+        nextIdx=i; break;
+      }
+    }
+  }
+  if(nextIdx!==-1){
+    // إذا كان هناك منتجات متبقية، افتح التالي
+    if(currentOrder.length < filteredProducts.length){
+      setTimeout(()=>openOrderModal(nextIdx), 400);
+    } else {
+      showToast('تم الانتهاء من جميع المنتجات!','success');
+    }
+  } else {
+    showToast('تم الانتهاء من جميع المنتجات!','success');
+  }
+}
+
+function updateProgress(){
+  const bar = document.getElementById('orderProgress');
+  const orderCountEl = document.getElementById('orderCount');
+  if(currentOrder.length===0 && !activeClient){
+    bar.classList.add('hidden');
+    orderCountEl.classList.add('hidden');
+    return;
+  }
+  bar.classList.remove('hidden');
+  orderCountEl.classList.remove('hidden');
+  orderCountEl.textContent = currentOrder.length;
+  document.getElementById('progressText').textContent = `${currentOrder.length} / ${filteredProducts.length}`;
+  document.getElementById('progressBar').style.width = `${(currentOrder.length/filteredProducts.length)*100}%`;
+  // summary
+  const summary = document.getElementById('orderSummary');
+  summary.innerHTML = currentOrder.slice(-4).reverse().map(o=>`<div class="bg-gray-50 rounded-lg p-2 flex justify-between"><span class="font-bold truncate">${o.name}</span><span class="text-emerald-600 font-bold">${o.qty}</span></div>`).join('');
+}
+
+window.finishOrder = async function(){
+  if(!activeClient){ showToast('اختر العميل','error'); return; }
+  if(currentOrder.length===0){ showToast('لا يوجد طلبات','error'); return; }
+  try{
+    const orderData = {
+      clientName: activeClient,
+      owner: storeOwnerName,
+      items: currentOrder,
+      totalItems: currentOrder.length,
+      totalQty: currentOrder.reduce((s,i)=>s+i.qty,0),
+      createdAt: new Date().toISOString(),
+      status: 'pending'
+    };
+    await push(ref(db, "orders"), orderData);
+    // حفظ أيضاً في طلبات العميل
+    await push(ref(db, `clientOrders/${activeClient}`), orderData);
+    showToast(`تم إرسال طلب ${activeClient} بنجاح (${currentOrder.length} منتج)`,'success');
+    currentOrder = [];
+    updateProgress();
+    renderProducts();
+  } catch(e){
+    showToast('خطأ في الحفظ: '+e.message,'error');
+  }
+}
+
+window.clearOrder = function(){
+  if(confirm('مسح الطلب الحالي؟')){ currentOrder=[]; updateProgress(); renderProducts(); showToast('تم مسح الطلب','info'); }
+}
+
+// Gallery
+window.openGalleryFromOrder = function(){ openGallery(galleryImages, galleryIndex); }
+function openGallery(images, startIdx=0){
+  galleryImages = images;
+  galleryIndex = startIdx;
+  showGallery();
+  document.getElementById('galleryModal').classList.add('active');
+}
+function showGallery(){
+  if(!galleryImages.length) return;
+  document.getElementById('galleryImage').src = galleryImages[galleryIndex];
+  document.getElementById('galleryCounter').textContent = `${galleryIndex+1} / ${galleryImages.length}`;
+  document.getElementById('galleryDots').innerHTML = galleryImages.map((_,i)=>`<div class="dot ${i===galleryIndex?'active':''}" onclick="goGallery(${i})"></div>`).join('');
+  document.getElementById('galleryThumbs').innerHTML = galleryImages.map((img,i)=>`<img src="${img}" class="w-14 h-14 rounded-lg object-cover border-2 ${i===galleryIndex?'border-emerald-500':'border-transparent'} cursor-pointer" onclick="goGallery(${i})">`).join('');
+}
+window.nextGallery = function(){ galleryIndex=(galleryIndex+1)%galleryImages.length; showGallery(); }
+window.prevGallery = function(){ galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length; showGallery(); }
+window.goGallery = function(i){ galleryIndex=i; showGallery(); }
+window.closeGallery = function(){ document.getElementById('galleryModal').classList.remove('active'); }
+
+document.addEventListener('DOMContentLoaded', async()=>{
+  await loadOwnerName();
+  await loadClients();
+  await loadProducts();
+  if(activeClient){
+    document.getElementById('activeClientName').textContent=activeClient;
+    document.getElementById('activeClientBar').classList.remove('hidden');
+    document.getElementById('orderClientLabel').textContent=`(${activeClient})`;
+    updateProgress();
+  }
+  document.getElementById('searchInput').addEventListener('input', renderProducts);
+  document.getElementById('confirmClientBtn').addEventListener('click', ()=>setActiveClient(document.getElementById('clientNameInput').value.trim()));
+  document.getElementById('clientNameInput').addEventListener('keypress', e=>{ if(e.key==='Enter') setActiveClient(e.target.value.trim()); });
+  document.getElementById('changeClientBtn').addEventListener('click', ()=>{ document.getElementById('activeClientBar').classList.add('hidden'); activeClient=''; localStorage.removeItem('activeClient'); updateProgress(); });
+  document.getElementById('finishOrderBtn').addEventListener('click', finishOrder);
+  document.getElementById('clearOrderBtn').addEventListener('click', clearOrder);
+  document.getElementById('reportsBtn').addEventListener('click', ()=>window.location.href='reports.html');
+});
+
+function showToast(msg,type='success'){
+  const toast=document.getElementById('toast');
+  const icon=document.getElementById('toastIcon');
+  const m=document.getElementById('toastMessage');
+  m.textContent=msg;
+  icon.className=type==='success'?'fa-solid fa-check-circle text-emerald-400':type==='error'?'fa-solid fa-circle-exclamation text-red-400':'fa-solid fa-info-circle text-blue-400';
+  toast.classList.remove('hidden');
+  setTimeout(()=>toast.classList.add('hidden'),3000);
+}
+</script>
+</body>
+</html>
