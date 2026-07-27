@@ -30,7 +30,6 @@
   *{font-family:'Cairo',sans-serif} body{background:#f8fafc}
   .modal-backdrop{backdrop-filter:blur(4px)}
   .animate-slide-up{animation:slideUp .3s ease-out} @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .product-card{will-change:transform;contain:layout style paint}
   .product-card:hover{transform:translateY(-2px)}
   input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   .gallery-card{position:relative;border-radius:14px;overflow:hidden;border:2px solid #e5e7eb;background:#fff;transition:.2s}
@@ -45,6 +44,7 @@
 <body class="pb-10">
 
 <main class="max-w-7xl mx-auto px-4 pt-6 pb-6">
+  <!-- Stats -->
   <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
     <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100"><div class="flex justify-between"><div><p class="text-gray-500 text-xs mb-1">قيمة المخزون</p><p class="text-xl font-bold" id="totalValue">0</p><p class="text-xs text-gray-500">درهم</p></div><div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center"><i class="fa-solid fa-coins text-emerald-600"></i></div></div></div>
     <div class="bg-white rounded-xl shadow-sm p-4 border border-gray-100"><div class="flex justify-between"><div><p class="text-gray-500 text-xs mb-1">إجمالي المخزون</p><p class="text-xl font-bold" id="totalStock">0</p><p class="text-xs text-gray-500">وحدة</p></div><div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center"><i class="fa-solid fa-boxes-stacked text-blue-600"></i></div></div></div>
@@ -58,12 +58,12 @@
   </div>
 
   <div id="productsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
-  <div id="loadMoreContainer" class="hidden text-center mt-6"><button id="loadMoreBtn" class="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50">تحميل المزيد (<span id="remainingCount">0</span>)</button></div>
   <div id="emptyState" class="hidden text-center py-16"><div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-box-open text-4xl text-gray-400"></i></div><h3 class="text-xl font-semibold mb-2">لا توجد منتجات</h3><button onclick="openAddModal()" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold"><i class="fa-solid fa-plus ml-2"></i>إضافة منتج</button></div>
 </main>
 
 <button id="fabBtn" class="fixed bottom-6 left-6 w-14 h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-lg flex items-center justify-center z-30"><i class="fa-solid fa-plus text-xl"></i></button>
 
+<!-- Add/Edit Modal -->
 <div id="productModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
   <div class="modal-backdrop absolute inset-0 bg-black/50" onclick="closeProductModal()"></div>
   <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[94vh] overflow-y-auto animate-slide-up">
@@ -71,6 +71,8 @@
     <form id="productForm" class="p-6 space-y-5">
       <input type="hidden" id="productId">
       <input type="file" id="productImageInput" accept="image/jpeg,image/jpg,image/png,image/webp" multiple hidden>
+
+      <!-- Gallery Upload -->
       <div>
         <div class="flex items-center justify-between mb-3">
           <label class="text-sm font-bold"><i class="fa-solid fa-images ml-2 text-emerald-600"></i>إضافة صور المنتج</label>
@@ -87,6 +89,7 @@
           <p class="text-[11px] text-gray-500 mt-3 text-center">الصورة الأولى هي الرئيسية. استخدم الأسهم لإعادة الترتيب.</p>
         </div>
       </div>
+
       <div><label class="block text-sm font-semibold mb-2">اسم المنتج *</label><input type="text" id="productName" required class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none"></div>
       <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-semibold mb-2">السعر (درهم) *</label><input type="number" id="productPrice" required min="0" step="0.01" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 outline-none" placeholder="0.00"></div><div><label class="block text-sm font-semibold mb-2">الكمية *</label><input type="number" id="productStock" required min="0" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 outline-none" placeholder="0"></div></div>
       <div><label class="block text-sm font-semibold mb-2">حد التنبيه</label><input type="number" id="lowStockThreshold" min="0" value="10" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 outline-none"></div>
@@ -95,14 +98,18 @@
   </div>
 </div>
 
+<!-- Delete Modal -->
 <div id="deleteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-backdrop absolute inset-0 bg-black/50" onclick="closeDeleteModal()"></div><div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md animate-slide-up"><div class="p-6 text-center"><div class="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-trash text-2xl text-red-600"></i></div><h3 class="text-xl font-bold mb-2">حذف المنتج</h3><p class="text-gray-600 mb-6 text-sm">هل أنت متأكد من حذف هذا المنتج؟</p><div class="flex gap-3"><button id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold">نعم، احذف</button><button onclick="closeDeleteModal()" class="flex-1 bg-gray-100 py-3 rounded-lg font-semibold">إلغاء</button></div></div></div></div>
 
+<!-- Filter Modal -->
 <div id="filterModal" class="hidden fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-4"><div class="modal-backdrop absolute inset-0 bg-black/50" onclick="closeFilterModal()"></div><div class="relative bg-white rounded-t-2xl md:rounded-2xl shadow-2xl w-full md:max-w-md animate-slide-up"><div class="px-6 py-4 border-b flex justify-between"><h2 class="text-lg font-bold">تصفية المنتجات</h2><button onclick="closeFilterModal()" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div><div class="p-6 space-y-4"><div class="space-y-2"><label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="all" checked class="w-4 h-4 text-emerald-600"><span>الكل</span></label><label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="available" class="w-4 h-4 text-emerald-600"><span>متوفر</span></label><label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="low" class="w-4 h-4 text-emerald-600"><span>منخفض</span></label></div><div class="flex gap-3"><button onclick="applyFilters()" class="flex-1 bg-emerald-600 text-white py-3 rounded-lg font-semibold">تطبيق</button><button onclick="resetFilters()" class="px-6 py-3 bg-gray-100 rounded-lg font-semibold">إعادة تعيين</button></div></div></div></div>
 
+<!-- Professional Gallery Slider -->
 <div id="sliderModal" class="slider-modal">
   <button onclick="closeSlider()" class="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-xmark"></i></button>
   <button onclick="prevSlide()" class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-left"></i></button>
   <button onclick="nextSlide()" class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-right"></i></button>
+  
   <div class="flex flex-col items-center w-full max-w-5xl px-4">
     <img id="sliderImage" src="" class="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl select-none" draggable="false">
     <div class="mt-4 flex items-center gap-2" id="sliderDots"></div>
@@ -116,19 +123,23 @@
 import { db } from "./firebase.js";
 import { ref, get, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
+/* ================= Cloudinary Config =================
+   اذهب إلى Cloudinary Dashboard -> Settings -> Upload
+   أنشئ Upload Preset جديد: Unsigned
+   ضع الاسم هنا
+*/
 const CLOUDINARY_CLOUD_NAME = "vdqmpfyv";
 const CLOUDINARY_UPLOAD_PRESET = "ml_default";
 const CLOUDINARY_FOLDER = "karni_products";
+// =====================================================
 
+/* ================= State ================= */
 let products = [];
-let filteredProducts = [];
-let displayedCount = 0;
-const PAGE_SIZE = 60;
 let statusFilter = 'all';
 let searchQuery = '';
 let editingProductId = null;
 let deletingProductId = null;
-let galleryImages = [];
+let galleryImages = []; // {id, file, previewUrl, cloudinaryUrl, isExisting, progress, status}
 let sliderImages = [];
 let sliderIndex = 0;
 let touchStartX = 0;
@@ -140,18 +151,20 @@ const initialProducts = [
 
 document.addEventListener('DOMContentLoaded', async()=>{
   await loadProducts();
-  applyFiltersAndSearch();
+  renderProducts();
   updateStats();
   setupEventListeners();
   setupSliderTouch();
 });
 
+/* ================= Firebase ================= */
 async function loadProducts(){
   try{
     const snap = await get(ref(db, "products"));
     if(snap.exists()){
       const val = snap.val();
       products = Object.values(val).map(p=>{
+        // توافق مع النظام القديم: image -> mainImage
         if(p.image && !p.mainImage) p.mainImage = p.image;
         if(p.mainImage && (!p.images || p.images.length===0)) p.images = [p.mainImage];
         if(!p.images) p.images = p.mainImage ? [p.mainImage] : [];
@@ -164,9 +177,8 @@ async function loadProducts(){
     }
   } catch(e){
     console.error(e);
-    // لا تعرض toast خطأ تحميل إذا كانت البيانات فارغة، فقط استعمل initial
-    if(products.length===0) products = [...initialProducts];
-    // showToast("خطأ في تحميل البيانات","error"); // تم تعطيله لتجنب إزعاج المستخدم عند أول تشغيل
+    products = [...initialProducts];
+    showToast("خطأ في تحميل البيانات","error");
   }
 }
 
@@ -179,15 +191,9 @@ async function saveProducts(){
 function setupEventListeners(){
   document.getElementById('fabBtn').addEventListener('click', openAddModal);
   document.getElementById('filterBtn').addEventListener('click', openFilterModal);
-  // بحث محسن debounce 250ms
-  let searchTimeout;
-  document.getElementById('searchInput').addEventListener('input', e=>{
-    clearTimeout(searchTimeout);
-    searchTimeout=setTimeout(()=>{ searchQuery=e.target.value; applyFiltersAndSearch(); }, 250);
-  });
+  document.getElementById('searchInput').addEventListener('input', e=>{ searchQuery=e.target.value; renderProducts(); });
   document.getElementById('productForm').addEventListener('submit', handleFormSubmit);
   document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
-  document.getElementById('loadMoreBtn')?.addEventListener('click', loadMore);
   const box=document.getElementById('uploadBox');
   const input=document.getElementById('productImageInput');
   box.addEventListener('click', ()=>input.click());
@@ -227,9 +233,10 @@ function renderGallery(){
   const countEl=document.getElementById('imagesCount');
   countEl.textContent=`${galleryImages.length} صور`;
   if(galleryImages.length===0){ container.innerHTML=''; return; }
+  
   container.innerHTML=galleryImages.map((img,idx)=>`
     <div class="gallery-card ${idx===0?'main':''}">
-      <img src="${img.cloudinaryUrl||img.previewUrl}" class="w-full h-24 object-cover cursor-pointer" onclick="openSliderFromGallery(${idx})" loading="lazy" decoding="async">
+      <img src="${img.cloudinaryUrl||img.previewUrl}" class="w-full h-24 object-cover cursor-pointer" onclick="openSliderFromGallery(${idx})" loading="lazy">
       ${idx===0?'<span class="absolute top-1 right-1 bg-emerald-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">رئيسية</span>':''}
       <button type="button" onclick="removeGalleryImage('${img.id}')" class="absolute top-1 left-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-[10px]"><i class="fa-solid fa-xmark"></i></button>
       <div class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur flex items-center justify-between px-1 py-1">
@@ -238,6 +245,7 @@ function renderGallery(){
         <button type="button" onclick="moveImage(${idx},1)" ${idx===galleryImages.length-1?'disabled':''} class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center disabled:opacity-30"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
       </div>
       ${img.status==='uploading'?`<div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-2"><div class="w-full bg-white/30 h-1.5 rounded-full overflow-hidden"><div class="bg-emerald-500 h-1.5 transition-all" style="width:${img.progress}%"></div></div><span class="text-white text-[10px] mt-1 font-bold">${img.progress}%</span></div>`:''}
+      ${img.status==='error'?'<div class="absolute inset-0 bg-red-500/80 flex items-center justify-center text-white text-xs font-bold">فشل</div>':''}
     </div>
   `).join('');
 }
@@ -257,123 +265,134 @@ window.moveImage=function(idx,dir){
   renderGallery();
 }
 
-/* ================= ضغط ذكي ~300KB ================= */
-async function smartCompressTo300KB(file){
-  const TARGET=300*1024;
-  if(file.size <= 350*1024) return file;
-  return new Promise(async resolve=>{
-    const bitmap=await createImageBitmap(file).catch(()=>null);
-    if(!bitmap){ resolve(file); return; }
-    let w=bitmap.width, h=bitmap.height;
-    const MAX_W=1024;
-    if(w>MAX_W){ h=(MAX_W/w)*h; w=MAX_W; }
-    if(h>MAX_W){ w=(MAX_W/h)*w; h=MAX_W; }
-    const canvas=document.createElement('canvas');
-    canvas.width=w; canvas.height=h;
-    const ctx=canvas.getContext('2d',{alpha:false});
-    ctx.drawImage(bitmap,0,0,w,h);
-    bitmap.close();
-    let quality=0.82;
-    let blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',quality));
-    let attempts=0;
-    while(blob && blob.size>TARGET && quality>0.6 && attempts<4){
-      quality-=0.08;
-      blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',quality));
-      attempts++;
-    }
-    if(!blob){ resolve(file); return; }
-    resolve(new File([blob], file.name.replace(/\.\w+$/,'.jpg'), {type:'image/jpeg'}));
+/* ================= Image Compression 1920px ================= */
+async function compressImage(file, maxWidth=1920, quality=0.85){
+  return new Promise(resolve=>{
+    if(file.size<800*1024){ resolve(file); return; }
+    const img=new Image();
+    const url=URL.createObjectURL(file);
+    img.onload=()=>{
+      let w=img.width, h=img.height;
+      if(w>maxWidth){ h=(maxWidth/w)*h; w=maxWidth; }
+      const canvas=document.createElement('canvas');
+      canvas.width=w; canvas.height=h;
+      const ctx=canvas.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      canvas.toBlob(blob=>{
+        URL.revokeObjectURL(url);
+        if(!blob){ resolve(file); return; }
+        const newFile=new File([blob], file.name, {type:'image/jpeg'});
+        resolve(newFile);
+      },'image/jpeg',quality);
+    };
+    img.onerror=()=>{ URL.revokeObjectURL(url); resolve(file); };
+    img.src=url;
   });
 }
 
-/* ================= Cloudinary ================= */
+/* ================= Cloudinary Upload ================= */
 function uploadToCloudinary(file, onProgress){
   return new Promise(async (resolve,reject)=>{
-    const compressed=await smartCompressTo300KB(file);
+    if(CLOUDINARY_CLOUD_NAME==="YOUR_CLOUD_NAME"){
+      reject(new Error("يرجى إعداد Cloudinary Cloud Name و Upload Preset في أعلى الملف"));
+      return;
+    }
+    const compressed=await compressImage(file);
     const fd=new FormData();
     fd.append('file', compressed);
     fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
     fd.append('folder', CLOUDINARY_FOLDER);
     const xhr=new XMLHttpRequest();
     xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`);
-    xhr.upload.onprogress=e=>{ if(e.lengthComputable) onProgress(Math.round(e.loaded/e.total*100)); };
-    xhr.onload=()=>{
-      if(xhr.status>=200&&xhr.status<300){
-        try{ resolve(JSON.parse(xhr.responseText).secure_url); }catch{ reject(new Error('خطأ استجابة')); }
-      } else {
-        try{ reject(new Error(JSON.parse(xhr.responseText).error?.message||'فشل رفع الصورة')); }catch{ reject(new Error('فشل رفع الصورة')); }
+    xhr.upload.onprogress=e=>{
+      if(e.lengthComputable){
+        const p=Math.round((e.loaded/e.total)*100);
+        onProgress(p);
       }
     };
-    xhr.onerror=()=>reject(new Error('خطأ شبكة'));
+    xhr.onload=()=>{
+      if(xhr.status>=200&&xhr.status<300){
+        try{ const r=JSON.parse(xhr.responseText); resolve(r.secure_url); }
+        catch{ reject(new Error('خطأ استجابة Cloudinary')); }
+      } else {
+        try{ const r=JSON.parse(xhr.responseText); reject(new Error(r.error?.message||'فشل رفع الصورة')); }
+        catch{ reject(new Error('فشل رفع الصورة')); }
+      }
+    };
+    xhr.onerror=()=>reject(new Error('خطأ شبكة أثناء الرفع'));
     xhr.send(fd);
   });
 }
 
 async function uploadAllGalleryImages(){
+  // فقط الصور الجديدة التي تحتوي file
   const toUpload=galleryImages.filter(g=>g.file && !g.isExisting);
   if(toUpload.length===0) return true;
+
   const overall=document.getElementById('overallProgress');
   const bar=document.getElementById('overallProgressBar');
   const text=document.getElementById('overallProgressText');
+  const perContainer=document.getElementById('perImageProgress');
   overall.classList.remove('hidden');
+  perContainer.innerHTML='';
+
   let completed=0;
   const total=toUpload.length;
-  // رفع متوازي محدود بـ 3 لتوفير الذاكرة
-  const queue=[...toUpload];
-  const workers=Array(Math.min(3, total)).fill(0).map(async ()=>{
-    while(queue.length){
-      const img=queue.shift();
-      img.status='uploading';
-      try{
-        const url=await uploadToCloudinary(img.file, pct=>{ img.progress=pct; renderGallery(); });
-        img.cloudinaryUrl=url; img.status='done'; img.progress=100;
-        completed++;
-        const op=Math.round(completed/total*100);
-        bar.style.width=op+'%'; text.textContent=op+'%';
+
+  const promises=toUpload.map(async img=>{
+    img.status='uploading';
+    try{
+      const url=await uploadToCloudinary(img.file, pct=>{
+        img.progress=pct;
         renderGallery();
-      } catch(err){ img.status='error'; renderGallery(); throw err; }
+        const overallPct=Math.round(((completed+pct/100)/total)*100);
+        bar.style.width=overallPct+'%';
+        text.textContent=overallPct+'%';
+      });
+      img.cloudinaryUrl=url;
+      img.status='done';
+      img.progress=100;
+      completed++;
+      bar.style.width=Math.round((completed/total)*100)+'%';
+      text.textContent=Math.round((completed/total)*100)+'%';
+      renderGallery();
+      return url;
+    } catch(err){
+      img.status='error';
+      renderGallery();
+      throw err;
     }
   });
-  try{ await Promise.all(workers); overall.classList.add('hidden'); showToast('✅ تم رفع جميع الصور بنجاح','success'); return true; }
-  catch(err){ overall.classList.add('hidden'); showToast('فشل رفع صورة: '+err.message,'error'); return false; }
+
+  try{
+    await Promise.all(promises);
+    overall.classList.add('hidden');
+    showToast('✅ تم رفع جميع الصور بنجاح','success');
+    return true;
+  } catch(err){
+    overall.classList.add('hidden');
+    showToast('فشل رفع صورة: '+err.message,'error');
+    return false;
+  }
 }
 
-/* ================= Render محسن ================= */
-function applyFiltersAndSearch(){
-  filteredProducts=products.filter(p=>{
+/* ================= Core Product Logic - محفوظ بدون كسر ================= */
+function renderProducts(){
+  const container=document.getElementById('productsContainer');
+  const empty=document.getElementById('emptyState');
+  let filtered=products.filter(p=>{
     const matchesSearch=(p.name||"").toLowerCase().includes(searchQuery.toLowerCase());
     const isLow=(p.stock||0)<=(p.lowStockThreshold||10);
     const matchesStatus=statusFilter==='all'||(statusFilter==='low'&&isLow)||(statusFilter==='available'&&!isLow);
     return matchesSearch&&matchesStatus;
   });
-  filteredProducts.sort((a,b)=>(a.name||"").localeCompare(b.name||"",'ar',{sensitivity:'base'}));
-  displayedCount=0;
-  document.getElementById('productsContainer').innerHTML='';
-  renderProductsChunk();
-}
-
-function renderProductsChunk(){
-  const container=document.getElementById('productsContainer');
-  const empty=document.getElementById('emptyState');
-  const loadMore=document.getElementById('loadMoreContainer');
-  if(filteredProducts.length===0){ container.innerHTML=''; empty.classList.remove('hidden'); loadMore.classList.add('hidden'); return; }
-  empty.classList.add('hidden');
-  const next=filteredProducts.slice(displayedCount, displayedCount+PAGE_SIZE);
-  const frag=document.createDocumentFragment();
-  const div=document.createElement('div');
-  div.innerHTML=next.map(p=>createProductCard(p)).join('');
-  while(div.firstChild) frag.appendChild(div.firstChild);
-  container.appendChild(frag);
-  displayedCount+=next.length;
-  if(displayedCount<filteredProducts.length){
-    loadMore.classList.remove('hidden');
-    document.getElementById('remainingCount').textContent=filteredProducts.length-displayedCount;
-  } else {
-    loadMore.classList.add('hidden');
+  filtered.sort((a,b)=>(a.name||"").localeCompare(b.name||"",'ar',{sensitivity:'base'}));
+  if(filtered.length===0){ container.innerHTML=''; empty.classList.remove('hidden'); }
+  else {
+    empty.classList.add('hidden');
+    container.innerHTML=filtered.map(p=>createProductCard(p)).join('');
   }
 }
-function loadMore(){ renderProductsChunk(); }
-function renderProducts(){ applyFiltersAndSearch(); }
 
 function createProductCard(product){
   const isLow=(product.stock||0)<=(product.lowStockThreshold||10);
@@ -384,20 +403,38 @@ function createProductCard(product){
   const hideIcon=product.hidden?'fa-eye':'fa-eye-slash';
   const hideText=product.hidden?'إظهار':'إخفاء';
   const mainImg=product.mainImage||product.image||(product.images&&product.images[0])||defaultImage;
-  const count=product.images?product.images.length:0;
-  return `<div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${product.hidden?'opacity-60':''}"><div class="p-4"><div class="flex gap-4"><div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative cursor-pointer" onclick="openSlider(${product.id})"><img src="${mainImg}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='${defaultImage}'" loading="lazy" decoding="async">${count>1?`<span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-full"><i class="fa-solid fa-images ml-1"></i>${count}</span>`:''}</div><div class="flex-1 min-w-0"><div class="flex justify-between gap-2 mb-2"><h3 class="font-semibold text-sm md:text-base line-clamp-2">${product.name||'بدون اسم'}</h3><span class="px-2.5 py-1 rounded-full text-xs font-medium ${statusClass} whitespace-nowrap">${statusText}</span></div><p class="text-lg font-bold text-emerald-600">${parseFloat(product.price||0).toFixed(2)} <span class="text-xs font-normal text-gray-500">درهم</span></p><p class="text-xs text-gray-500">المخزون: ${parseInt(product.stock||0)}</p></div></div><div class="flex gap-2 mt-4 pt-4 border-t border-gray-100"><button onclick="toggleHideProduct(${product.id})" class="flex-1 px-3 py-2 ${hideClass} rounded-lg text-sm font-medium flex items-center justify-center gap-1.5"><i class="fa-solid ${hideIcon} text-xs"></i><span>${hideText}</span></button><button onclick="editProduct(${product.id})" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteProduct(${product.id})" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg"><i class="fa-solid fa-trash"></i></button></div></div></div>`;
+  const count=product.images?product.images.length:(product.mainImage?1:0);
+
+  return `<div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${product.hidden?'opacity-60':''}">
+    <div class="p-4">
+      <div class="flex gap-4">
+        <div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative cursor-pointer" onclick="openSlider(${product.id})">
+          <img src="${mainImg}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='${defaultImage}'" loading="lazy">
+          ${count>1?`<span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-full"><i class="fa-solid fa-images ml-1"></i>${count}</span>`:''}
+        </div>
+        <div class="flex-1 min-w-0">
+          <div class="flex justify-between gap-2 mb-2"><h3 class="font-semibold text-sm md:text-base line-clamp-2">${product.name||'بدون اسم'}</h3><span class="px-2.5 py-1 rounded-full text-xs font-medium ${statusClass} whitespace-nowrap">${statusText}</span></div>
+          <p class="text-lg font-bold text-emerald-600">${parseFloat(product.price||0).toFixed(2)} <span class="text-xs font-normal text-gray-500">درهم</span></p>
+          <p class="text-xs text-gray-500">المخزون: ${parseInt(product.stock||0)}</p>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-4 pt-4 border-t border-gray-100">
+        <button onclick="toggleHideProduct(${product.id})" class="flex-1 px-3 py-2 ${hideClass} rounded-lg text-sm font-medium flex items-center justify-center gap-1.5"><i class="fa-solid ${hideIcon} text-xs"></i><span>${hideText}</span></button>
+        <button onclick="editProduct(${product.id})" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg"><i class="fa-solid fa-pen-to-square"></i></button>
+        <button onclick="deleteProduct(${product.id})" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+      </div>
+    </div>
+  </div>`;
 }
 
 function updateStats(){
-  requestAnimationFrame(()=>{
-    const totalStock=products.reduce((s,p)=>s+(parseInt(p.stock)||0),0);
-    const totalValue=products.reduce((s,p)=>s+((parseFloat(p.price)||0)*(parseInt(p.stock)||0)),0);
-    const low=products.filter(p=>(parseInt(p.stock)||0)<=(parseInt(p.lowStockThreshold)||10)).length;
-    document.getElementById('totalStock').textContent=totalStock.toLocaleString('ar-MA');
-    document.getElementById('totalValue').textContent=totalValue.toLocaleString('ar-MA',{minimumFractionDigits:0,maximumFractionDigits:0});
-    document.getElementById('lowStockCount').textContent=low;
-    document.getElementById('totalProducts').textContent=products.length;
-  });
+  const totalStock=products.reduce((s,p)=>s+(parseInt(p.stock)||0),0);
+  const totalValue=products.reduce((s,p)=>s+((parseFloat(p.price)||0)*(parseInt(p.stock)||0)),0);
+  const low=products.filter(p=>(parseInt(p.stock)||0)<=(parseInt(p.lowStockThreshold)||10)).length;
+  document.getElementById('totalStock').textContent=totalStock.toLocaleString('ar-MA');
+  document.getElementById('totalValue').textContent=totalValue.toLocaleString('ar-MA',{minimumFractionDigits:0,maximumFractionDigits:0});
+  document.getElementById('lowStockCount').textContent=low;
+  document.getElementById('totalProducts').textContent=products.length;
 }
 
 function openAddModal(){
@@ -442,11 +479,19 @@ async function handleFormSubmit(e){
   const saveBtn=document.getElementById('saveBtn');
   const name=document.getElementById('productName').value.trim();
   if(!name){ showToast('اسم المنتج مطلوب','error'); return; }
+
   saveBtn.disabled=true;
   saveBtn.innerHTML='<i class="fa-solid fa-spinner fa-spin ml-2"></i> جاري الرفع...';
+
   const ok=await uploadAllGalleryImages();
-  if(!ok){ saveBtn.disabled=false; saveBtn.innerHTML='<i class="fa-solid fa-check ml-2"></i> حفظ المنتج'; return; }
+  if(!ok){
+    saveBtn.disabled=false;
+    saveBtn.innerHTML='<i class="fa-solid fa-check ml-2"></i> حفظ المنتج';
+    return; // لا يتم حفظ المنتج إذا فشل رفع صورة واحدة
+  }
+
   const finalImages=galleryImages.map(g=>g.cloudinaryUrl||g.previewUrl).filter(Boolean);
+
   const productData={
     name: name,
     price: parseFloat(document.getElementById('productPrice').value)||0,
@@ -456,6 +501,7 @@ async function handleFormSubmit(e){
     images: finalImages,
     hidden: false
   };
+
   try{
     if(editingProductId){
       const idx=products.findIndex(p=>p.id==editingProductId);
@@ -466,7 +512,7 @@ async function handleFormSubmit(e){
       showToast('تم إضافة المنتج بنجاح','success');
     }
     await saveProducts();
-    applyFiltersAndSearch();
+    renderProducts();
     updateStats();
     closeProductModal();
   } catch(err){
@@ -482,20 +528,21 @@ window.toggleHideProduct=async function(id){
   const p=products.find(x=>x.id==id);
   if(!p) return;
   p.hidden=!p.hidden;
-  try{ await saveProducts(); applyFiltersAndSearch(); showToast(p.hidden?'تم إخفاء المنتج':'تم إظهار المنتج','success'); } catch(e){ showToast('خطأ: '+e.message,'error'); }
+  try{ await saveProducts(); renderProducts(); showToast(p.hidden?'تم إخفاء المنتج':'تم إظهار المنتج','success'); } catch(e){ showToast('خطأ: '+e.message,'error'); }
 }
 window.deleteProduct=function(id){ deletingProductId=id; document.getElementById('deleteModal').classList.remove('hidden'); }
 function closeDeleteModal(){ document.getElementById('deleteModal').classList.add('hidden'); deletingProductId=null; }
 async function confirmDelete(){
   if(!deletingProductId) return;
-  try{ products=products.filter(p=>p.id!=deletingProductId); await saveProducts(); applyFiltersAndSearch(); updateStats(); showToast('تم حذف المنتج','success'); } catch(e){ showToast('خطأ في الحذف','error'); }
+  try{ products=products.filter(p=>p.id!=deletingProductId); await saveProducts(); renderProducts(); updateStats(); showToast('تم حذف المنتج','success'); } catch(e){ showToast('خطأ في الحذف','error'); }
   closeDeleteModal();
 }
 function openFilterModal(){ document.getElementById('filterModal').classList.remove('hidden'); }
 function closeFilterModal(){ document.getElementById('filterModal').classList.add('hidden'); }
-function applyFilters(){ const s=document.querySelector('input[name="statusFilter"]:checked'); if(s) statusFilter=s.value; applyFiltersAndSearch(); closeFilterModal(); showToast('تم تطبيق التصفية','success'); }
-function resetFilters(){ statusFilter='all'; document.querySelector('input[name="statusFilter"][value="all"]').checked=true; applyFiltersAndSearch(); closeFilterModal(); showToast('تم إعادة التعيين','info'); }
+function applyFilters(){ const s=document.querySelector('input[name="statusFilter"]:checked'); if(s) statusFilter=s.value; renderProducts(); closeFilterModal(); showToast('تم تطبيق التصفية','success'); }
+function resetFilters(){ statusFilter='all'; document.querySelector('input[name="statusFilter"][value="all"]').checked=true; renderProducts(); closeFilterModal(); showToast('تم إعادة التعيين','info'); }
 
+/* ================= Slider Professional ================= */
 window.openSlider=function(productId){
   const p=products.find(x=>x.id==productId);
   if(!p) return;
@@ -522,15 +569,20 @@ window.nextSlide=function(){ sliderIndex=(sliderIndex+1)%sliderImages.length; sh
 window.prevSlide=function(){ sliderIndex=(sliderIndex-1+sliderImages.length)%sliderImages.length; showSlide(); }
 window.goToSlide=function(i){ sliderIndex=i; showSlide(); }
 window.closeSlider=function(){ document.getElementById('sliderModal').classList.remove('active'); }
+
 function setupSliderTouch(){
   const modal=document.getElementById('sliderModal');
   modal.addEventListener('touchstart', e=>{ touchStartX=e.changedTouches[0].screenX; }, {passive:true});
   modal.addEventListener('touchend', e=>{
     touchEndX=e.changedTouches[0].screenX;
     const diff=touchEndX-touchStartX;
-    if(Math.abs(diff)>50){ if(diff>0) prevSlide(); else nextSlide(); }
+    if(Math.abs(diff)>50){
+      if(diff>0) prevSlide();
+      else nextSlide();
+    }
   }, {passive:true});
 }
+
 function showToast(msg,type='success'){
   const toast=document.getElementById('toast');
   const icon=document.getElementById('toastIcon');
@@ -540,6 +592,7 @@ function showToast(msg,type='success'){
   toast.classList.remove('hidden');
   setTimeout(()=>toast.classList.add('hidden'),3000);
 }
+
 window.openAddModal=openAddModal;
 window.closeProductModal=closeProductModal;
 window.closeDeleteModal=closeDeleteModal;
