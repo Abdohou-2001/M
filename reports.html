@@ -19,6 +19,25 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
+</script><script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,7 +54,6 @@
 .card{transition:.2s}
 .skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
 @keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
-/* منطقة الطباعة - مخفية عادي، ظاهرة فقط عند الطباعة */
 #thermalPrintArea{display:none}
 @media print{
   body *{visibility:hidden}
@@ -58,10 +76,7 @@ setTimeout(function(){
 </style>
 </head>
 <body class="pb-24">
-
-<!-- منطقة الطباعة الثابتة - هذه هي اللي غادي يطبع -->
 <div id="thermalPrintArea"></div>
-
 <header class="bg-white shadow-sm sticky top-0 z-40 no-print">
   <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
     <div class="flex items-center gap-3">
@@ -72,23 +87,19 @@ setTimeout(function(){
     <button onclick="loadFirebase()" class="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-gray-100"><i class="fa-solid fa-rotate"></i></button>
   </div>
 </header>
-
 <main class="max-w-7xl mx-auto px-4 pt-4 no-print">
   <div class="bg-white rounded-2xl p-1.5 flex gap-1 mb-4 border">
     <button id="tabPersons" class="flex-1 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-sm">الأشخاص</button>
     <button id="tabTotal" class="flex-1 py-2.5 rounded-xl text-gray-600 font-bold text-sm">المجموع العام</button>
   </div>
-
   <div class="grid grid-cols-3 gap-2 mb-4">
     <div class="bg-white rounded-xl p-3 border text-center"><p class="text-xs text-gray-500">عدد الأشخاص</p><p id="personsCount" class="font-bold text-lg">0</p></div>
     <div class="bg-white rounded-xl p-3 border text-center"><p class="text-xs text-gray-500">إجمالي المنتجات</p><p id="totalQty" class="font-bold text-lg text-emerald-600">0</p></div>
     <div class="bg-white rounded-xl p-3 border text-center"><p class="text-xs text-gray-500">القيمة</p><p id="totalValue" class="font-bold text-lg">0 درهم</p></div>
   </div>
-
   <div id="personsContainer" class="space-y-3"></div>
   <div id="totalContainer" class="hidden"><div class="bg-white rounded-2xl border p-4"><div id="totalSummary" class="space-y-2"></div></div></div>
 </main>
-
 <div id="bonModal" class="modal p-4 no-print">
   <div class="bg-white rounded-[20px] w-full max-w-lg max-h-[92vh] overflow-hidden flex flex-col">
     <div class="p-4 border-b flex items-center justify-between">
@@ -111,7 +122,6 @@ setTimeout(function(){
     </div>
   </div>
 </div>
-
 <div id="addProductModal" class="modal p-4" style="z-index:90">
   <div class="bg-white rounded-2xl w-full max-w-md max-h-[80vh] overflow-hidden flex flex-col">
     <div class="p-4 border-b flex justify-between"><h3 class="font-bold">إضافة منتج</h3><button onclick="closeAddProductModal()" class="w-8 h-8 bg-gray-100 rounded-full">×</button></div>
@@ -119,13 +129,10 @@ setTimeout(function(){
     <div id="productsToAdd" class="flex-1 overflow-y-auto p-2 space-y-2"></div>
   </div>
 </div>
-
 <div id="toast" class="hidden fixed top-20 left-1/2 z-[100]" style="transform:translateX(-50%)"><div class="bg-gray-900 text-white px-6 py-3 rounded-xl"><span id="toastMessage" class="text-sm"></span></div></div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
 const firebaseConfig = {
   apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
   authDomain: "karnipromaroc.firebaseapp.com",
@@ -137,17 +144,14 @@ const firebaseConfig = {
 };
 const fbApp = initializeApp(firebaseConfig);
 const db = getDatabase(fbApp);
-
 let allOrders = [];
 let allProducts = [];
 let groupedByClient = {};
 let aggregatedTotal = {};
 let currentViewingClient = null;
 let currentBonItems = [];
-
 const CACHE_KEY = 'reports_orders_v2';
 const PROD_KEY = 'products_v3';
-
 function saveCache(){
   try{ localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), orders:allOrders, grouped:groupedByClient, agg:aggregatedTotal})); }catch(e){}
 }
@@ -160,7 +164,6 @@ function loadCache(){
     return p;
   }catch(e){ return null; }
 }
-
 function renderInstant(){
   var c = loadCache();
   if(c && c.orders){
@@ -173,7 +176,6 @@ function renderInstant(){
   }
   return false;
 }
-
 window.loadFirebase = async function(){
   try{
     var snapProd = await get(ref(db, "products"));
@@ -200,7 +202,6 @@ window.loadFirebase = async function(){
   }catch(e){}
   processData(); saveCache();
 }
-
 function processData(){
   groupedByClient = {};
   aggregatedTotal = {};
@@ -219,7 +220,6 @@ function processData(){
   });
   renderPersons(); renderTotal(); updateStats();
 }
-
 function updateStats(){
   var persons = Object.keys(groupedByClient).length;
   var totalQty = 0, totalVal = 0;
@@ -228,7 +228,6 @@ function updateStats(){
   document.getElementById('totalQty').textContent = totalQty;
   document.getElementById('totalValue').textContent = totalVal.toFixed(2) + ' درهم';
 }
-
 function renderPersons(){
   var container = document.getElementById('personsContainer');
   var clients = Object.keys(groupedByClient);
@@ -245,7 +244,6 @@ function renderPersons(){
   });
   container.innerHTML = html;
 }
-
 function renderTotal(){
   var container = document.getElementById('totalSummary');
   var totals = Object.values(aggregatedTotal).sort(function(a,b){ return b.qty-a.qty; });
@@ -256,7 +254,6 @@ function renderTotal(){
   });
   container.innerHTML = h;
 }
-
 window.openBon = function(clientName){
   currentViewingClient = clientName;
   var orders = groupedByClient[clientName]||[];
@@ -275,7 +272,6 @@ window.openBon = function(clientName){
   renderBonItems();
   document.getElementById('bonModal').classList.add('active');
 }
-
 function renderBonItems(){
   var container = document.getElementById('bonItems');
   if(currentBonItems.length===0){ container.innerHTML='<p class="text-center text-gray-400 py-8">البون فارغ</p>'; document.getElementById('bonTotal').textContent='0 درهم'; return; }
@@ -288,7 +284,6 @@ function renderBonItems(){
   currentBonItems.forEach(function(i){ total += (parseFloat(i.price)||0)*(parseInt(i.qty)||0); });
   document.getElementById('bonTotal').textContent = total.toFixed(2)+' درهم';
 }
-
 window.updateQty = function(idx, d){
   currentBonItems[idx].qty = Math.max(0, (parseInt(currentBonItems[idx].qty)||0)+d);
   if(currentBonItems[idx].qty===0) currentBonItems.splice(idx,1);
@@ -297,7 +292,6 @@ window.updateQty = function(idx, d){
 window.updateQtyInput = function(idx, v){ currentBonItems[idx].qty = Math.max(0, parseInt(v)||0); renderBonItems(); }
 window.updatePrice = function(idx, v){ currentBonItems[idx].price = parseFloat(v)||0; renderBonItems(); }
 window.removeItem = function(idx){ currentBonItems.splice(idx,1); renderBonItems(); }
-
 window.saveBonEdits = async function(){
   if(!currentViewingClient) return;
   try{
@@ -307,7 +301,6 @@ window.saveBonEdits = async function(){
     renderBonItems();
   }catch(e){}
 }
-
 window.deleteClientBon = async function(){
   if(!currentViewingClient) return;
   if(!confirm('حذف بون '+currentViewingClient+'؟')) return;
@@ -322,10 +315,8 @@ window.deleteClientBon = async function(){
     await loadFirebase();
   }catch(e){}
 }
-
 window.openAddProductToBon = function(){ document.getElementById('addProductModal').classList.add('active'); renderProductsToAdd(''); }
 window.closeAddProductModal = function(){ document.getElementById('addProductModal').classList.remove('active'); }
-
 function renderProductsToAdd(filter){
   var container = document.getElementById('productsToAdd');
   var list = allProducts;
@@ -347,27 +338,28 @@ window.addToBon = function(id){
   renderBonItems();
   closeAddProductModal();
 }
-
 window.closeBon = function(){ document.getElementById('bonModal').classList.remove('active'); currentViewingClient=null; }
 
-// ======== الطباعة المضمونة 100% ========
+// ======== الطباعة المصححة - الثمن وحده والعدد وحده ========
 function buildPrintHTML(width){
   var total = 0;
   currentBonItems.forEach(function(i){ total += (parseFloat(i.price)||0)*(parseInt(i.qty)||0); });
   var rows = '';
   currentBonItems.forEach(function(i){
     var lineTotal = (parseFloat(i.price)||0)*parseInt(i.qty||0);
-    rows += '<tr><td>'+i.name+'</td><td style="text-align:center">'+i.qty+' x '+parseFloat(i.price||0).toFixed(2)+'</td><td style="text-align:left">'+lineTotal.toFixed(2)+'</td></tr>';
+    // هنا التصحيح: الكمية وحدها | الثمن وحده | المجموع
+    rows += '<tr><td style="padding:6px 4px;border-bottom:1px dashed #bbb;text-align:right">'+i.name+'</td><td style="padding:6px 4px;border-bottom:1px dashed #bbb;text-align:center">'+i.qty+'</td><td style="padding:6px 4px;border-bottom:1px dashed #bbb;text-align:center">'+parseFloat(i.price||0).toFixed(2)+'</td><td style="padding:6px 4px;border-bottom:1px dashed #bbb;text-align:left">'+lineTotal.toFixed(2)+'</td></tr>';
   });
   var html = '';
   html += '<div style="text-align:center;border-bottom:2px dashed #000;padding-bottom:8px;margin-bottom:8px">';
   html += '<h2 style="margin:0;font-size:18px">بون '+currentViewingClient+'</h2>';
   html += '<p style="margin:4px 0;font-size:11px">'+new Date().toLocaleDateString('ar-MA')+' '+new Date().toLocaleTimeString('ar-MA')+'</p>';
-  html += '<p style="margin:0;font-size:10px">متجري - Karni Pro - ZQ320 Compatible</p>';
+  html += '<p style="margin:0;font-size:10px">متجري - Karni Pro</p>';
   html += '</div>';
-  html += '<table style="width:100%;border-collapse:collapse;font-size:'+(width==58?'10px':'12px')+'"><tr style="border-bottom:1px solid #000"><th style="text-align:right;padding:4px 0">المنتج</th><th style="text-align:center">الكمية</th><th style="text-align:left">المجموع</th></tr>'+rows+'</table>';
+  // جدول مصحح: المنتج | الكمية | الثمن | المجموع
+  html += '<table style="width:100%;border-collapse:collapse;font-size:'+(width==58?'9px':'11px')+';direction:rtl"><thead><tr style="border-bottom:2px solid #000"><th style="text-align:right;padding:6px 4px">المنتج</th><th style="text-align:center;padding:6px 4px">الكمية</th><th style="text-align:center;padding:6px 4px">الثمن</th><th style="text-align:left;padding:6px 4px">المجموع</th></tr></thead><tbody>'+rows+'</tbody></table>';
   html += '<div style="border-top:2px dashed #000;margin-top:10px;padding-top:8px;display:flex;justify-content:space-between;font-weight:bold;font-size:14px"><span>المجموع العام:</span><span>'+total.toFixed(2)+' درهم</span></div>';
-  html += '<div style="text-align:center;margin-top:10px;font-size:9px;border-top:1px dashed #000;padding-top:6px"><p>شكرا لتعاملكم معنا</p><p>عدد المنتجات: '+currentBonItems.length+' | الكمية: '+(function(){var s=0;currentBonItems.forEach(function(i){s+=i.qty});return s;})()+'</p></div>';
+  html += '<div style="text-align:center;margin-top:10px;font-size:9px;border-top:1px dashed #000;padding-top:6px"><p>شكرا لتعاملكم معنا</p><p>عدد المنتجات: '+currentBonItems.length+' | الكمية: '+(function(){var s=0;currentBonItems.forEach(function(i){s+=parseInt(i.qty)||0;return s;}); var sum=0; currentBonItems.forEach(function(i){sum+=parseInt(i.qty)||0;}); return sum;})()+'</p></div>';
   return html;
 }
 
@@ -378,10 +370,8 @@ window.doPrint = function(width){
   area.style.display = 'block';
   area.style.width = width + 'mm';
   area.style.fontSize = width==58 ? '10px' : '12px';
-  // انتظر ثانية ثم اطبع
   setTimeout(function(){
     window.print();
-    // بعد الطباعة اخفي المنطقة
     setTimeout(function(){ area.style.display='none'; }, 500);
   }, 300);
 }
@@ -393,9 +383,9 @@ window.doPrintPDF = function(){
   currentBonItems.forEach(function(i){ total += (parseFloat(i.price)||0)*(parseInt(i.qty)||0); });
   var rows = '';
   currentBonItems.forEach(function(i){
-    rows += '<tr><td>'+i.name+'</td><td>'+i.qty+'</td><td>'+parseFloat(i.price||0).toFixed(2)+'</td><td>'+(parseFloat(i.price||0)*i.qty).toFixed(2)+'</td></tr>';
+    rows += '<tr><td>'+i.name+'</td><td style="text-align:center">'+i.qty+'</td><td style="text-align:center">'+parseFloat(i.price||0).toFixed(2)+'</td><td>'+(parseFloat(i.price||0)*i.qty).toFixed(2)+'</td></tr>';
   });
-  var html = '<div style="padding:20px"><h1 style="text-align:center">بون '+currentViewingClient+'</h1><p>التاريخ: '+new Date().toLocaleDateString('ar-MA')+'</p><table border="1" style="width:100%;border-collapse:collapse;margin-top:15px"><tr style="background:#eee"><th>المنتج</th><th>الكمية</th><th>السعر</th><th>المجموع</th></tr>'+rows+'</table><h3 style="margin-top:15px">المجموع: '+total.toFixed(2)+' درهم</h3></div>';
+  var html = '<div style="padding:20px;direction:rtl"><h1 style="text-align:center">بون '+currentViewingClient+'</h1><p>التاريخ: '+new Date().toLocaleDateString('ar-MA')+'</p><table border="1" style="width:100%;border-collapse:collapse;margin-top:15px"><tr style="background:#eee"><th>المنتج</th><th>الكمية</th><th>الثمن</th><th>المجموع</th></tr>'+rows+'</table><h3 style="margin-top:15px">المجموع: '+total.toFixed(2)+' درهم</h3></div>';
   area.innerHTML = html;
   area.style.display = 'block';
   area.style.width = '210mm';
@@ -418,14 +408,12 @@ document.getElementById('tabTotal').addEventListener('click', function(){
   document.getElementById('totalContainer').classList.remove('hidden');
 });
 document.getElementById('productSearch')?.addEventListener('input', function(e){ renderProductsToAdd(e.target.value); });
-
 function showToast(msg){
   var toast=document.getElementById('toast');
   document.getElementById('toastMessage').textContent=msg;
   toast.classList.remove('hidden');
   setTimeout(function(){ toast.classList.add('hidden'); },2500);
 }
-
 document.addEventListener('DOMContentLoaded', function(){
   if(renderInstant()){
     setTimeout(function(){ loadFirebase(); },500);
