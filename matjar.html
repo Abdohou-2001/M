@@ -23,8 +23,31 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>متجري - الطلب</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- Critical CSS فوري -->
+<style>
+*{font-family:'Cairo',sans-serif;box-sizing:border-box}body{background:#f8fafc;margin:0}
+.flex{display:flex}.grid{display:grid}.hidden{display:none}
+.grid-cols-2{grid-template-columns:repeat(2,1fr)}.gap-3{gap:.75rem}.gap-2{gap:.5rem}
+.bg-white{background:#fff}.rounded-2xl{border-radius:1rem}.rounded-xl{border-radius:.75rem}
+.border{border:1px solid #e5e7eb}.p-4{padding:1rem}.p-3{padding:.75rem}
+.font-bold{font-weight:700}.text-sm{font-size:.875rem}.text-xs{font-size:.75rem}
+.justify-between{justify-content:space-between}.items-center{align-items:center}
+.w-10{width:2.5rem}.h-10{height:2.5rem}.w-8{width:2rem}.h-8{height:2rem}
+.bg-emerald-100{background:#d1fae5}.bg-emerald-50{background:#ecfdf5}.bg-gray-100{background:#f3f4f6}
+.max-w-7xl{max-width:80rem}.mx-auto{margin-left:auto;margin-right:auto}
+.pb-6{padding-bottom:1.5rem}.pt-4{padding-top:1rem}.px-4{padding-left:1rem;padding-right:1rem}
+.product-card{contain:layout style paint;content-visibility:auto;contain-intrinsic-size:200px}
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
+@keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
+</style>
+<script>
+// تحميل المكتبات بعد عرض الصفحة مباشرة
+setTimeout(()=>{
+  var s=document.createElement('script');s.src='https://cdn.tailwindcss.com';document.head.appendChild(s);
+  var l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';document.head.appendChild(l);
+  var f=document.createElement('link');f.rel='stylesheet';f.href='https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap';document.head.appendChild(f);
+}, 80);
+</script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
 *{font-family:'Cairo',sans-serif} body{background:#f8fafc}
@@ -52,7 +75,6 @@
 </header>
 
 <main class="max-w-7xl mx-auto px-4 pt-4">
-  <!-- اختيار العميل مع زر البحث -->
   <div class="bg-white rounded-2xl shadow-sm border border-emerald-100 p-4 mb-4">
     <div class="flex items-center gap-2 mb-3">
       <div class="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-users text-emerald-600 text-sm"></i></div>
@@ -73,7 +95,6 @@
     <p id="clientsLoading" class="text-xs text-gray-400 mt-2"><i class="fa-solid fa-spinner fa-spin ml-1"></i> جاري تحميل العملاء...</p>
   </div>
 
-  <!-- تقدم الطلب -->
   <div id="orderProgress" class="hidden bg-white rounded-2xl border p-4 mb-4">
     <div class="flex justify-between items-center mb-2"><span class="text-sm font-bold">تقدم الطلب</span><span id="progressText" class="text-xs bg-gray-100 px-2 py-1 rounded-full">0 / 0</span></div>
     <div class="w-full bg-gray-100 rounded-full h-2"><div id="progressBar" class="bg-emerald-600 h-2 rounded-full transition-all" style="width:0%"></div></div>
@@ -84,7 +105,6 @@
     <div id="orderSummary" class="mt-3 space-y-1.5 text-xs"></div>
   </div>
 
-  <!-- البحث عن منتج -->
   <div class="bg-white rounded-2xl border p-3 mb-4">
     <div class="relative">
       <input type="text" id="searchInput" placeholder="البحث عن منتج..." class="w-full pr-10 pl-4 py-3 rounded-xl border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none text-sm">
@@ -92,12 +112,11 @@
     </div>
   </div>
 
-  <!-- المنتجات مع أزرار التعديل بجانب كل منتج -->
   <div id="productsContainer" class="grid grid-cols-2 gap-3"></div>
+  <div id="loadMoreTrigger" class="h-10"></div>
   <div id="emptyState" class="hidden text-center py-16"><i class="fa-solid fa-box-open text-4xl text-gray-300 mb-3"></i><p class="text-gray-500 text-sm">لا توجد منتجات</p></div>
 </main>
 
-<!-- Modal تحديد الكمية -->
 <div id="orderModal" class="modal p-0 md:p-4">
   <div class="bg-white md:rounded-[24px] w-full max-w-lg h-[100dvh] md:h-auto md:max-h-[92vh] overflow-hidden flex flex-col">
     <div class="p-4 flex items-center justify-between border-b">
@@ -135,7 +154,6 @@
   </div>
 </div>
 
-<!-- Gallery -->
 <div id="galleryModal" class="slider-modal">
   <button onclick="closeGallery()" class="absolute top-4 right-4 w-10 h-10 bg-white/20 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-xmark"></i></button>
   <button onclick="prevGallery()" class="absolute left-3 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-left"></i></button>
@@ -173,13 +191,76 @@ let activeClient = localStorage.getItem('activeClient') || '';
 let galleryImages = [];
 let galleryIndex = 0;
 let allClients = [];
+let renderedCount = 0;
+const PAGE_SIZE = 20;
+
+// ===== Storage الهاتف لـ matjar =====
+const PROD_CACHE_KEY = 'products_v3';
+const CLIENT_CACHE_KEY = 'clients_cache_v2';
+const CLIENT_TIME_KEY = 'clients_cache_time';
+
+function saveProductsToPhone(data){
+  try{
+    localStorage.setItem(PROD_CACHE_KEY, JSON.stringify({v:'v3', t:Date.now(), d:data}));
+  } catch(e){}
+}
+function loadProductsFromPhone(){
+  try{
+    const raw = localStorage.getItem(PROD_CACHE_KEY);
+    if(!raw) return null;
+    const p = JSON.parse(raw);
+    if(Date.now() - p.t > 24*60*60*1000) return null;
+    return p.d;
+  } catch(e){ return null; }
+}
+function saveClientsToPhone(clients){
+  try{
+    localStorage.setItem(CLIENT_CACHE_KEY, JSON.stringify(clients));
+    localStorage.setItem(CLIENT_TIME_KEY, Date.now().toString());
+  } catch(e){}
+}
+function loadClientsFromPhone(){
+  try{
+    const raw = localStorage.getItem(CLIENT_CACHE_KEY);
+    const time = localStorage.getItem(CLIENT_TIME_KEY);
+    if(!raw || !time) return null;
+    if(Date.now() - parseInt(time) > 24*60*60*1000) return null;
+    return JSON.parse(raw);
+  } catch(e){ return null; }
+}
+
+function renderInstant(){
+  let hasData = false;
+  // منتجات من الهاتف
+  const cachedProds = loadProductsFromPhone();
+  if(cachedProds && cachedProds.length>0){
+    products = cachedProds.filter(p=>!p.hidden);
+    filteredProducts = [...products];
+    renderProducts(true);
+    hasData = true;
+  }
+  // عملاء من الهاتف
+  const cachedClients = loadClientsFromPhone();
+  if(cachedClients && cachedClients.length>0){
+    allClients = cachedClients;
+    document.getElementById('clientsLoading').textContent = `تم تحميل ${cachedClients.length} عميل من الهاتف`;
+    setTimeout(()=>document.getElementById('clientsLoading').classList.add('hidden'), 1200);
+    hasData = true;
+    if(activeClient){
+      document.getElementById('activeClientName').textContent = activeClient;
+      document.getElementById('activeClientBar').classList.remove('hidden');
+      document.getElementById('orderClientLabel').textContent = `(${activeClient})`;
+      document.getElementById('clientSearchInput').value = activeClient;
+    }
+  }
+  return hasData;
+}
 
 async function loadClients(){
-  const loading = document.getElementById('clientsLoading');
   let clients = [];
+  // من localStorage keys
   try{
-    const keys = ['clients','customers','allClients','clientList'];
-    keys.forEach(k=>{
+    ['clients','customers','allClients','clientList'].forEach(k=>{
       try{
         const data = localStorage.getItem(k);
         if(data){
@@ -189,8 +270,9 @@ async function loadClients(){
       } catch(e){}
     });
   } catch(e){}
-  const possiblePaths = ["clients","customers","clientsList","customersList","users","customer","client"];
-  for(const path of possiblePaths){
+  // من Firebase
+  const paths = ["clients","customers","clientsList","customersList","users","customer","client"];
+  for(const path of paths){
     try{
       const snap = await get(ref(db, path));
       if(snap.exists()){
@@ -205,46 +287,20 @@ async function loadClients(){
     } catch(e){}
   }
   clients = [...new Set(clients.map(c=>c.trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
-  allClients = clients;
-  if(activeClient && clients.includes(activeClient)){
-    document.getElementById('activeClientName').textContent = activeClient;
-    document.getElementById('activeClientBar').classList.remove('hidden');
-    document.getElementById('orderClientLabel').textContent = `(${activeClient})`;
-    document.getElementById('clientSearchInput').value = activeClient;
+  if(clients.length>0){
+    allClients = clients;
+    saveClientsToPhone(clients);
+    document.getElementById('clientsLoading').textContent = `تم تحميل ${clients.length} عميل`;
+    setTimeout(()=>document.getElementById('clientsLoading').classList.add('hidden'), 1200);
+    if(activeClient && clients.includes(activeClient)){
+      document.getElementById('activeClientName').textContent = activeClient;
+      document.getElementById('activeClientBar').classList.remove('hidden');
+      document.getElementById('orderClientLabel').textContent = `(${activeClient})`;
+      document.getElementById('clientSearchInput').value = activeClient;
+    }
+  } else if(allClients.length===0){
+    document.getElementById('clientsLoading').innerHTML = '<span class="text-red-400 text-xs">لا يوجد عملاء</span>';
   }
-  if(clients.length===0){
-    loading.innerHTML = '<span class="text-red-400 text-xs">لا يوجد عملاء</span>';
-  } else {
-    loading.textContent = `تم تحميل ${clients.length} عميل`;
-    setTimeout(()=>loading.classList.add('hidden'),1500);
-  }
-  renderClientDropdown('');
-}
-
-function renderClientDropdown(filter){
-  const dropdown = document.getElementById('clientDropdown');
-  let list = allClients;
-  if(filter) list = list.filter(c=>c.toLowerCase().includes(filter.toLowerCase()));
-  if(list.length===0 || !filter){ dropdown.classList.add('hidden'); return; }
-  dropdown.innerHTML = list.map(c=>`<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b last:border-0 text-sm font-bold" onclick="selectClient('${c.replace(/'/g,"\\'")}')"><i class="fa-solid fa-user ml-2 text-gray-400"></i>${c}</div>`).join('');
-  dropdown.classList.remove('hidden');
-}
-
-window.selectClient = function(name){
-  document.getElementById('clientSearchInput').value = name;
-  document.getElementById('clientDropdown').classList.add('hidden');
-  setActiveClient(name);
-}
-
-function setActiveClient(name){
-  if(!name) return;
-  activeClient = name;
-  localStorage.setItem('activeClient', name);
-  document.getElementById('activeClientName').textContent = name;
-  document.getElementById('activeClientBar').classList.remove('hidden');
-  document.getElementById('orderClientLabel').textContent = `(${name})`;
-  showToast(`العميل: ${name}`,'success');
-  updateProgress();
 }
 
 async function loadProducts(){
@@ -252,28 +308,45 @@ async function loadProducts(){
     const snap = await get(ref(db, "products"));
     if(snap.exists()){
       const val = snap.val();
-      products = Object.values(val).map(p=>{
+      const fresh = Object.values(val).map(p=>{
         if(p.image && !p.mainImage) p.mainImage = p.image;
         if(p.mainImage && (!p.images || p.images.length===0)) p.images=[p.mainImage];
         if(!p.images) p.images = p.mainImage ? [p.mainImage] : [];
         if(!p.mainImage && p.images.length>0) p.mainImage = p.images[0];
         return {hidden:false, ...p};
       }).filter(p=>!p.hidden);
+      // إذا مختلف عن الكاش، حدث
+      if(JSON.stringify(fresh.map(p=>p.id).sort()) !== JSON.stringify(products.map(p=>p.id).sort())){
+        products = fresh;
+        filteredProducts = [...fresh];
+        saveProductsToPhone(fresh);
+        renderProducts(true);
+      }
     }
   } catch(e){}
-  filteredProducts = [...products];
-  renderProducts();
 }
 
-function renderProducts(){
+function renderProducts(reset=true){
   const container = document.getElementById('productsContainer');
   const empty = document.getElementById('emptyState');
-  let list = filteredProducts;
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  if(q) list = list.filter(p=>(p.name||'').toLowerCase().includes(q));
-  if(list.length===0){ container.innerHTML=''; empty.classList.remove('hidden'); return; }
-  empty.classList.add('hidden');
-  container.innerHTML = list.map(p=>{
+  if(reset){
+    let list = filteredProducts;
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    if(q) list = list.filter(p=>(p.name||'').toLowerCase().includes(q));
+    filteredProducts = filteredProducts; // keep
+    // إعادة حساب
+    let filtered = products;
+    if(q) filtered = filtered.filter(p=>(p.name||'').toLowerCase().includes(q));
+    window._lastFiltered = filtered;
+    renderedCount = 0;
+    container.innerHTML = '';
+    if(filtered.length===0){ empty.classList.remove('hidden'); return; }
+    empty.classList.add('hidden');
+  }
+  const list = window._lastFiltered || products;
+  const nextSlice = list.slice(renderedCount, renderedCount+PAGE_SIZE);
+  if(nextSlice.length===0) return;
+  const html = nextSlice.map(p=>{
     const mainImg = p.mainImage || p.images?.[0] || 'https://via.placeholder.com/300';
     const inOrder = currentOrder.find(o=>o.productId==p.id);
     const hasQty = inOrder ? inOrder.qty : 0;
@@ -288,9 +361,9 @@ function renderProducts(){
         <p class="font-bold text-emerald-600 text-[13px] text-center mb-2">${parseFloat(p.price||0).toFixed(2)} درهم</p>
         ${hasQty>0?`
         <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2 flex items-center justify-between gap-1">
-          <button onclick="editProductQty('${p.id}',-1)" class="w-8 h-8 bg-white border rounded-full flex items-center justify-center font-bold hover:bg-gray-50">-</button>
+          <button onclick="editProductQty('${p.id}',-1)" class="w-8 h-8 bg-white border rounded-full flex items-center justify-center font-bold">-</button>
           <span class="flex-1 text-center font-bold text-sm">${hasQty}</span>
-          <button onclick="editProductQty('${p.id}',1)" class="w-8 h-8 bg-white border rounded-full flex items-center justify-center font-bold hover:bg-gray-50">+</button>
+          <button onclick="editProductQty('${p.id}',1)" class="w-8 h-8 bg-white border rounded-full flex items-center justify-center font-bold">+</button>
           <button onclick="deleteFromOrder('${p.id}')" class="w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center ml-1"><i class="fa-solid fa-trash text-[11px]"></i></button>
         </div>
         `:`
@@ -299,24 +372,26 @@ function renderProducts(){
       </div>
     </div>`;
   }).join('');
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
+  while(temp.firstChild) container.appendChild(temp.firstChild);
+  renderedCount += nextSlice.length;
 }
 
 window.editProductQty = function(productId, delta){
   const item = currentOrder.find(o=>o.productId==productId);
   if(!item) return;
   item.qty = Math.max(0, item.qty + delta);
-  if(item.qty===0){ currentOrder = currentOrder.filter(o=>o.productId!=productId); }
-  updateProgress(); renderProducts();
-  showToast(item.qty>0?`الكمية: ${item.qty}`:'تم الحذف','success');
+  if(item.qty===0) currentOrder = currentOrder.filter(o=>o.productId!=productId);
+  updateProgress(); renderProducts(true);
 }
 window.deleteFromOrder = function(productId){
   currentOrder = currentOrder.filter(o=>o.productId!=productId);
-  updateProgress(); renderProducts();
-  showToast('تم حذف المنتج من الطلب','info');
+  updateProgress(); renderProducts(true);
 }
 
 window.openOrderModal = function(productId){
-  if(!activeClient){ showToast('ابحث عن العميل واختره أولاً','error'); document.getElementById('clientSearchInput').focus(); return; }
+  if(!activeClient){ showToast('ابحث عن العميل واختره أولاً','error'); return; }
   const p = products.find(x=>x.id==productId);
   if(!p) return;
   currentProductIndex = products.findIndex(x=>x.id==productId);
@@ -343,8 +418,6 @@ window.changeQty = function(d){
   let v = parseInt(input.value)||0; v+=d; if(v<0) v=0; input.value=v;
 }
 window.closeOrderModal = function(){ document.getElementById('orderModal').classList.remove('active'); }
-
-// تم = الرجوع للمنتجات (لا ينتقل للمنتج التالي)
 window.confirmOrder = function(){
   const qty = parseInt(document.getElementById('orderQty').value)||0;
   if(qty<=0){ showToast('أدخل كمية صحيحة','error'); return; }
@@ -354,7 +427,7 @@ window.confirmOrder = function(){
   if(existingIdx>-1) currentOrder[existingIdx].qty = qty;
   else currentOrder.push({productId:p.id, name:p.name, qty, price:p.price, mainImage:p.mainImage||p.images?.[0]});
   updateProgress();
-  renderProducts();
+  renderProducts(true);
   closeOrderModal();
   showToast(`تمت إضافة ${p.name} ×${qty}`,'success');
 }
@@ -366,8 +439,9 @@ function updateProgress(){
   bar.classList.remove('hidden');
   countEl.classList.remove('hidden');
   countEl.textContent = currentOrder.length;
-  document.getElementById('progressText').textContent = `${currentOrder.length} / ${filteredProducts.length}`;
-  document.getElementById('progressBar').style.width = `${(currentOrder.length/filteredProducts.length)*100}%`;
+  document.getElementById('progressText').textContent = `${currentOrder.length} / ${filteredProducts.length||products.length}`;
+  const total = filteredProducts.length||products.length||1;
+  document.getElementById('progressBar').style.width = `${(currentOrder.length/total)*100}%`;
   document.getElementById('orderSummary').innerHTML = currentOrder.map(o=>`<div class="bg-gray-50 rounded-lg p-2.5 flex justify-between items-center"><span class="font-bold text-xs truncate">${o.name}</span><div class="flex items-center gap-2"><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold text-xs">${o.qty}</span><button onclick="deleteFromOrder('${o.productId}')" class="w-6 h-6 bg-red-50 text-red-500 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-[10px]"></i></button></div></div>`).join('');
 }
 
@@ -376,17 +450,38 @@ window.finishOrder = async function(){
   if(currentOrder.length===0){ showToast('لا يوجد طلبات','error'); return; }
   try{
     const orderData = {clientName:activeClient, items:currentOrder, totalItems:currentOrder.length, totalQty:currentOrder.reduce((s,i)=>s+i.qty,0), totalValue:currentOrder.reduce((s,i)=>s+(parseFloat(i.price)||0)*i.qty,0), createdAt:new Date().toISOString(), status:'pending'};
-    // حفظ في orders لظهوره في التقارير
-    const newRef = await push(ref(db, "orders"), orderData);
-    // حفظ أيضاً في clientBons للتقارير
+    await push(ref(db, "orders"), orderData);
     await push(ref(db, `clientBons/${activeClient}/orders`), orderData);
-    showToast(`✅ تم إرسال طلب ${activeClient} - ${currentOrder.length} منتج - سيظهر في التقارير`,'success');
-    // لا تمسح العميل، فقط الطلب
-    currentOrder=[]; updateProgress(); renderProducts();
-    setTimeout(()=>{ window.location.href='reports.html'; }, 1000);
+    showToast(`✅ تم إرسال طلب ${activeClient} - ${currentOrder.length} منتج`,'success');
+    currentOrder=[]; updateProgress(); renderProducts(true);
+    setTimeout(()=>{ window.location.href='reports.html'; }, 800);
   } catch(e){ showToast('خطأ: '+e.message,'error'); }
 }
-window.clearOrder = function(){ if(confirm('مسح الطلب؟')){ currentOrder=[]; updateProgress(); renderProducts(); showToast('تم المسح','info'); } }
+window.clearOrder = function(){ if(confirm('مسح الطلب؟')){ currentOrder=[]; updateProgress(); renderProducts(true); } }
+
+function renderClientDropdown(filter){
+  const dropdown = document.getElementById('clientDropdown');
+  let list = allClients;
+  if(filter) list = list.filter(c=>c.toLowerCase().includes(filter.toLowerCase()));
+  if(list.length===0 || !filter){ dropdown.classList.add('hidden'); return; }
+  dropdown.innerHTML = list.slice(0,20).map(c=>`<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b last:border-0 text-sm font-bold" onclick="selectClient('${c.replace(/'/g,"\\'")}')"><i class="fa-solid fa-user ml-2 text-gray-400"></i>${c}</div>`).join('');
+  dropdown.classList.remove('hidden');
+}
+window.selectClient = function(name){
+  document.getElementById('clientSearchInput').value = name;
+  document.getElementById('clientDropdown').classList.add('hidden');
+  setActiveClient(name);
+}
+function setActiveClient(name){
+  if(!name) return;
+  activeClient = name;
+  localStorage.setItem('activeClient', name);
+  document.getElementById('activeClientName').textContent = name;
+  document.getElementById('activeClientBar').classList.remove('hidden');
+  document.getElementById('orderClientLabel').textContent = `(${name})`;
+  showToast(`العميل: ${name}`,'success');
+  updateProgress();
+}
 
 /* Gallery */
 window.openGalleryFromOrder = function(){ openGallery(galleryImages, galleryIndex); }
@@ -404,27 +499,27 @@ window.goGallery=function(i){ galleryIndex=i; showGallery(); }
 window.closeGallery=function(){ document.getElementById('galleryModal').classList.remove('active'); }
 
 document.addEventListener('DOMContentLoaded', async()=>{
-  await loadClients();
-  await loadProducts();
-  if(activeClient){
-    document.getElementById('activeClientName').textContent=activeClient;
-    document.getElementById('activeClientBar').classList.remove('hidden');
-    document.getElementById('orderClientLabel').textContent=`(${activeClient})`;
-    document.getElementById('clientSearchInput').value=activeClient;
-  }
-  const searchInput = document.getElementById('clientSearchInput');
-  searchInput.addEventListener('input', e=>renderClientDropdown(e.target.value));
-  searchInput.addEventListener('focus', e=>renderClientDropdown(e.target.value));
+  // 1. عرض فوري من الهاتف
+  const hasCache = renderInstant();
+  // إعداد الأحداث
+  document.getElementById('clientSearchInput').addEventListener('input', e=>renderClientDropdown(e.target.value));
+  document.getElementById('clientSearchInput').addEventListener('focus', e=>renderClientDropdown(e.target.value));
   document.addEventListener('click', e=>{ if(!e.target.closest('#clientSearchInput') && !e.target.closest('#clientDropdown')) document.getElementById('clientDropdown').classList.add('hidden'); });
-  document.getElementById('searchClientBtn').addEventListener('click', ()=>{
-    const val = document.getElementById('clientSearchInput').value.trim();
-    if(val) setActiveClient(val);
-  });
+  document.getElementById('searchClientBtn').addEventListener('click', ()=>{ const v=document.getElementById('clientSearchInput').value.trim(); if(v) setActiveClient(v); });
   document.getElementById('changeClientBtn').addEventListener('click', ()=>{ document.getElementById('activeClientBar').classList.add('hidden'); document.getElementById('clientSearchInput').value=''; activeClient=''; localStorage.removeItem('activeClient'); updateProgress(); });
-  document.getElementById('searchInput').addEventListener('input', renderProducts);
+  document.getElementById('searchInput').addEventListener('input', ()=>{ renderProducts(true); });
   document.getElementById('finishOrderBtn').addEventListener('click', finishOrder);
   document.getElementById('clearOrderBtn').addEventListener('click', clearOrder);
   document.getElementById('reportsBtn').addEventListener('click', ()=>window.location.href='reports.html');
+  const observer = new IntersectionObserver(entries=>{ if(entries[0].isIntersecting) renderProducts(false); }, {rootMargin:'300px'});
+  observer.observe(document.getElementById('loadMoreTrigger'));
+
+  if(hasCache){
+    setTimeout(()=>{ loadClients(); loadProducts(); }, 300);
+  } else {
+    document.getElementById('productsContainer').innerHTML = Array(4).fill(0).map(()=>`<div class="bg-white rounded-2xl p-4 border"><div class="w-full h-48 skeleton rounded-xl mb-2"></div><div class="h-3 skeleton rounded w-3/4 mx-auto"></div></div>`).join('');
+    await Promise.all([loadClients(), loadProducts()]);
+  }
 });
 
 function showToast(msg,type='success'){
@@ -434,7 +529,7 @@ function showToast(msg,type='success'){
   m.textContent=msg;
   icon.className=type==='success'?'fa-solid fa-check-circle text-emerald-400':type==='error'?'fa-solid fa-circle-exclamation text-red-400':'fa-solid fa-info-circle text-blue-400';
   toast.classList.remove('hidden');
-  setTimeout(()=>toast.classList.add('hidden'),3500);
+  setTimeout(()=>toast.classList.add('hidden'),3000);
 }
 </script>
 </body>
