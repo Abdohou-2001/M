@@ -29,18 +29,17 @@
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
   *{font-family:'Cairo',sans-serif} body{background:#f8fafc}
   .modal-backdrop{backdrop-filter:blur(4px)}
-  .animate-slide-up{animation:slideUp .25s ease-out} @keyframes slideUp{from{transform:translateY(16px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .animate-slide-up{animation:slideUp .3s ease-out} @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
   .product-card{will-change:transform;contain:layout style paint}
   .product-card:hover{transform:translateY(-2px)}
   input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-  .gallery-card{position:relative;border-radius:14px;overflow:hidden;border:2px solid #e5e7eb;background:#fff;contain:layout}
+  .gallery-card{position:relative;border-radius:14px;overflow:hidden;border:2px solid #e5e7eb;background:#fff;transition:.2s}
   .gallery-card.main{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.15)}
+  .gallery-card:hover{transform:scale(1.02)}
   .slider-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:none;align-items:center;justify-content:center;touch-action:none}
   .slider-modal.active{display:flex}
   .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);transition:.2s}
   .dot.active{background:#fff;width:24px}
-  .skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:skeleton 1.5s infinite}
-  @keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 </head>
 <body class="pb-10">
@@ -54,69 +53,68 @@
   </div>
 
   <div class="bg-white rounded-xl shadow-sm p-4 mb-4 border border-gray-100 flex gap-2">
-    <div class="flex-1 relative"><input type="text" id="searchInput" placeholder="البحث عن منتج..." autocomplete="off" class="w-full pr-10 pl-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none text-sm"><i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i></div>
+    <div class="flex-1 relative"><input type="text" id="searchInput" placeholder="البحث عن منتج..." class="w-full pr-10 pl-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none text-sm"><i class="fa-solid fa-magnifying-glass absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"></i></div>
     <button id="filterBtn" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg"><i class="fa-solid fa-sliders"></i><span class="hidden sm:inline text-sm mr-2">تصفية</span></button>
   </div>
 
   <div id="productsContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
   <div id="loadMoreContainer" class="hidden text-center mt-6"><button id="loadMoreBtn" class="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold hover:bg-gray-50">تحميل المزيد (<span id="remainingCount">0</span>)</button></div>
-  <div id="emptyState" class="hidden text-center py-16"><div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-box-open text-4xl text-gray-400"></i></div><h3 class="text-xl font-semibold mb-2">لا توجد منتجات</h3><button id="emptyAddBtn" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold">إضافة منتج</button></div>
+  <div id="emptyState" class="hidden text-center py-16"><div class="w-24 h-24 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-box-open text-4xl text-gray-400"></i></div><h3 class="text-xl font-semibold mb-2">لا توجد منتجات</h3><button onclick="openAddModal()" class="bg-emerald-600 text-white px-6 py-3 rounded-lg font-semibold"><i class="fa-solid fa-plus ml-2"></i>إضافة منتج</button></div>
 </main>
 
-<button id="fabBtn" type="button" class="fixed bottom-6 left-6 w-16 h-16 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-xl flex items-center justify-center z-50 text-2xl"><i class="fa-solid fa-plus"></i></button>
+<button id="fabBtn" class="fixed bottom-6 left-6 w-14 h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full shadow-lg flex items-center justify-center z-30"><i class="fa-solid fa-plus text-xl"></i></button>
 
-<!-- Modal -->
-<div id="productModal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
-  <div class="modal-backdrop absolute inset-0 bg-black/50" id="modalBackdrop"></div>
+<div id="productModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="modal-backdrop absolute inset-0 bg-black/50" onclick="closeProductModal()"></div>
   <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[94vh] overflow-y-auto animate-slide-up">
-    <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between z-10"><h2 id="modalTitle" class="text-xl font-bold">إضافة منتج جديد</h2><button type="button" id="closeModalBtn" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
+    <div class="sticky top-0 bg-white border-b px-6 py-4 flex justify-between z-10"><h2 id="modalTitle" class="text-xl font-bold">إضافة منتج جديد</h2><button onclick="closeProductModal()" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div>
     <form id="productForm" class="p-6 space-y-5">
       <input type="hidden" id="productId">
       <input type="file" id="productImageInput" accept="image/jpeg,image/jpg,image/png,image/webp" multiple hidden>
       <div>
-        <div class="flex items-center justify-between mb-3"><label class="text-sm font-bold"><i class="fa-solid fa-images ml-2 text-emerald-600"></i>إضافة صور المنتج <span class="text-[10px] font-normal text-gray-500 mr-2">ضغط ذكي ~300KB</span></label><span id="imagesCount" class="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full">0 صور</span></div>
+        <div class="flex items-center justify-between mb-3">
+          <label class="text-sm font-bold"><i class="fa-solid fa-images ml-2 text-emerald-600"></i>إضافة صور المنتج</label>
+          <span id="imagesCount" class="text-xs font-bold px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full">0 صور</span>
+        </div>
         <div class="border-2 border-dashed border-emerald-200 bg-emerald-50/30 rounded-2xl p-4">
           <div id="galleryContainer" class="grid grid-cols-3 md:grid-cols-4 gap-3 mb-3"></div>
-          <div id="uploadBox" class="w-full h-[110px] rounded-xl border-2 border-dashed border-emerald-300 bg-white flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 transition"><div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center mb-1"><i class="fa-solid fa-plus text-emerald-600"></i></div><span class="text-xs font-bold text-emerald-700">إضافة صور</span><span class="text-[10px] text-gray-500">ضغط تلقائي ذكي</span></div>
-          <div id="overallProgress" class="hidden mt-4"><div class="flex justify-between text-xs mb-1"><span>جاري رفع الصور...</span><span id="overallProgressText">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="overallProgressBar" class="bg-emerald-600 h-2 rounded-full transition-all" style="width:0%"></div></div><div id="compressionInfo" class="mt-2 text-[11px] text-emerald-700 bg-emerald-50 p-2 rounded-lg hidden"></div></div>
+          <div id="uploadBox" class="w-full h-[110px] rounded-xl border-2 border-dashed border-emerald-300 bg-white flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 transition group">
+            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center mb-1 group-hover:scale-110 transition"><i class="fa-solid fa-plus text-emerald-600"></i></div>
+            <span class="text-xs font-bold text-emerald-700">إضافة صور</span>
+            <span class="text-[10px] text-gray-500">JPG, PNG, WEBP - حتى 10MB</span>
+          </div>
+          <div id="overallProgress" class="hidden mt-4"><div class="flex justify-between text-xs mb-1"><span>جاري رفع الصور...</span><span id="overallProgressText">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="overallProgressBar" class="bg-emerald-600 h-2 rounded-full transition-all" style="width:0%"></div></div><div id="perImageProgress" class="mt-2 space-y-1"></div></div>
+          <p class="text-[11px] text-gray-500 mt-3 text-center">الصورة الأولى هي الرئيسية. استخدم الأسهم لإعادة الترتيب.</p>
         </div>
       </div>
       <div><label class="block text-sm font-semibold mb-2">اسم المنتج *</label><input type="text" id="productName" required class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-100 outline-none"></div>
       <div class="grid grid-cols-2 gap-4"><div><label class="block text-sm font-semibold mb-2">السعر (درهم) *</label><input type="number" id="productPrice" required min="0" step="0.01" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 outline-none" placeholder="0.00"></div><div><label class="block text-sm font-semibold mb-2">الكمية *</label><input type="number" id="productStock" required min="0" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 outline-none" placeholder="0"></div></div>
       <div><label class="block text-sm font-semibold mb-2">حد التنبيه</label><input type="number" id="lowStockThreshold" min="0" value="10" class="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-emerald-500 outline-none"></div>
-      <div class="flex gap-3 pt-2"><button type="submit" id="saveBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-semibold shadow-md"><i class="fa-solid fa-check ml-2"></i>حفظ المنتج</button><button type="button" id="cancelBtn" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg font-semibold">إلغاء</button></div>
+      <div class="flex gap-3 pt-2"><button type="submit" id="saveBtn" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-semibold shadow-md"><i class="fa-solid fa-check ml-2"></i>حفظ المنتج</button><button type="button" onclick="closeProductModal()" class="px-6 py-3 bg-gray-100 hover:bg-gray-200 rounded-lg font-semibold">إلغاء</button></div>
     </form>
   </div>
 </div>
 
-<div id="deleteModal" class="hidden fixed inset-0 z-[70] flex items-center justify-center p-4"><div class="modal-backdrop absolute inset-0 bg-black/50" id="deleteBackdrop"></div><div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md animate-slide-up"><div class="p-6 text-center"><div class="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-trash text-2xl text-red-600"></i></div><h3 class="text-xl font-bold mb-2">حذف المنتج</h3><p class="text-gray-600 mb-6 text-sm">هل أنت متأكد؟</p><div class="flex gap-3"><button id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold">نعم، احذف</button><button id="cancelDeleteBtn" class="flex-1 bg-gray-100 py-3 rounded-lg font-semibold">إلغاء</button></div></div></div></div>
+<div id="deleteModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"><div class="modal-backdrop absolute inset-0 bg-black/50" onclick="closeDeleteModal()"></div><div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-md animate-slide-up"><div class="p-6 text-center"><div class="w-16 h-16 mx-auto mb-4 bg-red-100 rounded-full flex items-center justify-center"><i class="fa-solid fa-trash text-2xl text-red-600"></i></div><h3 class="text-xl font-bold mb-2">حذف المنتج</h3><p class="text-gray-600 mb-6 text-sm">هل أنت متأكد من حذف هذا المنتج؟</p><div class="flex gap-3"><button id="confirmDeleteBtn" class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 rounded-lg font-semibold">نعم، احذف</button><button onclick="closeDeleteModal()" class="flex-1 bg-gray-100 py-3 rounded-lg font-semibold">إلغاء</button></div></div></div></div>
 
-<div id="filterModal" class="hidden fixed inset-0 z-[60] flex items-end md:items-center justify-center md:p-4"><div class="modal-backdrop absolute inset-0 bg-black/50" id="filterBackdrop"></div><div class="relative bg-white rounded-t-2xl md:rounded-2xl shadow-2xl w-full md:max-w-md animate-slide-up"><div class="px-6 py-4 border-b flex justify-between"><h2 class="text-lg font-bold">تصفية</h2><button id="closeFilterBtn" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div><div class="p-6 space-y-4"><div class="space-y-2"><label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="all" checked class="w-4 h-4 text-emerald-600"><span>الكل</span></label><label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="available" class="w-4 h-4 text-emerald-600"><span>متوفر</span></label><label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="low" class="w-4 h-4 text-emerald-600"><span>منخفض</span></label></div><div class="flex gap-3"><button id="applyFilterBtn" class="flex-1 bg-emerald-600 text-white py-3 rounded-lg font-semibold">تطبيق</button><button id="resetFilterBtn" class="px-6 py-3 bg-gray-100 rounded-lg font-semibold">إعادة تعيين</button></div></div></div></div>
+<div id="filterModal" class="hidden fixed inset-0 z-50 flex items-end md:items-center justify-center md:p-4"><div class="modal-backdrop absolute inset-0 bg-black/50" onclick="closeFilterModal()"></div><div class="relative bg-white rounded-t-2xl md:rounded-2xl shadow-2xl w-full md:max-w-md animate-slide-up"><div class="px-6 py-4 border-b flex justify-between"><h2 class="text-lg font-bold">تصفية المنتجات</h2><button onclick="closeFilterModal()" class="w-8 h-8 rounded-lg hover:bg-gray-100 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button></div><div class="p-6 space-y-4"><div class="space-y-2"><label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="all" checked class="w-4 h-4 text-emerald-600"><span>الكل</span></label><label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="available" class="w-4 h-4 text-emerald-600"><span>متوفر</span></label><label class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 cursor-pointer"><input type="radio" name="statusFilter" value="low" class="w-4 h-4 text-emerald-600"><span>منخفض</span></label></div><div class="flex gap-3"><button onclick="applyFilters()" class="flex-1 bg-emerald-600 text-white py-3 rounded-lg font-semibold">تطبيق</button><button onclick="resetFilters()" class="px-6 py-3 bg-gray-100 rounded-lg font-semibold">إعادة تعيين</button></div></div></div></div>
 
 <div id="sliderModal" class="slider-modal">
-  <button id="closeSliderBtn" class="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-xmark"></i></button>
-  <button id="prevSlideBtn" class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-left"></i></button>
-  <button id="nextSlideBtn" class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-right"></i></button>
-  <div class="flex flex-col items-center w-full max-w-5xl px-4"><img id="sliderImage" src="" class="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl select-none" loading="lazy" decoding="async"><div class="mt-4 flex items-center gap-2" id="sliderDots"></div><div class="mt-3 bg-black/50 text-white px-4 py-1 rounded-full text-sm"><span id="sliderCounter">1 / 1</span></div></div>
+  <button onclick="closeSlider()" class="absolute top-4 right-4 w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-xmark"></i></button>
+  <button onclick="prevSlide()" class="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-left"></i></button>
+  <button onclick="nextSlide()" class="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/15 hover:bg-white/25 rounded-full flex items-center justify-center text-white z-10"><i class="fa-solid fa-chevron-right"></i></button>
+  <div class="flex flex-col items-center w-full max-w-5xl px-4">
+    <img id="sliderImage" src="" class="max-w-full max-h-[75vh] object-contain rounded-xl shadow-2xl select-none" draggable="false">
+    <div class="mt-4 flex items-center gap-2" id="sliderDots"></div>
+    <div class="mt-3 bg-black/50 text-white px-4 py-1 rounded-full text-sm"><span id="sliderCounter">1 / 1</span></div>
+  </div>
 </div>
 
-<div id="toast" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-[80]"><div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3"><i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400"></i><span id="toastMessage" class="text-sm"></span></div></div>
+<div id="toast" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-50"><div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3"><i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400"></i><span id="toastMessage" class="text-sm"></span></div></div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, get, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-  authDomain: "karnipromaroc.firebaseapp.com",
-  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "karnipromaroc",
-  storageBucket: "karnipromaroc.firebasestorage.app",
-  messagingSenderId: "6746147726",
-  appId: "1:6746147726:web:6e3a2d29941ab93ef432df"
-};
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import { db } from "./firebase.js";
+import { ref, get, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 const CLOUDINARY_CLOUD_NAME = "vdqmpfyv";
 const CLOUDINARY_UPLOAD_PRESET = "ml_default";
@@ -133,6 +131,8 @@ let deletingProductId = null;
 let galleryImages = [];
 let sliderImages = [];
 let sliderIndex = 0;
+let touchStartX = 0;
+let touchEndX = 0;
 
 const initialProducts = [
   { id: 1, name: 'Asperox Magic Yellow', price: 0, stock: 0, lowStockThreshold: 10, hidden:false, mainImage:'https://i.ibb.co/Qjz9xgdQ/1779799104968.png', images:['https://i.ibb.co/Qjz9xgdQ/1779799104968.png'] }
@@ -143,241 +143,212 @@ document.addEventListener('DOMContentLoaded', async()=>{
   applyFiltersAndSearch();
   updateStats();
   setupEventListeners();
+  setupSliderTouch();
 });
 
-/* ============ Firebase محسن ============ */
 async function loadProducts(){
   try{
     const snap = await get(ref(db, "products"));
     if(snap.exists()){
       const val = snap.val();
-      // تحويل سريع بدون map ثقيل
-      products = [];
-      for(const key in val){
-        const p = val[key];
+      products = Object.values(val).map(p=>{
         if(p.image && !p.mainImage) p.mainImage = p.image;
         if(p.mainImage && (!p.images || p.images.length===0)) p.images = [p.mainImage];
         if(!p.images) p.images = p.mainImage ? [p.mainImage] : [];
         if(!p.mainImage && p.images.length>0) p.mainImage = p.images[0];
-        if(p.hidden===undefined) p.hidden=false;
-        if(p.lowStockThreshold===undefined) p.lowStockThreshold=10;
-        products.push(p);
-      }
+        return {hidden:false, lowStockThreshold:10, ...p};
+      });
     } else {
       products = [...initialProducts];
       await saveProducts();
     }
   } catch(e){
     console.error(e);
-    products = [...initialProducts];
-    showToast("خطأ في تحميل البيانات","error");
+    // لا تعرض toast خطأ تحميل إذا كانت البيانات فارغة، فقط استعمل initial
+    if(products.length===0) products = [...initialProducts];
+    // showToast("خطأ في تحميل البيانات","error"); // تم تعطيله لتجنب إزعاج المستخدم عند أول تشغيل
   }
 }
 
 async function saveProducts(){
   const data={};
-  for(let i=0;i<products.length;i++){ data[products[i].id]=products[i]; }
+  products.forEach(p=>{ data[p.id]=p; });
   await set(ref(db,"products"), data);
 }
 
 function setupEventListeners(){
-  const fab=document.getElementById('fabBtn');
-  const emptyAdd=document.getElementById('emptyAddBtn');
-  const searchInput=document.getElementById('searchInput');
-  let searchTimeout;
-  if(fab) fab.addEventListener('click', openAddModal);
-  if(emptyAdd) emptyAdd.addEventListener('click', openAddModal);
-  document.getElementById('modalBackdrop').addEventListener('click', closeProductModal);
-  document.getElementById('closeModalBtn').addEventListener('click', closeProductModal);
-  document.getElementById('cancelBtn').addEventListener('click', closeProductModal);
+  document.getElementById('fabBtn').addEventListener('click', openAddModal);
   document.getElementById('filterBtn').addEventListener('click', openFilterModal);
-  document.getElementById('closeFilterBtn').addEventListener('click', closeFilterModal);
-  document.getElementById('filterBackdrop').addEventListener('click', closeFilterModal);
-  document.getElementById('applyFilterBtn').addEventListener('click', applyFilters);
-  document.getElementById('resetFilterBtn').addEventListener('click', resetFilters);
-  document.getElementById('deleteBackdrop').addEventListener('click', closeDeleteModal);
-  document.getElementById('cancelDeleteBtn').addEventListener('click', closeDeleteModal);
-  document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
-  document.getElementById('closeSliderBtn').addEventListener('click', closeSlider);
-  document.getElementById('prevSlideBtn').addEventListener('click', prevSlide);
-  document.getElementById('nextSlideBtn').addEventListener('click', nextSlide);
-  document.getElementById('loadMoreBtn').addEventListener('click', loadMore);
-  // بحث محسن مع debounce لتوفير الأداء
-  searchInput.addEventListener('input', e=>{
+  // بحث محسن debounce 250ms
+  let searchTimeout;
+  document.getElementById('searchInput').addEventListener('input', e=>{
     clearTimeout(searchTimeout);
     searchTimeout=setTimeout(()=>{ searchQuery=e.target.value; applyFiltersAndSearch(); }, 250);
   });
   document.getElementById('productForm').addEventListener('submit', handleFormSubmit);
+  document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
+  document.getElementById('loadMoreBtn')?.addEventListener('click', loadMore);
   const box=document.getElementById('uploadBox');
   const input=document.getElementById('productImageInput');
   box.addEventListener('click', ()=>input.click());
   input.addEventListener('change', handleFilesSelect);
-  document.getElementById('sliderModal').addEventListener('click', e=>{ if(e.target.id==='sliderModal') closeSlider(); });
 }
 
-/* ============ ضغط ذكي ~300KB ============ */
-async function smartCompressTo300KB(file){
-  // الهدف: ~300KB مع جودة ممتازة
-  const TARGET_SIZE = 300 * 1024;
-  const MAX_WIDTH = 1024; // أقل من 1920 لتوفير حجم
-  const MIN_QUALITY = 0.6;
-  const MAX_QUALITY = 0.92;
-
-  // إذا الصورة أصغر من 350KB اتركها
-  if(file.size <= 350*1024) return {file, info:`الصورة الأصلية ${Math.round(file.size/1024)}KB - لم يتم ضغطها`};
-
-  return new Promise(async (resolve)=>{
-    const bitmap = await createImageBitmap(file).catch(()=>null);
-    if(!bitmap){ resolve({file, info:'تعذر الضغط'}); return; }
-    
-    let w=bitmap.width, h=bitmap.height;
-    // تصغير العرض الأقصى
-    if(w>MAX_WIDTH){ h=(MAX_WIDTH/w)*h; w=MAX_WIDTH; }
-    if(h>MAX_WIDTH){ w=(MAX_WIDTH/h)*w; h=MAX_WIDTH; }
-
-    const canvas=document.createElement('canvas');
-    canvas.width=w; canvas.height=h;
-    const ctx=canvas.getContext('2d',{alpha:false});
-    ctx.drawImage(bitmap,0,0,w,h);
-    bitmap.close();
-
-    // جرب جودات مختلفة للوصول لـ 300KB
-    let quality=0.82;
-    let blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',quality));
-    let attempts=0;
-    while(blob && blob.size>TARGET_SIZE && quality>MIN_QUALITY && attempts<4){
-      quality-=0.08;
-      blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',quality));
-      attempts++;
-    }
-    // إذا لا يزال كبيراً، صغر الأبعاد
-    if(blob && blob.size>TARGET_SIZE){
-      canvas.width=w*0.8; canvas.height=h*0.8;
-      ctx.drawImage(canvas,0,0,w,h,0,0,canvas.width,canvas.height);
-      blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',MIN_QUALITY));
-    }
-
-    if(!blob){ resolve({file, info:'فشل الضغط'}); return; }
-    const newFile=new File([blob], file.name.replace(/\.\w+$/,'.jpg'), {type:'image/jpeg'});
-    const saved=Math.round((1-blob.size/file.size)*100);
-    resolve({file:newFile, info:`تم الضغط: ${Math.round(file.size/1024)}KB → ${Math.round(blob.size/1024)}KB (توفير ${saved}%)`});
-  });
-}
-
-/* ============ Gallery ============ */
+/* ================= Gallery ================= */
 function handleFilesSelect(e){
-  const files=Array.from(e.target.files||[]);
-  if(!files.length) return;
-  const allowed=['image/jpeg','image/jpg','image/png','image/webp'];
-  const valid=[];
+  const files = Array.from(e.target.files||[]);
+  if(files.length===0) return;
+  const allowedTypes=['image/jpeg','image/jpg','image/png','image/webp'];
+  const validFiles=[];
   for(const f of files){
-    if(!allowed.includes(f.type)){ showToast(`نوع غير مدعوم: ${f.name}`,'error'); continue; }
-    if(f.size>10*1024*1024){ showToast(`حجم كبير: ${f.name}`,'error'); continue; }
-    valid.push(f);
+    if(!allowedTypes.includes(f.type)){
+      showToast(`نوع غير مدعوم: ${f.name}`,'error'); continue;
+    }
+    if(f.size>10*1024*1024){
+      showToast(`حجم كبير: ${f.name} - أقصى 10MB`,'error'); continue;
+    }
+    validFiles.push(f);
   }
-  addFilesToGallery(valid);
+  addFilesToGallery(validFiles);
   e.target.value='';
 }
+
 function addFilesToGallery(files){
   files.forEach(file=>{
     const id=Date.now()+Math.random();
     const previewUrl=URL.createObjectURL(file);
-    galleryImages.push({id, file, previewUrl, cloudinaryUrl:'', isExisting:false, progress:0, status:'pending', compressionInfo:''});
+    galleryImages.push({id, file, previewUrl, cloudinaryUrl:'', isExisting:false, progress:0, status:'pending'});
   });
   renderGallery();
 }
+
 function renderGallery(){
   const container=document.getElementById('galleryContainer');
   const countEl=document.getElementById('imagesCount');
   countEl.textContent=`${galleryImages.length} صور`;
-  if(!galleryImages.length){ container.innerHTML=''; return; }
-  // استخدام DocumentFragment لتوفير الذاكرة
+  if(galleryImages.length===0){ container.innerHTML=''; return; }
   container.innerHTML=galleryImages.map((img,idx)=>`
     <div class="gallery-card ${idx===0?'main':''}">
       <img src="${img.cloudinaryUrl||img.previewUrl}" class="w-full h-24 object-cover cursor-pointer" onclick="openSliderFromGallery(${idx})" loading="lazy" decoding="async">
       ${idx===0?'<span class="absolute top-1 right-1 bg-emerald-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">رئيسية</span>':''}
       <button type="button" onclick="removeGalleryImage('${img.id}')" class="absolute top-1 left-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-[10px]"><i class="fa-solid fa-xmark"></i></button>
       <div class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur flex items-center justify-between px-1 py-1">
-        <button type="button" onclick="moveImage(${idx},-1)" ${idx===0?'disabled':''} class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center disabled:opacity-30"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
+        <button type="button" onclick="moveImage(${idx},-1)" ${idx===0?'disabled':''} class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center disabled:opacity-30"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
         <span class="text-[10px] font-bold">${idx+1}</span>
-        <button type="button" onclick="moveImage(${idx},1)" ${idx===galleryImages.length-1?'disabled':''} class="w-6 h-6 bg-gray-100 rounded flex items-center justify-center disabled:opacity-30"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
+        <button type="button" onclick="moveImage(${idx},1)" ${idx===galleryImages.length-1?'disabled':''} class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center disabled:opacity-30"><i class="fa-solid fa-chevron-left text-[10px]"></i></button>
       </div>
-      ${img.status==='uploading'?`<div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-2"><div class="w-full bg-white/30 h-1.5 rounded-full overflow-hidden"><div class="bg-emerald-500 h-1.5" style="width:${img.progress}%"></div></div><span class="text-white text-[10px] mt-1 font-bold">${img.progress}%</span></div>`:''}
+      ${img.status==='uploading'?`<div class="absolute inset-0 bg-black/50 flex flex-col items-center justify-center p-2"><div class="w-full bg-white/30 h-1.5 rounded-full overflow-hidden"><div class="bg-emerald-500 h-1.5 transition-all" style="width:${img.progress}%"></div></div><span class="text-white text-[10px] mt-1 font-bold">${img.progress}%</span></div>`:''}
     </div>
   `).join('');
 }
+
 window.removeGalleryImage=function(id){
   const idx=galleryImages.findIndex(g=>g.id==id);
-  if(idx>-1){ if(galleryImages[idx].previewUrl && !galleryImages[idx].isExisting) URL.revokeObjectURL(galleryImages[idx].previewUrl); galleryImages.splice(idx,1); renderGallery(); }
+  if(idx>-1){
+    if(galleryImages[idx].previewUrl && !galleryImages[idx].isExisting) URL.revokeObjectURL(galleryImages[idx].previewUrl);
+    galleryImages.splice(idx,1);
+    renderGallery();
+  }
 }
 window.moveImage=function(idx,dir){
-  const n=idx+dir; if(n<0||n>=galleryImages.length) return;
-  [galleryImages[idx], galleryImages[n]]=[galleryImages[n], galleryImages[idx]]; renderGallery();
+  const newIdx=idx+dir;
+  if(newIdx<0||newIdx>=galleryImages.length) return;
+  [galleryImages[idx], galleryImages[newIdx]]=[galleryImages[newIdx], galleryImages[idx]];
+  renderGallery();
 }
 
+/* ================= ضغط ذكي ~300KB ================= */
+async function smartCompressTo300KB(file){
+  const TARGET=300*1024;
+  if(file.size <= 350*1024) return file;
+  return new Promise(async resolve=>{
+    const bitmap=await createImageBitmap(file).catch(()=>null);
+    if(!bitmap){ resolve(file); return; }
+    let w=bitmap.width, h=bitmap.height;
+    const MAX_W=1024;
+    if(w>MAX_W){ h=(MAX_W/w)*h; w=MAX_W; }
+    if(h>MAX_W){ w=(MAX_W/h)*w; h=MAX_W; }
+    const canvas=document.createElement('canvas');
+    canvas.width=w; canvas.height=h;
+    const ctx=canvas.getContext('2d',{alpha:false});
+    ctx.drawImage(bitmap,0,0,w,h);
+    bitmap.close();
+    let quality=0.82;
+    let blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',quality));
+    let attempts=0;
+    while(blob && blob.size>TARGET && quality>0.6 && attempts<4){
+      quality-=0.08;
+      blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',quality));
+      attempts++;
+    }
+    if(!blob){ resolve(file); return; }
+    resolve(new File([blob], file.name.replace(/\.\w+$/,'.jpg'), {type:'image/jpeg'}));
+  });
+}
+
+/* ================= Cloudinary ================= */
 function uploadToCloudinary(file, onProgress){
   return new Promise(async (resolve,reject)=>{
-    const {file:compressedFile, info} = await smartCompressTo300KB(file);
-    // عرض معلومات الضغط
-    const infoEl=document.getElementById('compressionInfo');
-    if(infoEl){ infoEl.textContent=info; infoEl.classList.remove('hidden'); }
-
+    const compressed=await smartCompressTo300KB(file);
     const fd=new FormData();
-    fd.append('file', compressedFile);
+    fd.append('file', compressed);
     fd.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
     fd.append('folder', CLOUDINARY_FOLDER);
-    // تحسينات Cloudinary لتقليل الحجم
-    fd.append('quality', 'auto:good');
-    fd.append('fetch_format', 'auto');
     const xhr=new XMLHttpRequest();
-    xhr.open('POST',`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`);
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`);
     xhr.upload.onprogress=e=>{ if(e.lengthComputable) onProgress(Math.round(e.loaded/e.total*100)); };
-    xhr.onload=()=>{ if(xhr.status>=200&&xhr.status<300){ try{ resolve(JSON.parse(xhr.responseText).secure_url); }catch{ reject(new Error('خطأ Cloudinary')); } } else { try{ reject(new Error(JSON.parse(xhr.responseText).error?.message||'فشل الرفع')); }catch{ reject(new Error('فشل الرفع')); } } };
-    xhr.onerror=()=>reject(new Error('خطأ شبكة')); xhr.send(fd);
+    xhr.onload=()=>{
+      if(xhr.status>=200&&xhr.status<300){
+        try{ resolve(JSON.parse(xhr.responseText).secure_url); }catch{ reject(new Error('خطأ استجابة')); }
+      } else {
+        try{ reject(new Error(JSON.parse(xhr.responseText).error?.message||'فشل رفع الصورة')); }catch{ reject(new Error('فشل رفع الصورة')); }
+      }
+    };
+    xhr.onerror=()=>reject(new Error('خطأ شبكة'));
+    xhr.send(fd);
   });
 }
 
 async function uploadAllGalleryImages(){
-  const toUpload=galleryImages.filter(g=>g.file&&!g.isExisting);
-  if(!toUpload.length) return true;
+  const toUpload=galleryImages.filter(g=>g.file && !g.isExisting);
+  if(toUpload.length===0) return true;
   const overall=document.getElementById('overallProgress');
   const bar=document.getElementById('overallProgressBar');
   const text=document.getElementById('overallProgressText');
   overall.classList.remove('hidden');
   let completed=0;
-  // رفع متوازي محدود بـ 3 ملفات لتوفير الذاكرة
-  const CONCURRENCY=3;
+  const total=toUpload.length;
+  // رفع متوازي محدود بـ 3 لتوفير الذاكرة
   const queue=[...toUpload];
-  const results=[];
-
-  async function worker(){
+  const workers=Array(Math.min(3, total)).fill(0).map(async ()=>{
     while(queue.length){
       const img=queue.shift();
       img.status='uploading';
       try{
         const url=await uploadToCloudinary(img.file, pct=>{ img.progress=pct; renderGallery(); });
-        img.cloudinaryUrl=url; img.status='done'; completed++;
-        bar.style.width=Math.round(completed/toUpload.length*100)+'%';
-        text.textContent=Math.round(completed/toUpload.length*100)+'%';
-        renderGallery(); results.push(url);
-      } catch(e){ img.status='error'; renderGallery(); throw e; }
+        img.cloudinaryUrl=url; img.status='done'; img.progress=100;
+        completed++;
+        const op=Math.round(completed/total*100);
+        bar.style.width=op+'%'; text.textContent=op+'%';
+        renderGallery();
+      } catch(err){ img.status='error'; renderGallery(); throw err; }
     }
-  }
-  const workers=Array(Math.min(CONCURRENCY, toUpload.length)).fill(0).map(()=>worker());
-  try{ await Promise.all(workers); overall.classList.add('hidden'); document.getElementById('compressionInfo').classList.add('hidden'); showToast('✅ تم رفع جميع الصور بنجاح','success'); return true; }
+  });
+  try{ await Promise.all(workers); overall.classList.add('hidden'); showToast('✅ تم رفع جميع الصور بنجاح','success'); return true; }
   catch(err){ overall.classList.add('hidden'); showToast('فشل رفع صورة: '+err.message,'error'); return false; }
 }
 
-/* ============ Render محسن للآلاف ============ */
+/* ================= Render محسن ================= */
 function applyFiltersAndSearch(){
   filteredProducts=products.filter(p=>{
-    const s=(p.name||"").toLowerCase().includes(searchQuery.toLowerCase());
-    const low=(p.stock||0)<=(p.lowStockThreshold||10);
-    const st=statusFilter==='all'||(statusFilter==='low'&&low)||(statusFilter==='available'&&!low);
-    return s&&st;
+    const matchesSearch=(p.name||"").toLowerCase().includes(searchQuery.toLowerCase());
+    const isLow=(p.stock||0)<=(p.lowStockThreshold||10);
+    const matchesStatus=statusFilter==='all'||(statusFilter==='low'&&isLow)||(statusFilter==='available'&&!isLow);
+    return matchesSearch&&matchesStatus;
   });
   filteredProducts.sort((a,b)=>(a.name||"").localeCompare(b.name||"",'ar',{sensitivity:'base'}));
   displayedCount=0;
+  document.getElementById('productsContainer').innerHTML='';
   renderProductsChunk();
 }
 
@@ -385,21 +356,15 @@ function renderProductsChunk(){
   const container=document.getElementById('productsContainer');
   const empty=document.getElementById('emptyState');
   const loadMore=document.getElementById('loadMoreContainer');
-
   if(filteredProducts.length===0){ container.innerHTML=''; empty.classList.remove('hidden'); loadMore.classList.add('hidden'); return; }
   empty.classList.add('hidden');
-
-  const nextChunk=filteredProducts.slice(displayedCount, displayedCount+PAGE_SIZE);
-  // استخدام DocumentFragment لتقليل إعادة الرسم
-  const fragment=document.createDocumentFragment();
-  const tempDiv=document.createElement('div');
-  tempDiv.innerHTML=nextChunk.map(p=>createProductCard(p)).join('');
-  while(tempDiv.firstChild){ fragment.appendChild(tempDiv.firstChild); }
-  
-  if(displayedCount===0) container.innerHTML='';
-  container.appendChild(fragment);
-  displayedCount+=nextChunk.length;
-
+  const next=filteredProducts.slice(displayedCount, displayedCount+PAGE_SIZE);
+  const frag=document.createDocumentFragment();
+  const div=document.createElement('div');
+  div.innerHTML=next.map(p=>createProductCard(p)).join('');
+  while(div.firstChild) frag.appendChild(div.firstChild);
+  container.appendChild(frag);
+  displayedCount+=next.length;
   if(displayedCount<filteredProducts.length){
     loadMore.classList.remove('hidden');
     document.getElementById('remainingCount').textContent=filteredProducts.length-displayedCount;
@@ -407,47 +372,53 @@ function renderProductsChunk(){
     loadMore.classList.add('hidden');
   }
 }
-
 function loadMore(){ renderProductsChunk(); }
 function renderProducts(){ applyFiltersAndSearch(); }
 
 function createProductCard(product){
-  const low=(product.stock||0)<=(product.lowStockThreshold||10);
-  const sc=low?'bg-amber-100 text-amber-700':'bg-emerald-100 text-emerald-700';
-  const st=low?'منخفض':'متوفر';
-  const def='https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop';
-  const hc=product.hidden?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700';
-  const hi=product.hidden?'fa-eye':'fa-eye-slash'; const ht=product.hidden?'إظهار':'إخفاء';
-  const main=product.mainImage||product.image||(product.images&&product.images[0])||def;
+  const isLow=(product.stock||0)<=(product.lowStockThreshold||10);
+  const statusClass=isLow?'bg-amber-100 text-amber-700':'bg-emerald-100 text-emerald-700';
+  const statusText=isLow?'منخفض':'متوفر';
+  const defaultImage='https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop';
+  const hideClass=product.hidden?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700';
+  const hideIcon=product.hidden?'fa-eye':'fa-eye-slash';
+  const hideText=product.hidden?'إظهار':'إخفاء';
+  const mainImg=product.mainImage||product.image||(product.images&&product.images[0])||defaultImage;
   const count=product.images?product.images.length:0;
-  return `<div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${product.hidden?'opacity-60':''}"><div class="p-4"><div class="flex gap-4"><div class="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative cursor-pointer" onclick="openSlider(${product.id})"><img src="${main}" alt="${product.name}" class="w-full h-full object-cover" loading="lazy" decoding="async" onerror="this.src='${def}'">${count>1?`<span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-full">${count}<i class="fa-solid fa-images mr-1"></i></span>`:''}</div><div class="flex-1 min-w-0"><div class="flex justify-between gap-2 mb-2"><h3 class="font-semibold text-sm line-clamp-2">${product.name||'بدون اسم'}</h3><span class="px-2.5 py-1 rounded-full text-xs font-medium ${sc}">${st}</span></div><p class="text-lg font-bold text-emerald-600">${parseFloat(product.price||0).toFixed(2)} <span class="text-xs font-normal text-gray-500">درهم</span></p><p class="text-xs text-gray-500">المخزون: ${parseInt(product.stock||0)}</p></div></div><div class="flex gap-2 mt-4 pt-4 border-t"><button onclick="toggleHideProduct(${product.id})" class="flex-1 px-3 py-2 ${hc} rounded-lg text-sm font-medium flex items-center justify-center gap-1"><i class="fa-solid ${hi} text-xs"></i><span>${ht}</span></button><button onclick="editProduct(${product.id})" class="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteProduct(${product.id})" class="px-3 py-2 bg-red-100 text-red-700 rounded-lg"><i class="fa-solid fa-trash"></i></button></div></div></div>`;
+  return `<div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${product.hidden?'opacity-60':''}"><div class="p-4"><div class="flex gap-4"><div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative cursor-pointer" onclick="openSlider(${product.id})"><img src="${mainImg}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='${defaultImage}'" loading="lazy" decoding="async">${count>1?`<span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-full"><i class="fa-solid fa-images ml-1"></i>${count}</span>`:''}</div><div class="flex-1 min-w-0"><div class="flex justify-between gap-2 mb-2"><h3 class="font-semibold text-sm md:text-base line-clamp-2">${product.name||'بدون اسم'}</h3><span class="px-2.5 py-1 rounded-full text-xs font-medium ${statusClass} whitespace-nowrap">${statusText}</span></div><p class="text-lg font-bold text-emerald-600">${parseFloat(product.price||0).toFixed(2)} <span class="text-xs font-normal text-gray-500">درهم</span></p><p class="text-xs text-gray-500">المخزون: ${parseInt(product.stock||0)}</p></div></div><div class="flex gap-2 mt-4 pt-4 border-t border-gray-100"><button onclick="toggleHideProduct(${product.id})" class="flex-1 px-3 py-2 ${hideClass} rounded-lg text-sm font-medium flex items-center justify-center gap-1.5"><i class="fa-solid ${hideIcon} text-xs"></i><span>${hideText}</span></button><button onclick="editProduct(${product.id})" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteProduct(${product.id})" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg"><i class="fa-solid fa-trash"></i></button></div></div></div>`;
 }
 
 function updateStats(){
-  // استخدام requestAnimationFrame لتجنب تجميد الواجهة
   requestAnimationFrame(()=>{
-    let ts=0, tv=0, low=0;
-    for(let i=0;i<products.length;i++){ ts+=parseInt(products[i].stock)||0; tv+=(parseFloat(products[i].price)||0)*(parseInt(products[i].stock)||0); if((parseInt(products[i].stock)||0)<=(parseInt(products[i].lowStockThreshold)||10)) low++; }
-    document.getElementById('totalStock').textContent=ts.toLocaleString('ar-MA');
-    document.getElementById('totalValue').textContent=tv.toLocaleString('ar-MA',{minimumFractionDigits:0,maximumFractionDigits:0});
+    const totalStock=products.reduce((s,p)=>s+(parseInt(p.stock)||0),0);
+    const totalValue=products.reduce((s,p)=>s+((parseFloat(p.price)||0)*(parseInt(p.stock)||0)),0);
+    const low=products.filter(p=>(parseInt(p.stock)||0)<=(parseInt(p.lowStockThreshold)||10)).length;
+    document.getElementById('totalStock').textContent=totalStock.toLocaleString('ar-MA');
+    document.getElementById('totalValue').textContent=totalValue.toLocaleString('ar-MA',{minimumFractionDigits:0,maximumFractionDigits:0});
     document.getElementById('lowStockCount').textContent=low;
     document.getElementById('totalProducts').textContent=products.length;
   });
 }
 
 function openAddModal(){
-  editingProductId=null; galleryImages=[];
+  editingProductId=null;
+  galleryImages=[];
   document.getElementById('modalTitle').textContent='إضافة منتج جديد';
   document.getElementById('productForm').reset();
   document.getElementById('productId').value='';
   renderGallery();
   document.getElementById('productModal').classList.remove('hidden');
 }
+
 window.editProduct=function(id){
-  const p=products.find(x=>x.id==id); if(!p) return;
-  editingProductId=p.id; galleryImages=[];
+  const p=products.find(x=>x.id==id);
+  if(!p) return;
+  editingProductId=p.id;
+  galleryImages=[];
   const imgs=p.images||(p.mainImage?[p.mainImage]: (p.image?[p.image]:[]));
-  imgs.forEach(url=>{ galleryImages.push({id:Date.now()+Math.random(), file:null, previewUrl:url, cloudinaryUrl:url, isExisting:true, progress:100, status:'done'}); });
+  imgs.forEach(url=>{
+    galleryImages.push({id:Date.now()+Math.random(), file:null, previewUrl:url, cloudinaryUrl:url, isExisting:true, progress:100, status:'done'});
+  });
   document.getElementById('modalTitle').textContent='تعديل المنتج';
   document.getElementById('productId').value=p.id;
   document.getElementById('productName').value=p.name||'';
@@ -457,70 +428,118 @@ window.editProduct=function(id){
   renderGallery();
   document.getElementById('productModal').classList.remove('hidden');
 }
+
 function closeProductModal(){
   document.getElementById('productModal').classList.add('hidden');
   document.getElementById('productForm').reset();
   galleryImages.forEach(g=>{ if(g.previewUrl&&!g.isExisting) URL.revokeObjectURL(g.previewUrl); });
-  galleryImages=[]; editingProductId=null;
+  galleryImages=[];
+  editingProductId=null;
 }
+
 async function handleFormSubmit(e){
   e.preventDefault();
   const saveBtn=document.getElementById('saveBtn');
   const name=document.getElementById('productName').value.trim();
   if(!name){ showToast('اسم المنتج مطلوب','error'); return; }
-  saveBtn.disabled=true; saveBtn.innerHTML='<i class="fa-solid fa-spinner fa-spin ml-2"></i> جاري الرفع...';
+  saveBtn.disabled=true;
+  saveBtn.innerHTML='<i class="fa-solid fa-spinner fa-spin ml-2"></i> جاري الرفع...';
   const ok=await uploadAllGalleryImages();
   if(!ok){ saveBtn.disabled=false; saveBtn.innerHTML='<i class="fa-solid fa-check ml-2"></i> حفظ المنتج'; return; }
   const finalImages=galleryImages.map(g=>g.cloudinaryUrl||g.previewUrl).filter(Boolean);
-  const data={ name, price:parseFloat(document.getElementById('productPrice').value)||0, stock:parseInt(document.getElementById('productStock').value)||0, lowStockThreshold:parseInt(document.getElementById('lowStockThreshold').value)||10, mainImage:finalImages[0]||'', images:finalImages, hidden:false };
+  const productData={
+    name: name,
+    price: parseFloat(document.getElementById('productPrice').value)||0,
+    stock: parseInt(document.getElementById('productStock').value)||0,
+    lowStockThreshold: parseInt(document.getElementById('lowStockThreshold').value)||10,
+    mainImage: finalImages[0]||'',
+    images: finalImages,
+    hidden: false
+  };
   try{
-    if(editingProductId){ const idx=products.findIndex(p=>p.id==editingProductId); if(idx!==-1) products[idx]={...products[idx], ...data}; showToast('تم تحديث المنتج بنجاح','success'); }
-    else { products.push({id:Date.now(), ...data}); showToast('تم إضافة المنتج بنجاح','success'); }
-    await saveProducts(); applyFiltersAndSearch(); updateStats(); closeProductModal();
-  } catch(err){ showToast('خطأ في الحفظ: '+err.message,'error'); }
-  finally { saveBtn.disabled=false; saveBtn.innerHTML='<i class="fa-solid fa-check ml-2"></i> حفظ المنتج'; }
+    if(editingProductId){
+      const idx=products.findIndex(p=>p.id==editingProductId);
+      if(idx!==-1){ products[idx]={...products[idx], ...productData}; }
+      showToast('تم تحديث المنتج بنجاح','success');
+    } else {
+      products.push({id:Date.now(), ...productData});
+      showToast('تم إضافة المنتج بنجاح','success');
+    }
+    await saveProducts();
+    applyFiltersAndSearch();
+    updateStats();
+    closeProductModal();
+  } catch(err){
+    console.error(err);
+    showToast('خطأ في الحفظ: '+err.message,'error');
+  } finally {
+    saveBtn.disabled=false;
+    saveBtn.innerHTML='<i class="fa-solid fa-check ml-2"></i> حفظ المنتج';
+  }
 }
+
 window.toggleHideProduct=async function(id){
-  const p=products.find(x=>x.id==id); if(!p) return; p.hidden=!p.hidden;
-  await saveProducts(); applyFiltersAndSearch(); showToast(p.hidden?'تم إخفاء المنتج':'تم إظهار المنتج','success');
+  const p=products.find(x=>x.id==id);
+  if(!p) return;
+  p.hidden=!p.hidden;
+  try{ await saveProducts(); applyFiltersAndSearch(); showToast(p.hidden?'تم إخفاء المنتج':'تم إظهار المنتج','success'); } catch(e){ showToast('خطأ: '+e.message,'error'); }
 }
 window.deleteProduct=function(id){ deletingProductId=id; document.getElementById('deleteModal').classList.remove('hidden'); }
 function closeDeleteModal(){ document.getElementById('deleteModal').classList.add('hidden'); deletingProductId=null; }
 async function confirmDelete(){
   if(!deletingProductId) return;
-  products=products.filter(p=>p.id!=deletingProductId); await saveProducts(); applyFiltersAndSearch(); updateStats(); showToast('تم حذف المنتج','success'); closeDeleteModal();
+  try{ products=products.filter(p=>p.id!=deletingProductId); await saveProducts(); applyFiltersAndSearch(); updateStats(); showToast('تم حذف المنتج','success'); } catch(e){ showToast('خطأ في الحذف','error'); }
+  closeDeleteModal();
 }
 function openFilterModal(){ document.getElementById('filterModal').classList.remove('hidden'); }
 function closeFilterModal(){ document.getElementById('filterModal').classList.add('hidden'); }
 function applyFilters(){ const s=document.querySelector('input[name="statusFilter"]:checked'); if(s) statusFilter=s.value; applyFiltersAndSearch(); closeFilterModal(); showToast('تم تطبيق التصفية','success'); }
 function resetFilters(){ statusFilter='all'; document.querySelector('input[name="statusFilter"][value="all"]').checked=true; applyFiltersAndSearch(); closeFilterModal(); showToast('تم إعادة التعيين','info'); }
 
-// Slider
-window.openSlider=function(id){
-  const p=products.find(x=>x.id==id); if(!p) return;
-  sliderImages=p.images||(p.mainImage?[p.mainImage]:[]); if(!sliderImages.length) return;
-  sliderIndex=0; showSlide(); document.getElementById('sliderModal').classList.add('active');
+window.openSlider=function(productId){
+  const p=products.find(x=>x.id==productId);
+  if(!p) return;
+  sliderImages=p.images||(p.mainImage?[p.mainImage]:[]);
+  if(sliderImages.length===0) return;
+  sliderIndex=0;
+  showSlide();
+  document.getElementById('sliderModal').classList.add('active');
 }
 window.openSliderFromGallery=function(idx){
-  sliderImages=galleryImages.map(g=>g.cloudinaryUrl||g.previewUrl); sliderIndex=idx; showSlide(); document.getElementById('sliderModal').classList.add('active');
+  sliderImages=galleryImages.map(g=>g.cloudinaryUrl||g.previewUrl);
+  sliderIndex=idx;
+  showSlide();
+  document.getElementById('sliderModal').classList.add('active');
 }
 function showSlide(){
-  if(!sliderImages.length) return;
+  if(sliderImages.length===0) return;
   document.getElementById('sliderImage').src=sliderImages[sliderIndex];
   document.getElementById('sliderCounter').textContent=`${sliderIndex+1} / ${sliderImages.length}`;
-  document.getElementById('sliderDots').innerHTML=sliderImages.map((_,i)=>`<div class="dot ${i===sliderIndex?'active':''}" onclick="goToSlide(${i})"></div>`).join('');
+  const dots=document.getElementById('sliderDots');
+  dots.innerHTML=sliderImages.map((_,i)=>`<div class="dot ${i===sliderIndex?'active':''}" onclick="goToSlide(${i})"></div>`).join('');
 }
 window.nextSlide=function(){ sliderIndex=(sliderIndex+1)%sliderImages.length; showSlide(); }
 window.prevSlide=function(){ sliderIndex=(sliderIndex-1+sliderImages.length)%sliderImages.length; showSlide(); }
 window.goToSlide=function(i){ sliderIndex=i; showSlide(); }
 window.closeSlider=function(){ document.getElementById('sliderModal').classList.remove('active'); }
-
-function showToast(msg,type='success'){
-  const t=document.getElementById('toast'); const ic=document.getElementById('toastIcon'); const m=document.getElementById('toastMessage');
-  m.textContent=msg; ic.className=type==='success'?'fa-solid fa-check-circle text-emerald-400':type==='error'?'fa-solid fa-circle-exclamation text-red-400':'fa-solid fa-info-circle text-blue-400';
-  t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3000);
+function setupSliderTouch(){
+  const modal=document.getElementById('sliderModal');
+  modal.addEventListener('touchstart', e=>{ touchStartX=e.changedTouches[0].screenX; }, {passive:true});
+  modal.addEventListener('touchend', e=>{
+    touchEndX=e.changedTouches[0].screenX;
+    const diff=touchEndX-touchStartX;
+    if(Math.abs(diff)>50){ if(diff>0) prevSlide(); else nextSlide(); }
+  }, {passive:true});
 }
-
+function showToast(msg,type='success'){
+  const toast=document.getElementById('toast');
+  const icon=document.getElementById('toastIcon');
+  const m=document.getElementById('toastMessage');
+  m.textContent=msg;
+  icon.className=type==='success'?'fa-solid fa-check-circle text-emerald-400':type==='error'?'fa-solid fa-circle-exclamation text-red-400':'fa-solid fa-info-circle text-blue-400';
+  toast.classList.remove('hidden');
+  setTimeout(()=>toast.classList.add('hidden'),3000);
+}
 window.openAddModal=openAddModal;
 window.closeProductModal=closeProductModal;
 window.closeDeleteModal=closeDeleteModal;
