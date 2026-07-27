@@ -355,9 +355,7 @@
         }
         window.logoutKarni = async ()=>{ const ok=await openDialog({title:'تسجيل الخروج', message:'هل تريد تسجيل الخروج؟', icon:'right-from-bracket', iconType:'danger', confirmText:'خروج', danger:true}); if(!ok) return; localStorage.removeItem('loggedIn'); try{await signOut(auth);}catch(e){} window.location.href='login.html'; }
         window.changePassword = async ()=>{ const user=auth.currentUser; if(!user?.email){ showToastPro('البريد غير متوفر','error'); return; } try{ await sendPasswordResetEmail(auth, user.email); showToastPro('تم إرسال رابط تغيير كلمة المرور'); toggleDrawer(); }catch(e){ showToastPro('فشل الإرسال','error'); } }
-        window.openStoreSettings = () => {
-    window.location.href = "matjar.html";
-};
+        window.openStore = ()=> openDialog({title:'متجري', message:'صفحة المتجر قريباً', icon:'store', hideCancel:true});
         window.openStoreSettings = () => {
     window.location.href = "reglematjar.html";
 };
