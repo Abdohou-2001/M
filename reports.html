@@ -19,26 +19,27 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
-</script><script>
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script><script>
 (function(){if(window.__playableTouchPatchInstalled)return;window.__playableTouchPatchInstalled=true;var o=EventTarget.prototype.addEventListener;var b={touchstart:1,touchmove:1,wheel:1};EventTarget.prototype.addEventListener=function(t,l,opt){if(b[t]){if(opt===undefined||opt===null)opt={passive:true};else if(typeof opt==='boolean')opt={capture:opt,passive:true};else opt=Object.assign({},opt,{passive:true});}return o.call(this,t,l,opt);};})();
-</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>التقارير - البونات</title>
+<title>التقارير - Karni Pro</title>
 <style>
 *{font-family:'Cairo',sans-serif;box-sizing:border-box}body{background:#f8fafc;margin:0}
 .flex{display:flex}.grid{display:grid}.hidden{display:none}.grid-cols-3{grid-template-columns:repeat(3,1fr)}.gap-2{gap:.5rem}
 .bg-white{background:#fff}.rounded-2xl{border-radius:1rem}.rounded-xl{border-radius:.75rem}.border{border:1px solid #e5e7eb}.p-3{padding:.75rem}.p-4{padding:1rem}
 .text-xs{font-size:.75rem}.font-bold{font-weight:700}.justify-between{justify-content:space-between}.items-center{align-items:center}.text-center{text-align:center}
 .w-10{width:2.5rem}.h-10{height:2.5rem}.w-9{width:2.25rem}.h-9{height:2.25rem}.bg-emerald-600{background:#059669}.max-w-7xl{max-width:80rem}.mx-auto{margin:auto}.pb-24{padding-bottom:6rem}
-.card{transition:.2s}.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
+.card{transition:.2s}
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
 @keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
 #thermalPrintArea{display:none}
 @media print{
   body *{visibility:hidden}
   #thermalPrintArea, #thermalPrintArea *{visibility:visible !important; display:block !important}
-  #thermalPrintArea{position:absolute !important; left:0 !important; top:0 !important; width:80mm !important; margin:0 !important; padding:2mm !important; background:white !important; display:block !important}
-  @page{size:80mm auto; margin:1mm}
+  #thermalPrintArea{position:absolute !important; left:0 !important; top:0 !important; width:80mm !important; margin:0 !important; padding:0 !important; background:white !important; display:block !important}
+  @page{size:80mm auto; margin:0}
 }
 </style>
 <script>setTimeout(function(){var s=document.createElement('script');s.src='https://cdn.tailwindcss.com';document.head.appendChild(s);var l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';document.head.appendChild(l);},80);</script>
@@ -254,28 +255,63 @@ window.addToBon = function(id){
 }
 window.closeBon = function(){ document.getElementById('bonModal').classList.remove('active'); currentViewingClient=null; }
 
-// ====== التصحيح النهائي: سطر واحد مضغوط كما طلبت ======
-// الشكل المطلوب:
-// الكمية   الثمن   المبلغ
-// Asperox:   2       5       10
+// ===== تصميم KARMI PRO طبق الأصل للصورة =====
 function buildPrintHTML(width){
-  var total=0;
-  currentBonItems.forEach(function(i){ total+=(parseFloat(i.price)||0)*(parseInt(i.qty)||0); });
+  var now = new Date();
+  var dateStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  var timeStr = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  // رقم فاتورة تلقائي من اسم العميل + التاريخ
+  var invNum = '000000';
+  try{
+    var hash = 0;
+    var str = currentViewingClient + dateStr;
+    for(var i=0;i<str.length;i++){ hash = ((hash<<5)-hash)+str.charCodeAt(i); hash|=0; }
+    invNum = String(Math.abs(hash)%1000000).padStart(6,'0');
+  }catch(e){}
+
+  var total=0; var totalQty=0;
+  currentBonItems.forEach(function(i){ total+=(parseFloat(i.price)||0)*(parseInt(i.qty)||0); totalQty+=parseInt(i.qty)||0; });
+
   var rows='';
   currentBonItems.forEach(function(i){
     var lineTotal=(parseFloat(i.price)||0)*parseInt(i.qty||0);
-    // سطر واحد: المنتج | الكمية | الثمن | المبلغ
-    rows+='<tr><td style="padding:4px 3px;border-bottom:1px dashed #bbb;text-align:right">'+i.name+'</td><td style="padding:4px 3px;border-bottom:1px dashed #bbb;text-align:center">'+i.qty+'</td><td style="padding:4px 3px;border-bottom:1px dashed #bbb;text-align:center">'+parseFloat(i.price||0).toFixed(2)+'</td><td style="padding:4px 3px;border-bottom:1px dashed #bbb;text-align:center">'+lineTotal.toFixed(2)+'</td></tr>';
+    rows+='<tr><td style="padding:6px 4px;text-align:right;direction:ltr;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:36mm">'+i.name+'</td><td style="padding:6px 4px;text-align:center">'+i.qty+'</td><td style="padding:6px 4px;text-align:center">'+parseFloat(i.price||0).toFixed(2)+'</td><td style="padding:6px 4px;text-align:center">'+lineTotal.toFixed(2)+'</td></tr>';
+    rows+='<tr><td colspan="4" style="border-bottom:1px dashed #999;padding:0"></td></tr>';
   });
+
   var html='';
-  html+='<div style="text-align:center;border-bottom:2px dashed #000;padding-bottom:5px;margin-bottom:5px">';
-  html+='<div style="font-weight:bold;font-size:14px">بون '+currentViewingClient+'</div>';
-  html+='<div style="font-size:10px;margin-top:2px">'+new Date().toLocaleDateString('ar-MA')+' '+new Date().toLocaleTimeString('ar-MA')+'</div>';
-  html+='<div style="font-size:8px">Karni Pro - ZQ320</div>';
+  html+='<div style="font-family:Arial,sans-serif;direction:ltr;text-align:left;padding:4mm 3mm;color:#000;background:#fff">';
+  // Header KARMI PRO
+  html+='<div style="text-align:center;font-weight:900;font-size:22px;letter-spacing:0.5px;margin-bottom:6px">KARNI PRO</div>';
+  html+='<div style="border-top:2px dashed #000;margin:6px 0"></div>';
+  // Info: اسم العميل على اليمين + التاريخ والوقت ورقم الفاتورة
+  html+='<div style="display:flex;justify-content:space-between;font-size:11px;line-height:1.7;margin-bottom:6px">';
+  html+='<div style="text-align:left;direction:ltr"><div><span style="font-weight:bold">العميل:</span> '+currentViewingClient+'</div><div><span style="font-weight:bold">رقم الفاتورة:</span> '+invNum+'</div></div>';
+  html+='<div style="text-align:right;direction:rtl"><div><span>التاريخ:</span> '+dateStr+' <span style="margin-left:20px"></span></div><div><span>الوقت:</span> '+timeStr+' <span style="margin-left:20px"></span></div></div>';
   html+='</div>';
-  html+='<table style="width:100%;border-collapse:collapse;font-size:11px"><thead><tr style="border-bottom:2px solid #000"><th style="text-align:right;padding:5px 3px">المنتج</th><th style="text-align:center;padding:5px 3px">الكمية</th><th style="text-align:center;padding:5px 3px">الثمن</th><th style="text-align:center;padding:5px 3px">المبلغ</th></tr></thead><tbody>'+rows+'</tbody></table>';
-  html+='<div style="border-top:2px dashed #000;margin-top:6px;padding-top:6px;display:flex;justify-content:space-between;font-weight:bold;font-size:13px"><span>المجموع العام:</span><span>'+total.toFixed(2)+' درهم</span></div>';
-  html+='<div style="text-align:center;margin-top:6px;font-size:8px"><div>شكرا لتعاملكم معنا</div><div>عدد المنتجات: '+currentBonItems.length+' | الكمية: '+(function(){var s=0;currentBonItems.forEach(function(it){s+=parseInt(it.qty)||0;});return s;})()+'</div></div>';
+  // في التصميم الأصلي التاريخ والوقت ورقم الفاتورة على اليسار بالعربية - نطابق الصورة:
+  html='<div style="font-family:Arial,sans-serif;direction:rtl;text-align:right;padding:4mm 3mm;color:#000;background:#fff">';
+  html+='<div style="text-align:center;font-weight:900;font-size:22px;letter-spacing:0.5px;margin-bottom:6px">KARNI PRO</div>';
+  html+='<div style="border-top:2px dashed #000;margin:8px 0"></div>';
+  // معلومات كما في الصورة + اسم العميل على اليمين
+  html+='<table style="width:100%;font-size:11px;line-height:1.8;border-collapse:collapse;margin-bottom:6px">';
+  html+='<tr><td style="text-align:right">التاريخ:</td><td style="text-align:left;direction:ltr">'+dateStr+'</td><td style="text-align:right">العميل:</td><td style="text-align:left;font-weight:bold">'+currentViewingClient+'</td></tr>';
+  html+='<tr><td style="text-align:right">الوقت:</td><td style="text-align:left;direction:ltr">'+timeStr+'</td><td style="text-align:right"></td><td></td></tr>';
+  html+='<tr><td style="text-align:right">رقم الفاتورة:</td><td style="text-align:left;direction:ltr">'+invNum+'</td><td></td><td></td></tr>';
+  html+='</table>';
+  html+='<div style="border-top:2px solid #000;margin:8px 0"></div>';
+  // جدول المنتجات - نفس الصورة
+  html+='<table style="width:100%;border-collapse:collapse;font-size:11px;text-align:center">';
+  html+='<thead><tr style="border-bottom:2px solid #000"><th style="padding:6px 3px;text-align:right">المنتج</th><th style="padding:6px 3px;text-align:center;width:12%">الكمية</th><th style="padding:6px 3px;text-align:center;width:18%">الثمن</th><th style="padding:6px 3px;text-align:center;width:20%">المجموع</th></tr></thead>';
+  html+='<tbody style="border-top:2px solid #000">';
+  html+=rows;
+  html+='</tbody></table>';
+  html+='<div style="border-top:2px solid #000;margin-top:4px;padding-top:8px;display:flex;justify-content:space-between;font-weight:900;font-size:13px"><span>المجموع العام:</span><span>'+total.toFixed(2)+'</span></div>';
+  html+='<div style="border-top:2px dashed #000;margin:8px 0"></div>';
+  html+='<div style="display:flex;justify-content:space-between;font-size:11px;padding:4px 0"><span>عدد المنتجات: '+currentBonItems.length+'</span><span>عدد القطع: '+totalQty+'</span></div>';
+  html+='<div style="border-top:2px solid #000;margin:8px 0"></div>';
+  html+='<div style="text-align:center;font-size:11px;font-weight:bold;padding:4px 0">شكرا لتعاونكم معنا</div>';
+  html+='</div>';
   return html;
 }
 
@@ -285,23 +321,16 @@ window.doPrint = function(width){
   area.innerHTML=buildPrintHTML(width);
   area.style.display='block';
   area.style.width=width+'mm';
-  setTimeout(function(){ window.print(); setTimeout(function(){ area.style.display='none'; },500); },250);
+  setTimeout(function(){ window.print(); setTimeout(function(){ area.style.display='none'; },600); },300);
 }
 
 window.doPrintPDF = function(){
   if(!currentViewingClient || currentBonItems.length===0) return;
   var area=document.getElementById('thermalPrintArea');
-  var total=0;
-  currentBonItems.forEach(function(i){ total+=(parseFloat(i.price)||0)*(parseInt(i.qty)||0); });
-  var rows='';
-  currentBonItems.forEach(function(i){
-    rows+='<tr><td>'+i.name+'</td><td style="text-align:center">'+i.qty+'</td><td style="text-align:center">'+parseFloat(i.price||0).toFixed(2)+'</td><td style="text-align:center">'+(parseFloat(i.price||0)*i.qty).toFixed(2)+'</td></tr>';
-  });
-  var html='<div style="padding:14px;direction:rtl"><h2 style="text-align:center">بون '+currentViewingClient+'</h2><p style="font-size:11px;text-align:center">'+new Date().toLocaleDateString('ar-MA')+'</p><table border="1" style="width:100%;border-collapse:collapse;margin-top:8px;font-size:12px"><tr style="background:#eee"><th>المنتج</th><th>الكمية</th><th>الثمن</th><th>المبلغ</th></tr>'+rows+'</table><h3 style="margin-top:10px">المجموع: '+total.toFixed(2)+' درهم</h3></div>';
-  area.innerHTML=html;
+  area.innerHTML=buildPrintHTML(80);
   area.style.display='block';
   area.style.width='210mm';
-  setTimeout(function(){ window.print(); setTimeout(function(){ area.style.display='none'; },500); },300);
+  setTimeout(function(){ window.print(); setTimeout(function(){ area.style.display='none'; },600); },300);
 }
 
 document.getElementById('tabPersons').addEventListener('click', function(){
