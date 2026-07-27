@@ -22,251 +22,121 @@
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Route - Karni Pro Premium</title>
+<title>Route - Karni Pro - دين اليوم فقط</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Geist:wght@500;700&display=swap" rel="stylesheet">
 <style>
-:root{
-  --primary:#0F766E; --accent:#14B8A6; --success:#22C55E; --danger:#EF4444; --warning:#F59E0B; --info:#3B82F6;
-  --bg:#060d14; --glass:rgba(255,255,255,0.07); --glass2:rgba(255,255,255,0.11); --border:rgba(255,255,255,0.10); --text:#e6eef8; --muted:#8aa0b8;
-}
-*{margin:0;padding:0;box-sizing:border-box; -webkit-tap-highlight-color:transparent}
-html{scroll-behavior:smooth}
-body{
-  font-family:'IBM Plex Sans Arabic','Geist',sans-serif;
-  background:radial-gradient(1200px 800px at 80% -10%, rgba(20,184,166,0.18), transparent 60%),
-             radial-gradient(900px 600px at 10% 90%, rgba(59,130,246,0.14), transparent 60%),
-             linear-gradient(180deg, #060d14 0%, #0a1628 100%);
-  color:var(--text); overflow:hidden; height:100dvh; display:flex; flex-direction:column;
-}
-/* Header */
-.header{
-  flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
-  padding:12px 14px; background:rgba(8,18,31,0.85);
-  backdrop-filter:blur(24px) saturate(180%); border-bottom:1px solid var(--border); z-index:100;
-}
-.header-title{display:flex; align-items:center; gap:10px; font-weight:700; font-size:16px}
-.header-title .logo{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; box-shadow:0 0 18px rgba(20,184,166,0.35)}
-.icon-btn{width:38px; height:38px; border-radius:11px; border:1px solid var(--border); background:var(--glass); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:.2s}
-.icon-btn:active{transform:scale(0.95)}
-.icon-btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent)); border:none}
-
-/* Filter Bar */
-.filter-bar{
-  flex-shrink:0; display:flex; gap:8px; padding:10px 14px;
-  background:rgba(255,255,255,0.03); border-bottom:1px solid var(--border);
-  overflow-x:auto; scrollbar-width:none;
-}
+:root{--primary:#0F766E;--accent:#14B8A6;--success:#22C55E;--danger:#EF4444;--warning:#F59E0B;--info:#3B82F6;--bg:#060d14;--glass:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.10);--text:#e6eef8;--muted:#8aa0b8}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{font-family:'IBM Plex Sans Arabic','Geist',sans-serif;background:radial-gradient(900px 600px at 80% -10%, rgba(20,184,166,0.18), transparent 60%),linear-gradient(180deg,#060d14 0%,#0a1628 100%);color:var(--text);overflow:hidden;height:100dvh;display:flex;flex-direction:column}
+.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:11px 12px;background:rgba(8,18,31,0.9);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100}
+.header-title{display:flex;align-items:center;gap:9px;font-weight:700;font-size:15px}
+.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(20,184,166,0.35)}
+.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--glass);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.icon-btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent));border:none}
+.icon-btn.danger{background:rgba(239,68,68,0.12);border-color:rgba(239,68,68,0.2);color:#f87171}
+.filter-bar{flex-shrink:0;display:flex;gap:7px;padding:9px 10px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
 .filter-bar::-webkit-scrollbar{display:none}
-.filter-chip{
-  display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:20px;
-  background:rgba(255,255,255,0.06); border:1px solid var(--border);
-  font-size:12px; font-weight:600; white-space:nowrap; cursor:pointer; transition:.2s;
-}
-.filter-chip.active{background:linear-gradient(135deg,var(--primary),var(--accent)); border-color:transparent; color:white; box-shadow:0 4px 14px rgba(15,118,110,0.35)}
-.filter-chip .count{background:rgba(255,255,255,0.15); padding:2px 7px; border-radius:10px; font-size:11px; font-family:'Geist'}
+.filter-chip{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:18px;background:rgba(255,255,255,0.06);border:1px solid var(--border);font-size:11px;font-weight:600;white-space:nowrap;cursor:pointer}
+.filter-chip.active{background:linear-gradient(135deg,var(--primary),var(--accent));border-color:transparent;color:white}
+.stats{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px}
+.stat-card{background:linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04));border:1px solid var(--border);border-radius:12px;padding:8px 6px;text-align:center;backdrop-filter:blur(16px)}
+.stat-number{font-family:'Geist';font-size:18px;font-weight:700;line-height:1}
+.stat-label{font-size:9px;color:var(--muted);margin-top:2px}
+.map-container{flex:1;position:relative;overflow:auto;-webkit-overflow-scrolling:touch}
+.map-content{position:relative;min-height:100%;padding-top:16px;padding-bottom:220px}
+.route-path{position:absolute;top:0;left:0;width:100%;z-index:1;pointer-events:none}
+#routeSvg{width:100%;display:block;overflow:visible}
 
-/* Stats - Fixed Mobile */
-.stats{
-  flex-shrink:0; display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
-  padding:10px 12px; background:transparent;
-}
-.stat-card{
-  position:relative; background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-  border:1px solid var(--border); border-radius:14px; padding:10px 10px; text-align:center;
-  backdrop-filter:blur(20px);
-}
-.stat-icon{width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; margin:0 auto 6px}
-.stat-number{font-family:'Geist'; font-size:20px; font-weight:700; line-height:1}
-.stat-label{font-size:10px; color:var(--muted); margin-top:3px; line-height:1.2}
-
-/* Map */
-.map-container{flex:1; position:relative; overflow:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin}
-.map-content{position:relative; min-height:100%; padding-top:20px; padding-bottom:240px}
-.map-glow{position:absolute; inset:0; pointer-events:none; overflow:hidden}
-.glow-orb{position:absolute; border-radius:50%; filter:blur(60px); opacity:0.45}
-.glow-1{width:500px; height:500px; background:radial-gradient(circle, rgba(20,184,166,0.14), transparent 70%); top:5%; left:10%}
-.glow-2{width:400px; height:400px; background:radial-gradient(circle, rgba(59,130,246,0.10), transparent 70%); top:30%; right:5%}
-
-.route-path{position:absolute; top:0; left:0; width:100%; z-index:1; pointer-events:none}
-#routeSvg{width:100%; display:block; overflow:visible}
-
-/* Points */
-.point{
-  position:absolute; transform:translate(-50%,-50%);
-  display:flex; align-items:center; z-index:10; cursor:pointer;
-  transition:transform .3s cubic-bezier(0.16,1,0.3,1);
-  max-width:92vw;
-}
-.point:active{transform:translate(-50%,-50%) scale(0.97)}
+/* بطاقة الزبون مصغرة جدا */
+.point{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;z-index:10;cursor:pointer;max-width:94vw}
 .point-card{
-  display:flex; align-items:center; gap:10px;
-  width:280px; max-width:72vw;
-  padding:11px 12px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
-  border:1px solid rgba(255,255,255,0.12); border-radius:15px;
-  backdrop-filter:blur(22px) saturate(180%);
-  box-shadow:0 6px 24px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.04) inset;
-  transition:.25s;
+  display:flex;align-items:center;gap:8px;
+  width:200px; max-width:58vw;
+  padding:8px 9px;
+  background:linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.04));
+  border:1px solid rgba(255,255,255,0.11);border-radius:12px;
+  backdrop-filter:blur(18px) saturate(160%);
+  box-shadow:0 4px 18px rgba(0,0,0,0.26);
 }
-.point-card.current{
-  border-color:rgba(34,197,94,0.5);
-  box-shadow:0 0 0 1px rgba(34,197,94,0.3) inset, 0 0 28px rgba(34,197,94,0.28), 0 8px 28px rgba(0,0,0,0.35);
-  background:linear-gradient(180deg, rgba(34,197,94,0.13), rgba(255,255,255,0.06));
-}
-.point-avatar{
-  width:40px; height:40px; border-radius:11px; flex-shrink:0;
-  background:linear-gradient(135deg, #1e293b, #0f172a);
-  border:1px solid rgba(255,255,255,0.10);
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Geist'; font-weight:700; font-size:15px;
-}
-.point-avatar.current{background:linear-gradient(135deg, #22c55e, #0f766e); box-shadow:0 0 16px rgba(34,197,94,0.4)}
-.point-avatar.visited{background:linear-gradient(135deg, #16a34a, #14532d)}
-.point-info{flex:1; min-width:0}
-.point-name{font-weight:600; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.point-meta{display:flex; gap:6px; margin-top:3px; flex-wrap:wrap}
-.meta-item{font-size:10px; color:var(--muted); background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:12px; border:1px solid rgba(255,255,255,0.06)}
-.point-status{font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:12px; border:1px solid; margin-top:5px; display:inline-block}
-.point-status.visited{background:rgba(34,197,94,0.15); color:#4ade80; border-color:rgba(34,197,94,0.25)}
-.point-status.current{background:rgba(59,130,246,0.15); color:#60a5fa; border-color:rgba(59,130,246,0.25)}
-.point-status.pending{background:rgba(100,116,139,0.15); color:#94a3b8; border-color:rgba(100,116,139,0.2)}
-.point-status.closed{background:rgba(31,41,55,0.8); color:#9ca3af; border-color:rgba(55,65,81,0.5)}
-.point-status.postponed{background:rgba(249,115,22,0.15); color:#fb923c; border-color:rgba(249,115,22,0.25)}
-.point-status.refused{background:rgba(239,68,68,0.15); color:#f87171; border-color:rgba(239,68,68,0.25)}
-.point-dot{width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:'Geist'; font-weight:700; font-size:12px; border:1px solid rgba(255,255,255,0.12); box-shadow:0 4px 14px rgba(0,0,0,0.25); flex-shrink:0; margin:0 7px}
-.point-dot.visited{background:linear-gradient(135deg, #16a34a, #15803d); color:white}
-.point-dot.current{background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; box-shadow:0 0 16px rgba(59,130,246,0.5)}
-.point-dot.pending{background:rgba(51,65,85,0.9); color:#94a3b8}
-.point-dot.closed{background:#1f2937; color:#6b7280}
-.point-dot.postponed{background:linear-gradient(135deg, #f97316, #ea580c); color:white}
-.pulse-ring{position:absolute; inset:-5px; border-radius:15px; border:2px solid rgba(34,197,94,0.4); animation:pulseRing 2.5s infinite; pointer-events:none}
-@keyframes pulseRing{0%{transform:scale(0.95); opacity:0.8} 100%{transform:scale(1.18); opacity:0}}
+.point-card.current{border-color:rgba(34,197,94,0.45);box-shadow:0 0 0 1px rgba(34,197,94,0.25) inset,0 0 20px rgba(34,197,94,0.22)}
+.point-avatar{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,#1e293b,#0f172a);border:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-family:'Geist';font-weight:700;font-size:12px}
+.point-avatar.current{background:linear-gradient(135deg,#22c55e,#0f766e)}
+.point-info{flex:1;min-width:0}
+.point-name{font-weight:600;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.point-meta{font-size:9px;color:var(--muted);margin-top:2px;display:flex;gap:4px}
+.point-status{font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;border:1px solid;margin-top:4px;display:inline-block;line-height:1}
+.point-status.current{background:rgba(59,130,246,0.15);color:#60a5fa;border-color:rgba(59,130,246,0.25)}
+.point-status.pending{background:rgba(100,116,139,0.15);color:#94a3b8;border-color:rgba(100,116,139,0.2)}
+.point-dot{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Geist';font-weight:700;font-size:10px;border:1px solid rgba(255,255,255,0.10);flex-shrink:0;margin:0 6px;box-shadow:0 2px 10px rgba(0,0,0,0.2)}
+.point-dot.current{background:linear-gradient(135deg,#3b82f6,#2563eb);color:white}
+.point-dot.pending{background:rgba(51,65,85,0.9);color:#94a3b8}
+.pulse-ring{position:absolute;inset:-4px;border-radius:12px;border:2px solid rgba(34,197,94,0.4);animation:pulseRing 2.5s infinite;pointer-events:none}
+@keyframes pulseRing{0%{transform:scale(0.95);opacity:0.8}100%{transform:scale(1.25);opacity:0}}
 
 /* Terminals */
-.premium-terminal{position:absolute; transform:translate(-50%,-50%); z-index:20; display:flex; flex-direction:column; align-items:center}
-.terminal-card{display:flex; align-items:center; gap:10px; padding:12px 16px; background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06)); border:1px solid rgba(255,255,255,0.14); border-radius:14px; backdrop-filter:blur(24px); box-shadow:0 8px 28px rgba(0,0,0,0.35)}
-.terminal-icon{width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px}
-.start .terminal-icon{background:linear-gradient(135deg, var(--primary), var(--accent)); color:white}
-.finish .terminal-icon{background:linear-gradient(135deg, #dc2626, #991b1b); color:white}
-.terminal-text{font-weight:700; font-size:13px}
-.terminal-sub{font-size:10px; color:var(--muted); margin-top:2px}
-.terminal-line{width:2px; height:50px; background:linear-gradient(to bottom, rgba(255,255,255,0.2), transparent); margin-top:6px}
+.premium-terminal{position:absolute;transform:translate(-50%,-50%);z-index:20;display:flex;flex-direction:column;align-items:center}
+.terminal-card{display:flex;align-items:center;gap:8px;padding:9px 12px;background:linear-gradient(180deg,rgba(255,255,255,0.11),rgba(255,255,255,0.05));border:1px solid rgba(255,255,255,0.13);border-radius:12px;backdrop-filter:blur(20px);box-shadow:0 6px 22px rgba(0,0,0,0.32)}
+.terminal-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.start .terminal-icon{background:linear-gradient(135deg,var(--primary),var(--accent));color:white}
+.finish .terminal-icon{background:linear-gradient(135deg,#dc2626,#991b1b);color:white}
+.terminal-text{font-weight:700;font-size:12px}
+.terminal-sub{font-size:9px;color:var(--muted);margin-top:1px}
+.terminal-line{width:2px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,0.18),transparent);margin-top:5px}
 
 /* Sidebar */
-.sidebar{
-  position:fixed; top:0; right:0; height:100dvh; width:360px; max-width:88vw;
-  background:rgba(8,18,31,0.92); backdrop-filter:blur(32px) saturate(180%);
-  border-left:1px solid var(--border); z-index:200;
-  transform:translateX(100%); transition:transform .45s cubic-bezier(0.16,1,0.3,1);
-  display:flex; flex-direction:column; box-shadow:-20px 0 60px rgba(0,0,0,0.5);
-}
+.sidebar{position:fixed;top:0;right:0;height:100dvh;width:340px;max-width:86vw;background:rgba(8,18,31,0.94);backdrop-filter:blur(28px);border-left:1px solid var(--border);z-index:200;transform:translateX(100%);transition:transform .4s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;box-shadow:-18px 0 50px rgba(0,0,0,0.5)}
 .sidebar.open{transform:translateX(0)}
-.sidebar-handle{
-  position:absolute; left:-44px; top:50%; transform:translateY(-50%);
-  width:42px; height:76px; background:rgba(8,18,31,0.9); border:1px solid var(--border); border-right:none;
-  border-radius:12px 0 0 12px; display:flex; align-items:center; justify-content:center; cursor:pointer;
-}
-.sidebar-header{padding:16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center}
-.sidebar-content{flex:1; overflow-y:auto; padding:10px; -webkit-overflow-scrolling:touch}
-.sidebar-item{
-  display:flex; align-items:center; gap:10px; padding:10px 12px; margin-bottom:8px;
-  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:12px;
-  cursor:grab; user-select:none; touch-action:none;
-}
-.sidebar-item.dragging{opacity:0.6; transform:scale(0.98); background:rgba(20,184,166,0.12); border-color:rgba(20,184,166,0.3)}
-.sidebar-item.current{border-color:rgba(34,197,94,0.4); background:rgba(34,197,94,0.08)}
-.sidebar-item-number{width:26px; height:26px; border-radius:7px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:'Geist'; flex-shrink:0}
-.sidebar-item-name{flex:1; font-size:12.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.sidebar-item-drag{color:var(--muted); opacity:0.5; padding:4px}
+.sidebar-handle{position:absolute;left:-40px;top:50%;transform:translateY(-50%);width:38px;height:70px;background:rgba(8,18,31,0.9);border:1px solid var(--border);border-right:none;border-radius:11px 0 0 11px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sidebar-header{padding:14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.sidebar-content{flex:1;overflow-y:auto;padding:8px;-webkit-overflow-scrolling:touch}
+.sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;cursor:grab;user-select:none;touch-action:none}
+.sidebar-item.dragging{opacity:0.6;transform:scale(0.97);background:rgba(20,184,166,0.12)}
+.sidebar-item-number{width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;font-family:'Geist';flex-shrink:0}
+.sidebar-item-name{flex:1;font-size:11.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* Modal */
-.client-modal{position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.6); backdrop-filter:blur(16px); display:none; align-items:center; justify-content:center; padding:16px}
+.client-modal{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.6);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:14px}
 .client-modal.active{display:flex}
-.modal-card{width:100%; max-width:400px; background:linear-gradient(180deg, rgba(22,34,51,0.97), rgba(10,20,34,0.99)); border:1px solid rgba(255,255,255,0.12); border-radius:20px; backdrop-filter:blur(32px); box-shadow:0 24px 64px rgba(0,0,0,0.5); overflow:hidden; animation:modalIn .35s cubic-bezier(0.16,1,0.3,1)}
-@keyframes modalIn{from{opacity:0; transform:translateY(14px) scale(0.98)} to{opacity:1; transform:translateY(0) scale(1)}}
-.modal-header{padding:18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center}
-.modal-body{padding:12px; display:grid; gap:8px; max-height:65vh; overflow-y:auto}
-.modal-action{display:flex; align-items:center; gap:12px; padding:12px 14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:12px; cursor:pointer; transition:.2s; font-size:13px; font-weight:500}
-.modal-action:active{transform:scale(0.98)}
-.modal-action i{width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.06); flex-shrink:0}
-
-@media(max-width:768px){
-  .stats{grid-template-columns:repeat(4,1fr); gap:6px; padding:8px 10px}
-  .stat-card{padding:8px 6px; border-radius:12px}
-  .stat-number{font-size:18px}
-  .stat-label{font-size:9px}
-  .point-card{width:260px; max-width:68vw}
-  .header{padding:10px 12px}
-  .filter-bar{padding:8px 10px}
-}
+.modal-card{width:100%;max-width:380px;background:linear-gradient(180deg,rgba(22,34,51,0.97),rgba(10,20,34,0.99));border:1px solid rgba(255,255,255,0.11);border-radius:18px;backdrop-filter:blur(28px);box-shadow:0 22px 60px rgba(0,0,0,0.5);overflow:hidden}
+.modal-header{padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-body{padding:10px;display:grid;gap:7px;max-height:62vh;overflow-y:auto}
+.modal-action{display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:11px;cursor:pointer;font-size:12.5px;font-weight:500}
+.modal-action i{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);flex-shrink:0}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div style="display:flex; gap:8px">
-    <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered"></i></button>
-    <button class="icon-btn" onclick="window.location.href='route-map.html'"><i class="fa-solid fa-list"></i></button>
+  <div style="display:flex;gap:7px">
+    <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered" style="font-size:13px"></i></button>
+    <button class="icon-btn danger" onclick="resetRoute()" title="إعادة التعيين - من جديد"><i class="fa-solid fa-rotate" style="font-size:13px"></i></button>
   </div>
   <div class="header-title">
-    <div class="logo"><i class="fa-solid fa-route" style="font-size:14px"></i></div>
+    <div class="logo"><i class="fa-solid fa-route" style="font-size:12px"></i></div>
     <span>Route</span>
-    <span style="font-weight:400; opacity:0.5; font-size:12px; margin-right:6px">Karni Pro</span>
+    <span style="font-weight:400;opacity:0.5;font-size:10px;margin-right:5px">دين اليوم فقط</span>
   </div>
-  <button class="icon-btn primary" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
+  <button class="icon-btn primary" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left" style="font-size:13px"></i></button>
 </div>
 
 <div class="filter-bar">
-  <div class="filter-chip active" id="filterToday" onclick="setFilter('today')"><i class="fa-solid fa-coins"></i> دين اليوم <span class="count" id="countToday">0</span></div>
-  <div class="filter-chip" id="filterAll" onclick="setFilter('all')"><i class="fa-solid fa-layer-group"></i> الكل <span class="count" id="countAll">0</span></div>
-  <div class="filter-chip" id="filterPending" onclick="setFilter('pending')"><i class="fa-regular fa-clock"></i> في الانتظار <span class="count" id="countPending">0</span></div>
-  <div class="filter-chip" id="filterCurrent" onclick="setFilter('current')"><i class="fa-solid fa-location-dot"></i> الحالي <span class="count" id="countCurrent">0</span></div>
-  <div class="filter-chip" onclick="clearRoute()" style="background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.2); color:#f87171"><i class="fa-solid fa-trash-can"></i> مسح المسار</div>
+  <div class="filter-chip active" onclick="setFilter('today')"><i class="fa-solid fa-coins"></i> دين اليوم فقط</div>
+  <div class="filter-chip" onclick="resetRoute()" style="background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.2);color:#fbbf24"><i class="fa-solid fa-rotate"></i> إعادة التعيين</div>
+  <div class="filter-chip" onclick="clearBlocked()" style="background:rgba(239,68,68,0.10);border-color:rgba(239,68,68,0.18);color:#f87171"><i class="fa-solid fa-trash-can"></i> حذف الزبناء الغير موجودين</div>
 </div>
 
 <div class="stats">
-  <div class="stat-card">
-    <div class="stat-icon" style="background:rgba(100,116,139,0.15); color:#94a3b8"><i class="fa-regular fa-clock"></i></div>
-    <div class="stat-number" id="pendingCount">0</div>
-    <div class="stat-label">في الانتظار</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-icon" style="background:rgba(59,130,246,0.15); color:#60a5fa"><i class="fa-solid fa-location-dot"></i></div>
-    <div class="stat-number" id="currentCount">0</div>
-    <div class="stat-label">الزبون الحالي</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-icon" style="background:rgba(34,197,94,0.15); color:#4ade80"><i class="fa-solid fa-check"></i></div>
-    <div class="stat-number" id="visitedCount">0</div>
-    <div class="stat-label">تم التسديد</div>
-  </div>
-  <div class="stat-card">
-    <div class="stat-icon" style="background:rgba(20,184,166,0.15); color:#2dd4bf"><i class="fa-solid fa-layer-group"></i></div>
-    <div class="stat-number" id="totalCount">0</div>
-    <div class="stat-label">إجمالي الزبناء</div>
-  </div>
+  <div class="stat-card"><div class="stat-number" id="pendingCount">0</div><div class="stat-label">في الانتظار</div></div>
+  <div class="stat-card"><div class="stat-number" id="currentCount">0</div><div class="stat-label">الزبون الحالي</div></div>
+  <div class="stat-card"><div class="stat-number" id="visitedCount">0</div><div class="stat-label">تم التسديد</div></div>
+  <div class="stat-card"><div class="stat-number" id="totalCount">0</div><div class="stat-label">إجمالي اليوم</div></div>
 </div>
 
 <div class="map-container" id="mapContainer">
   <div class="map-content" id="mapContent">
-    <div class="map-glow"><div class="glow-orb glow-1"></div><div class="glow-orb glow-2"></div></div>
     <div class="route-path" id="routePathDiv">
-      <svg id="routeSvg" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="edgeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#14b8a6" stop-opacity="0"/>
-            <stop offset="20%" stop-color="#14b8a6" stop-opacity="0.6"/>
-            <stop offset="80%" stop-color="#3b82f6" stop-opacity="0.6"/>
-            <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path id="roadShadow" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="46" stroke-linecap="round" stroke-linejoin="round" style="filter:blur(10px)"/>
-        <path id="roadEdge" fill="none" stroke="url(#edgeGlow)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" style="filter:blur(3px)"/>
-        <path id="routePath" fill="none" stroke="#1e293b" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
-        <path id="roadInner" fill="none" stroke="#263449" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
-        <path id="roadCenter" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
-      </svg>
+      <svg id="routeSvg"><path id="roadShadow" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="40" stroke-linecap="round" style="filter:blur(8px)"/><path id="routePath" fill="none" stroke="#1e293b" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/><path id="roadInner" fill="none" stroke="#2a3a52" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div id="pointsContainer"></div>
     <div id="startContainer"></div>
@@ -275,41 +145,28 @@ body{
 </div>
 
 <div class="sidebar" id="sidebar">
-  <div class="sidebar-handle" onclick="toggleSidebar()"><i class="fa-solid fa-chevron-left" id="sidebarChevron"></i></div>
-  <div class="sidebar-header">
-    <div style="font-weight:700; font-size:14px"><i class="fa-solid fa-arrows-up-down" style="margin-left:8px; color:var(--accent)"></i>ترتيب الزبناء</div>
-    <button class="icon-btn" style="width:32px; height:32px" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
-  </div>
-  <div style="padding:10px; border-bottom:1px solid var(--border); font-size:11px; color:var(--muted)"><i class="fa-solid fa-hand" style="margin-left:6px"></i>اضغط مطولا واسحب لإعادة الترتيب • يحفظ تلقائيا</div>
+  <div class="sidebar-handle" onclick="toggleSidebar()"><i class="fa-solid fa-chevron-left" id="sidebarChevron" style="font-size:12px"></i></div>
+  <div class="sidebar-header"><div style="font-weight:700;font-size:13px"><i class="fa-solid fa-arrows-up-down" style="margin-left:7px;color:var(--accent)"></i>ترتيب زبناء اليوم</div><button class="icon-btn" style="width:30px;height:30px" onclick="toggleSidebar()"><i class="fa-solid fa-xmark" style="font-size:12px"></i></button></div>
+  <div style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:10px;color:var(--muted)">اسحب لإعادة الترتيب • يحفظ تلقائيا</div>
   <div class="sidebar-content" id="sidebarContent"></div>
-  <div style="padding:12px; border-top:1px solid var(--border)">
-    <button onclick="saveOrder()" style="width:100%; padding:12px; border-radius:12px; border:none; background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; font-weight:700; font-size:13px; cursor:pointer"><i class="fa-solid fa-floppy-disk" style="margin-left:6px"></i>حفظ الترتيب في Firebase</button>
-  </div>
+  <div style="padding:10px;border-top:1px solid var(--border)"><button onclick="saveOrder()" style="width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-weight:700;font-size:12px;cursor:pointer">حفظ الترتيب</button></div>
 </div>
 
 <div class="client-modal" id="clientModal" onclick="if(event.target===this) closeClientModal()">
   <div class="modal-card">
-    <div class="modal-header">
-      <div><div style="font-weight:700; font-size:15px" id="modalClientName">اسم الزبون</div><div style="font-size:11px; color:var(--muted); margin-top:2px" id="modalClientMeta">رقم 1</div></div>
-      <button class="icon-btn" style="width:34px; height:34px" onclick="closeClientModal()"><i class="fa-solid fa-xmark"></i></button>
-    </div>
+    <div class="modal-header"><div><div style="font-weight:700;font-size:14px" id="modalClientName">اسم</div><div style="font-size:10px;color:var(--muted)" id="modalClientMeta">رقم</div></div><button class="icon-btn" style="width:32px;height:32px" onclick="closeClientModal()"><i class="fa-solid fa-xmark" style="font-size:12px"></i></button></div>
     <div class="modal-body">
-      <div class="modal-action" style="background:rgba(34,197,94,0.10); border-color:rgba(34,197,94,0.20)" onclick="updateStatus('visited')"><i style="background:rgba(34,197,94,0.15); color:#4ade80"><i class="fa-solid fa-check"></i></i><span>تم التسديد</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
-      <div class="modal-action" style="background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.15)" onclick="updateStatus('refused')"><i style="background:rgba(239,68,68,0.12); color:#f87171"><i class="fa-solid fa-ban"></i></i><span>امتنع عن التسديد</span></div>
-      <div class="modal-action" onclick="updateStatus('closed')"><i><i class="fa-solid fa-door-closed"></i></i><span>مغلق</span></div>
-      <div class="modal-action" onclick="updateStatus('postponed')"><i style="background:rgba(245,158,11,0.12); color:#fbbf24"><i class="fa-regular fa-clock"></i></i><span>مؤجل</span></div>
-      <div style="height:1px; background:var(--border); margin:4px 0"></div>
-      <div class="modal-action" onclick="openDetails()"><i style="background:rgba(59,130,246,0.12); color:#60a5fa"><i class="fa-solid fa-eye"></i></i><span>عرض التفاصيل</span></div>
-      <div class="modal-action" onclick="callClient()"><i style="background:rgba(20,184,166,0.12); color:#2dd4bf"><i class="fa-solid fa-phone"></i></i><span>اتصال</span></div>
-      <div class="modal-action" onclick="whatsappClient()"><i style="background:rgba(34,197,94,0.12); color:#4ade80"><i class="fa-brands fa-whatsapp"></i></i><span>واتساب</span></div>
-      <div class="modal-action" onclick="openCard()"><i><i class="fa-regular fa-address-card"></i></i><span>فتح البطاقة</span></div>
+      <div class="modal-action" style="background:rgba(34,197,94,0.10)" onclick="updateStatus('visited')"><i style="background:rgba(34,197,94,0.15);color:#4ade80"><i class="fa-solid fa-check" style="font-size:12px"></i></i><span>تم التسديد</span></div>
+      <div class="modal-action" onclick="updateStatus('postponed')"><i style="background:rgba(245,158,11,0.12);color:#fbbf24"><i class="fa-regular fa-clock" style="font-size:12px"></i></i><span>مؤجل</span></div>
+      <div class="modal-action" onclick="updateStatus('closed')"><i><i class="fa-solid fa-door-closed" style="font-size:12px"></i></i><span>مغلق</span></div>
+      <div class="modal-action" style="background:rgba(239,68,68,0.08)" onclick="updateStatus('refused')"><i style="background:rgba(239,68,68,0.12);color:#f87171"><i class="fa-solid fa-ban" style="font-size:12px"></i></i><span>امتنع عن التسديد</span></div>
     </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBCVOOouLET3GDGyHj2i7ncvUZBjUUVB7Y",
@@ -327,7 +184,32 @@ const db = getDatabase(app);
 let routeList = [];
 let filteredList = [];
 let selectedIndex = null;
-let currentFilter = 'today'; // today = دين اليوم فقط
+
+// الزبناء الغير موجودين في قائمة اليوم - نحذفهم تلقائيا
+const BLOCKED_NAMES = [
+  'Rmdan Ikaml','rmdan ikaml','Rmdan','Ouchen abdellah','ouchen abdellah','Ouchen',
+  'Salh biranzaran','Salh tegh','Salh','Youssef biranzaran','Youssef',
+  'Ahmed','احمد','Ahb','Agsb','Aissa','Hafidi'
+];
+
+function isBlockedName(name){
+  if(!name) return false;
+  const lower = name.toLowerCase().trim();
+  return BLOCKED_NAMES.some(b => lower.includes(b.toLowerCase()) || b.toLowerCase().includes(lower));
+}
+
+function isDueToday(item){
+  if(!item) return false;
+  // إذا الاسم محظور لا يظهر
+  if(isBlockedName(item.name)) return false;
+  // فقط pending و current يظهرو في دين اليوم
+  if(!['pending','current'].includes(item.status)) return false;
+  // إذا عليه دين أو لا يوجد حقل دين نعتبره دين اليوم
+  const debt = parseFloat(item.debt || item.balance || item.rest || 0);
+  // إذا debt = 0 وموجود الحقل، لا يظهر
+  if(item.debt !== undefined && debt <= 0) return false;
+  return true;
+}
 
 onValue(ref(db, 'routeManual'), (snapshot)=>{
     routeList = snapshot.exists()? snapshot.val() : [];
@@ -335,391 +217,176 @@ onValue(ref(db, 'routeManual'), (snapshot)=>{
     applyFilter();
 });
 
-function isDueToday(item){
-  // منطق دين اليوم:
-  // 1. إذا كان عليه دين >0
-  // 2. إذا كان dueDate / payDate / nextPay هو اليوم أو فارغ (يعني مستحق)
-  // 3. إذا status ليس visited/closed
-  const debt = parseFloat(item.debt || item.balance || item.rest || item.credit || 0);
-  if(debt <= 0 && (item.debt !== undefined)) return false;
-  // إذا visited أو closed لا يظهر
-  if(item.status === 'visited' || item.status === 'closed') return false;
-  
-  const today = new Date();
-  today.setHours(0,0,0,0);
-  
-  const dateFields = [item.dueDate, item.payDate, item.nextPay, item.dateEcheance, item.echeance, item.due_date];
-  for(let f of dateFields){
-    if(!f) continue;
-    try{
-      let d = new Date(f);
-      d.setHours(0,0,0,0);
-      if(d.getTime() === today.getTime()) return true;
-      // إذا التاريخ فات (متأخر) يعتبر دين اليوم أيضا
-      if(d < today) return true;
-    }catch(e){}
-  }
-  // إذا لا يوجد تاريخ، لكن عليه دين أو حالة pending/current/postponed/refused يظهر
-  if(debt > 0) return true;
-  if(['pending','current','postponed','refused'].includes(item.status)) return true;
-  // إذا لا يوجد دين محدد، نعتبره دين اليوم افتراضيا إذا pending
-  return item.status === 'pending' || item.status === 'current';
-}
-
 function applyFilter(){
-  if(currentFilter === 'today'){
-    filteredList = routeList.filter(isDueToday);
-  } else if(currentFilter === 'pending'){
-    filteredList = routeList.filter(i=>i.status==='pending');
-  } else if(currentFilter === 'current'){
-    filteredList = routeList.filter(i=>i.status==='current');
-  } else {
-    filteredList = [...routeList];
-  }
+  // فقط زبناء اليوم
+  filteredList = routeList.filter(isDueToday);
   renderMap();
   renderSidebar();
-  updateFilterCounts();
 }
 
-function updateFilterCounts(){
-  document.getElementById('countAll').innerText = routeList.length;
-  document.getElementById('countToday').innerText = routeList.filter(isDueToday).length;
-  document.getElementById('countPending').innerText = routeList.filter(i=>i.status==='pending').length;
-  document.getElementById('countCurrent').innerText = routeList.filter(i=>i.status==='current').length;
+window.setFilter = function(){ applyFilter(); }
+
+window.clearBlocked = async function(){
+  if(!confirm('حذف الزبناء الغير موجودين في قائمة اليوم (Rmdan, Ouchen, Salh...) نهائيا من Firebase؟')) return;
+  const newList = routeList.filter(item => !isBlockedName(item.name));
+  await set(ref(db, 'routeManual'), newList);
+  alert('تم حذفهم');
 }
 
-window.setFilter = function(type){
-  currentFilter = type;
-  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
-  document.getElementById('filter'+type.charAt(0).toUpperCase()+type.slice(1)).classList.add('active');
-  applyFilter();
+window.resetRoute = async function(){
+  if(!confirm('إعادة التعيين - إرجاع جميع زبناء اليوم إلى في الانتظار والبدء من جديد؟')) return;
+  // إعادة تعيين فقط زبناء اليوم
+  const todayClients = routeList.filter(isDueToday);
+  let first = true;
+  const updated = routeList.map(item => {
+    if(isDueToday(item) || isBlockedName(item.name) === false && ['pending','current','postponed','refused','closed'].includes(item.status)){
+      if(isDueToday(item)){
+        if(first){ item.status = 'current'; first = false; }
+        else { item.status = 'pending'; }
+      }
+    }
+    return item;
+  });
+  // إذا كنا نريد إعادة تعيين الكل
+  let allReset = [...routeList];
+  let isFirst = true;
+  allReset = allReset.filter(i=>!isBlockedName(i.name)).map(item=>{
+    if(['pending','current','postponed','refused','closed','visited'].includes(item.status)){
+      if(isDueToday(item)){
+        if(isFirst){ item.status='current'; isFirst=false; } else { item.status='pending'; }
+      }
+    }
+    return item;
+  });
+  await set(ref(db, 'routeManual'), allReset);
 }
 
-window.clearRoute = async function(){
-  if(!confirm('هل تريد مسح جميع الزبناء من المسار؟ سيتم حذف routeManual بالكامل')) return;
-  await set(ref(db, 'routeManual'), []);
-}
-
-function getArabicStatus(status){
-  const map = {'current':'الزبون الحالي','visited':'تم التسديد','pending':'في الانتظار','closed':'مغلق','postponed':'مؤجل','refused':'امتنع عن التسديد','Note':'ملاحظة','closed-note':'مغلق'};
-  return map[status] || status;
+function getArabicStatus(s){
+  const m={'current':'الزبون الحالي','visited':'تم التسديد','pending':'في الانتظار','closed':'مغلق','postponed':'مؤجل','refused':'امتنع عن التسديد'};
+  return m[s]||s;
 }
 
 function renderMap(){
-    const container = document.getElementById('pointsContainer');
-    const startContainer = document.getElementById('startContainer');
-    const finishContainer = document.getElementById('finishContainer');
-    const mapContent = document.getElementById('mapContent');
-    const routeSvg = document.getElementById('routeSvg');
-    const path = document.getElementById('routePath');
-    const roadShadow = document.getElementById('roadShadow');
-    const roadEdge = document.getElementById('roadEdge');
-    const roadInner = document.getElementById('roadInner');
-    const roadCenter = document.getElementById('roadCenter');
+  const container = document.getElementById('pointsContainer');
+  const startC = document.getElementById('startContainer');
+  const finishC = document.getElementById('finishContainer');
+  const mapContent = document.getElementById('mapContent');
+  const path = document.getElementById('routePath');
+  const shadow = document.getElementById('roadShadow');
+  const inner = document.getElementById('roadInner');
+  container.innerHTML=''; startC.innerHTML=''; finishC.innerHTML='';
+  let pending=0, current=0, visited=0;
 
-    container.innerHTML = '';
-    startContainer.innerHTML = '';
-    finishContainer.innerHTML = '';
-    let pending = 0, current = 0, visited = 0;
+  if(filteredList.length===0){
+    [path,shadow,inner].forEach(p=>p.setAttribute('d',''));
+    document.getElementById('totalCount').innerText=0;
+    document.getElementById('pendingCount').innerText=0;
+    document.getElementById('currentCount').innerText=0;
+    document.getElementById('visitedCount').innerText=0;
+    mapContent.style.height='500px';
+    container.innerHTML='<div style="position:absolute;top:45%;left:50%;transform:translate(-50%,-50%);text-align:center;padding:18px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(18px)"><div style="font-size:28px;opacity:0.5;margin-bottom:8px"><i class="fa-solid fa-check-double"></i></div><div style="font-weight:700;font-size:13px">لا يوجد زبناء دين اليوم</div><div style="font-size:10px;color:var(--muted);margin-top:4px">تم مسح الزبناء الغير موجودين</div><button onclick="resetRoute()" style="margin-top:10px;padding:7px 14px;border-radius:9px;border:none;background:var(--primary);color:white;font-weight:600;font-size:11px;cursor:pointer"><i class="fa-solid fa-rotate" style="margin-left:5px"></i>إعادة التعيين</button></div>';
+    return;
+  }
 
-    const listToRender = filteredList;
+  let points=[]; let h = window.innerWidth < 768 ? 110 : 125;
+  let totalH = (filteredList.length * h) + 300;
+  mapContent.style.height = totalH + 'px';
+  document.getElementById('routePathDiv').style.height = totalH + 'px';
+  document.getElementById('routeSvg').setAttribute('height', totalH);
+  document.getElementById('routeSvg').setAttribute('viewBox', `0 0 ${window.innerWidth} ${totalH}`);
+  let width = document.getElementById('mapContainer').offsetWidth || window.innerWidth;
+  filteredList.forEach((_,i)=>{ let y=80+i*h; let x=width/2+Math.sin(i*0.85)*(width*0.26); points.push({x,y}); });
 
-    if(listToRender.length === 0){
-        [path, roadShadow, roadEdge, roadInner, roadCenter].forEach(p=>p.setAttribute('d',''));
-        document.getElementById('totalCount').innerText = 0;
-        document.getElementById('pendingCount').innerText = 0;
-        document.getElementById('currentCount').innerText = 0;
-        document.getElementById('visitedCount').innerText = 0;
-        mapContent.style.height = '600px';
-        if(currentFilter==='today'){
-          container.innerHTML = '<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; padding:20px; background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:16px; backdrop-filter:blur(20px)"><div style="font-size:36px; margin-bottom:10px; opacity:0.5"><i class="fa-solid fa-coins"></i></div><div style="font-weight:700">لا يوجد دين اليوم</div><div style="font-size:12px; color:var(--muted); margin-top:4px">جميع الزبناء سددوا أو لا يوجد مستحق اليوم</div><button onclick="setFilter(\'all\')" style="margin-top:12px; padding:8px 16px; border-radius:10px; border:none; background:var(--primary); color:white; font-weight:600; cursor:pointer">عرض الكل</button></div>';
-        }
-        return;
-    }
+  if(points.length>0){
+    let d=`M ${points[0].x} ${points[0].y}`;
+    for(let i=1;i<points.length;i++){ let p=points[i-1], c=points[i]; d+=` C ${p.x+(c.x-p.x)*0.35} ${p.y+45}, ${p.x+(c.x-p.x)*0.65} ${c.y-15}, ${c.x} ${c.y}`; }
+    d+=` L ${points[points.length-1].x} ${points[points.length-1].y+120}`;
+    [path,shadow,inner].forEach(p=>p.setAttribute('d',d));
+    startC.innerHTML=`<div class="premium-terminal start" style="top:${points[0].y-55}px;left:${points[0].x}px"><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-house"></i></div><div><div class="terminal-text">الانطلاق</div><div class="terminal-sub">${filteredList.length} زبون • دين اليوم</div></div></div><div class="terminal-line"></div></div>`;
+  }
 
-    let points = [];
-    let itemHeight = window.innerWidth < 768 ? 132 : 148;
-    let totalHeight = (listToRender.length * itemHeight) + 360;
-    mapContent.style.height = totalHeight + 'px';
-    document.getElementById('routePathDiv').style.height = totalHeight + 'px';
-    routeSvg.setAttribute('height', totalHeight);
-    routeSvg.setAttribute('viewBox', `0 0 ${window.innerWidth} ${totalHeight}`);
+  filteredList.forEach((item,i)=>{
+    if(item.status==='pending') pending++; if(item.status==='current') current++; if(item.status==='visited') visited++;
+    if(pending>0 && item.status==='pending' && current===0){ item.status='current'; current=1; pending--; }
+    let pt=points[i]; let isLeft=i%2===0;
+    let debt=item.debt||item.balance||'';
+    container.innerHTML+=`<div class="point" style="top:${pt.y}px;left:${pt.x}px;flex-direction:${isLeft?'row-reverse':'row'}" onclick="openModal(${i})">${item.status==='current'?'<div class="pulse-ring"></div>':''}<div class="point-dot ${item.status}">${i+1}</div><div class="point-card ${item.status==='current'?'current':''}"><div class="point-avatar ${item.status}">${(item.name||'C').charAt(0).toUpperCase()}</div><div class="point-info"><div class="point-name">${item.name||'بدون'}</div><div class="point-meta">${debt?'<span>'+debt+' درهم</span>':''} <span>#${i+1}</span></div><div><span class="point-status ${item.status}">${getArabicStatus(item.status)}</span></div></div></div></div>`;
+  });
 
-    let width = document.getElementById('mapContainer').offsetWidth || window.innerWidth;
+  if(points.length>0){
+    let last=points[points.length-1];
+    finishC.innerHTML=`<div class="premium-terminal finish" style="top:${last.y+140}px;left:${last.x}px"><div class="terminal-line" style="transform:rotate(180deg);margin-top:0;margin-bottom:6px"></div><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-flag-checkered"></i></div><div><div class="terminal-text">النهاية</div><div class="terminal-sub">${filteredList.length} زبون</div></div></div></div>`;
+  }
 
-    listToRender.forEach((item, index)=>{
-        let y = 100 + (index * itemHeight);
-        let x = width/2 + Math.sin(index * 0.85) * (width * 0.28);
-        x += Math.sin(index * 0.35) * (width * 0.05);
-        points.push({x, y});
-    });
+  document.getElementById('totalCount').innerText=filteredList.length;
+  document.getElementById('pendingCount').innerText=pending;
+  document.getElementById('currentCount').innerText=current;
+  document.getElementById('visitedCount').innerText=visited;
 
-    if(points.length > 1){
-        let firstPoint = points[0];
-        startContainer.innerHTML = `
-        <div class="premium-terminal start" style="top:${firstPoint.y - 65}px; left:${firstPoint.x}px">
-            <div class="terminal-card">
-                <div class="terminal-icon"><i class="fa-solid fa-house"></i></div>
-                <div>
-                    <div class="terminal-text">الانطلاق</div>
-                    <div class="terminal-sub">${listToRender.length} زبون • دين اليوم</div>
-                </div>
-            </div>
-            <div class="terminal-line"></div>
-        </div>`;
-
-        let d = `M ${points[0].x} ${points[0].y}`;
-        for(let i = 1; i < points.length; i++){
-            let prev = points[i-1]; let curr = points[i];
-            let cpX1 = prev.x + (curr.x - prev.x) * 0.35;
-            let cpY1 = prev.y + 55;
-            let cpX2 = prev.x + (curr.x - prev.x) * 0.65;
-            let cpY2 = curr.y - 18;
-            d += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${curr.x} ${curr.y}`;
-        }
-        let lastPoint = points[points.length-1];
-        d += ` L ${lastPoint.x} ${lastPoint.y + 150}`;
-        [path, roadShadow, roadEdge, roadInner, roadCenter].forEach(p=>p.setAttribute('d', d));
-    } else if(points.length===1){
-        let d = `M ${points[0].x} ${points[0].y} L ${points[0].x} ${points[0].y+150}`;
-        [path, roadShadow, roadEdge, roadInner, roadCenter].forEach(p=>p.setAttribute('d', d));
-        startContainer.innerHTML = `<div class="premium-terminal start" style="top:${points[0].y-65}px; left:${points[0].x}px"><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-house"></i></div><div><div class="terminal-text">الانطلاق</div><div class="terminal-sub">زبون واحد</div></div></div><div class="terminal-line"></div></div>`;
-    }
-
-    listToRender.forEach((item, index)=>{
-        if(item.status === 'pending') pending++;
-        if(item.status === 'current') current++;
-        if(item.status === 'visited') visited++;
-
-        if(pending > 0 && item.status === 'pending' && current === 0){
-            // أول pending يصبح current
-            item.status = 'current';
-            current = 1; pending--;
-        }
-
-        let point = points[index];
-        let statusArabic = getArabicStatus(item.status);
-        let isLeft = index % 2 === 0;
-        let debt = item.debt || item.balance || item.rest || 0;
-        let city = item.city || item.ville || '';
-
-        let statusClass = item.status;
-        if(item.status === 'refused') statusClass = 'refused';
-
-        container.innerHTML += `
-        <div class="point" style="top:${point.y}px;left:${point.x}px;flex-direction:${isLeft?'row-reverse':'row'}" onclick="openClientModalFiltered(${index})">
-            ${item.status === 'current' ? '<div class="pulse-ring"></div>' : ''}
-            <div class="point-dot ${item.status}">${index+1}</div>
-            <div class="point-card ${item.status === 'current' ? 'current' : ''}">
-                <div class="point-avatar ${item.status}">${(item.name||'C').charAt(0).toUpperCase()}</div>
-                <div class="point-info">
-                    <div class="point-name">${item.name || 'بدون اسم'}</div>
-                    <div class="point-meta">
-                        <span class="meta-item">#${index+1}</span>
-                        ${city ? `<span class="meta-item">${city}</span>` : ''}
-                        ${debt ? `<span class="meta-item" style="color:#fbbf24; background:rgba(251,191,36,0.12)">${debt} درهم</span>` : ''}
-                    </div>
-                    <div style="margin-top:5px"><span class="point-status ${statusClass}">${statusArabic}</span></div>
-                </div>
-            </div>
-        </div>
-        `;
-    });
-
-    if(points.length > 0){
-        let lastPoint = points[points.length-1];
-        finishContainer.innerHTML = `
-        <div class="premium-terminal finish" style="top:${lastPoint.y + 170}px;left:${lastPoint.x}px">
-            <div class="terminal-line" style="transform:rotate(180deg); margin-top:0; margin-bottom:8px"></div>
-            <div class="terminal-card">
-                <div class="terminal-icon"><i class="fa-solid fa-flag-checkered"></i></div>
-                <div><div class="terminal-text">النهاية</div><div class="terminal-sub">اكتمل • ${listToRender.length} زبون</div></div>
-            </div>
-        </div>
-        `;
-    }
-
-    document.getElementById('totalCount').innerText = listToRender.length;
-    document.getElementById('visitedCount').innerText = visited;
-    document.getElementById('currentCount').innerText = current;
-    document.getElementById('pendingCount').innerText = pending;
-
-    setTimeout(()=>{
-        const currentDot = document.querySelector('.point-dot.current');
-        if(currentDot){
-            currentDot.scrollIntoView({behavior:'smooth', block:'center'});
-        } else if(points.length>0){
-            document.getElementById('mapContainer').scrollTop = 0;
-        }
-    }, 350);
+  setTimeout(()=>{ const cur=document.querySelector('.point-dot.current'); if(cur) cur.scrollIntoView({behavior:'smooth',block:'center'}); else document.getElementById('mapContainer').scrollTop=0; },300);
 }
 
-// Sidebar with proper drag & drop for mobile + desktop
 function renderSidebar(){
-  const container = document.getElementById('sidebarContent');
-  container.innerHTML = '';
-  filteredList.forEach((item, index)=>{
-    const div = document.createElement('div');
-    div.className = `sidebar-item ${item.status === 'current' ? 'current' : ''}`;
-    div.dataset.filteredIndex = index;
-    div.dataset.realIndex = routeList.indexOf(item);
-    div.innerHTML = `
-      <div class="sidebar-item-number">${index+1}</div>
-      <div class="sidebar-item-name">${item.name||'بدون اسم'} ${item.debt? '• '+item.debt+' درهم':''}</div>
-      <div class="sidebar-item-drag"><i class="fa-solid fa-grip-lines"></i></div>
-    `;
-    div.addEventListener('click', (e)=>{ if(!div.classList.contains('dragging')) openClientModalFiltered(index); });
-    
-    // Mouse events
-    div.draggable = true;
-    div.addEventListener('dragstart', handleDragStart);
-    div.addEventListener('dragover', handleDragOver);
-    div.addEventListener('drop', handleDrop);
-    div.addEventListener('dragend', handleDragEnd);
-    
-    // Touch events for mobile
-    div.addEventListener('touchstart', handleTouchStart, {passive:false});
-    div.addEventListener('touchmove', handleTouchMove, {passive:false});
-    div.addEventListener('touchend', handleTouchEnd);
-    
-    container.appendChild(div);
+  const c=document.getElementById('sidebarContent'); c.innerHTML='';
+  filteredList.forEach((item,i)=>{
+    const div=document.createElement('div'); div.className=`sidebar-item ${item.status==='current'?'current':''}`; div.dataset.index=i;
+    div.innerHTML=`<div class="sidebar-item-number">${i+1}</div><div class="sidebar-item-name">${item.name||'بدون'} ${item.debt?'• '+item.debt+'د':''}</div><div style="opacity:0.4"><i class="fa-solid fa-grip-lines" style="font-size:10px"></i></div>`;
+    div.addEventListener('click',()=>{ if(!div.classList.contains('dragging')) openModal(i); });
+    div.draggable=true;
+    div.addEventListener('dragstart',function(){ this.classList.add('dragging'); window.dragged=i; });
+    div.addEventListener('dragover',function(e){ e.preventDefault(); this.style.borderTop='2px solid #14b8a6'; });
+    div.addEventListener('dragleave',function(){ this.style.borderTop=''; });
+    div.addEventListener('drop',function(e){ e.preventDefault(); this.style.borderTop=''; if(window.dragged!==null && window.dragged!==i) reorder(window.dragged,i); });
+    div.addEventListener('dragend',function(){ this.classList.remove('dragging'); window.dragged=null; document.querySelectorAll('.sidebar-item').forEach(el=>el.style.borderTop=''); });
+    // touch
+    div.addEventListener('touchstart',function(e){ window.dragged=i; this.classList.add('dragging'); window.touchY=e.touches[0].clientY; },{passive:false});
+    div.addEventListener('touchmove',function(e){ if(window.dragged===null) return; e.preventDefault(); const y=e.touches[0].clientY; const el=document.elementFromPoint(e.touches[0].clientX,y)?.closest('.sidebar-item'); document.querySelectorAll('.sidebar-item').forEach(x=>x.style.borderTop=''); if(el && el!==this) el.style.borderTop='2px solid #14b8a6'; },{passive:false});
+    div.addEventListener('touchend',function(e){ this.classList.remove('dragging'); const y=e.changedTouches[0].clientY; const el=document.elementFromPoint(e.changedTouches[0].clientX,y)?.closest('.sidebar-item'); document.querySelectorAll('.sidebar-item').forEach(x=>x.style.borderTop=''); if(el){ const to=parseInt(el.dataset.index); if(to!==window.dragged) reorder(window.dragged,to); } window.dragged=null; });
+    c.appendChild(div);
   });
 }
 
-let draggedIndex = null;
-let draggedRealIndex = null;
-let touchStartY = 0;
-let currentTouchElement = null;
-
-function handleDragStart(e){ 
-  draggedIndex = parseInt(this.dataset.filteredIndex);
-  draggedRealIndex = parseInt(this.dataset.realIndex);
-  this.classList.add('dragging'); 
-  e.dataTransfer.effectAllowed = 'move';
-}
-function handleDragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect = 'move'; this.style.borderTop = '2px solid var(--accent)'; }
-function handleDrop(e){
-  e.preventDefault();
-  this.style.borderTop = '';
-  const targetFilteredIndex = parseInt(this.dataset.filteredIndex);
-  if(draggedIndex === null || draggedIndex === targetFilteredIndex) return;
-  reorderArray(draggedIndex, targetFilteredIndex);
-}
-function handleDragEnd(){ this.classList.remove('dragging'); draggedIndex = null; draggedRealIndex = null; document.querySelectorAll('.sidebar-item').forEach(el=>el.style.borderTop=''); }
-
-function handleTouchStart(e){
-  touchStartY = e.touches[0].clientY;
-  currentTouchElement = this;
-  draggedIndex = parseInt(this.dataset.filteredIndex);
-  draggedRealIndex = parseInt(this.dataset.realIndex);
-  setTimeout(()=>{ if(currentTouchElement) currentTouchElement.classList.add('dragging'); }, 150);
-}
-function handleTouchMove(e){
-  if(!currentTouchElement) return;
-  e.preventDefault();
-  const touchY = e.touches[0].clientY;
-  const elementBelow = document.elementFromPoint(e.touches[0].clientX, touchY);
-  const itemBelow = elementBelow?.closest('.sidebar-item');
-  document.querySelectorAll('.sidebar-item').forEach(el=>el.style.borderTop='');
-  if(itemBelow && itemBelow !== currentTouchElement){
-    itemBelow.style.borderTop = '2px solid var(--accent)';
-  }
-}
-function handleTouchEnd(e){
-  if(!currentTouchElement) return;
-  currentTouchElement.classList.remove('dragging');
-  const touchY = e.changedTouches[0].clientY;
-  const elementBelow = document.elementFromPoint(e.changedTouches[0].clientX, touchY);
-  const itemBelow = elementBelow?.closest('.sidebar-item');
-  document.querySelectorAll('.sidebar-item').forEach(el=>el.style.borderTop='');
-  if(itemBelow && draggedIndex !== null){
-    const targetFilteredIndex = parseInt(itemBelow.dataset.filteredIndex);
-    if(targetFilteredIndex !== draggedIndex){
-      reorderArray(draggedIndex, targetFilteredIndex);
-    }
-  }
-  currentTouchElement = null;
-  draggedIndex = null;
-  draggedRealIndex = null;
+function reorder(from,to){
+  const arr=[...filteredList]; const [m]=arr.splice(from,1); arr.splice(to,0,m); filteredList=arr;
+  // إعادة بناء routeList: نحذف القديم ونضع الجديد في نفس المكان
+  let newRoute = routeList.filter(item=>!isDueToday(item) || isBlockedName(item.name));
+  let firstIdx = routeList.findIndex(isDueToday);
+  if(firstIdx===-1) firstIdx=0;
+  filteredList.forEach((item,idx)=>{ newRoute.splice(firstIdx+idx,0,item); });
+  routeList=newRoute;
+  renderMap(); renderSidebar();
+  set(ref(db,'routeManual'), routeList);
 }
 
-function reorderArray(from, to){
-  // نعيد ترتيب filteredList ثم نطبقه على routeList الأصلي
-  const newFiltered = [...filteredList];
-  const [moved] = newFiltered.splice(from, 1);
-  newFiltered.splice(to, 0, moved);
-  
-  // إذا كنا في فلتر اليوم، نعيد ترتيب routeList بناء على الترتيب الجديد
-  if(currentFilter === 'today'){
-    // نحذف العناصر المفلترة من routeList ونعيد إدخالها بالترتيب الجديد في نفس الأماكن
-    let newRoute = [...routeList];
-    // نزيل كل العناصر المفلترة
-    newRoute = newRoute.filter(item => !isDueToday(item));
-    // نجد أول index لعنصر due today في الأصلي
-    let firstDueIndex = routeList.findIndex(isDueToday);
-    if(firstDueIndex === -1) firstDueIndex = 0;
-    // ندخل الترتيب الجديد
-    newFiltered.forEach((item, i)=>{
-      newRoute.splice(firstDueIndex + i, 0, item);
-    });
-    routeList = newRoute;
-  } else {
-    routeList = newFiltered;
-  }
-  filteredList = newFiltered;
-  renderMap();
-  renderSidebar();
-  // حفظ تلقائي
-  set(ref(db, 'routeManual'), routeList);
-}
+window.saveOrder = async function(){ await set(ref(db,'routeManual'), routeList); alert('تم حفظ الترتيب'); }
 
-window.saveOrder = async function(){
-  await set(ref(db, 'routeManual'), routeList);
-  alert('تم حفظ الترتيب');
-}
-
-window.openClientModalFiltered = function(filteredIndex){
-  selectedIndex = routeList.indexOf(filteredList[filteredIndex]);
-  if(selectedIndex === -1) selectedIndex = filteredIndex;
-  const item = filteredList[filteredIndex];
-  document.getElementById('modalClientName').innerText = item.name || 'بدون اسم';
-  document.getElementById('modalClientMeta').innerText = `رقم ${filteredIndex+1} • ${getArabicStatus(item.status)} ${item.city ? '• '+item.city : ''} ${item.debt ? '• '+item.debt+' درهم' : ''}`;
+window.openModal = function(i){
+  const item=filteredList[i];
+  window.selectedRealIndex = routeList.indexOf(item);
+  window.selectedFilteredIndex = i;
+  document.getElementById('modalClientName').innerText=item.name||'بدون';
+  document.getElementById('modalClientMeta').innerText=`#${i+1} • ${getArabicStatus(item.status)} ${item.debt? '• '+item.debt+' درهم':''}`;
   document.getElementById('clientModal').classList.add('active');
 }
-window.openClientModal = function(index){ window.openClientModalFiltered(index); }
-window.closeClientModal = function(){ document.getElementById('clientModal').classList.remove('active'); selectedIndex = null; }
-
+window.closeClientModal = function(){ document.getElementById('clientModal').classList.remove('active'); }
 window.updateStatus = async function(newStatus){
-  if(selectedIndex === null) return;
-  routeList[selectedIndex].status = newStatus;
-  await set(ref(db, 'routeManual'), routeList);
+  if(window.selectedRealIndex===null || window.selectedRealIndex===-1){
+    const item=filteredList[window.selectedFilteredIndex];
+    const idx=routeList.indexOf(item);
+    if(idx!==-1){ routeList[idx].status=newStatus; }
+  } else {
+    routeList[window.selectedRealIndex].status=newStatus;
+  }
+  await set(ref(db,'routeManual'), routeList);
   closeClientModal();
 }
-window.openDetails = function(){ if(selectedIndex===null) return; alert(JSON.stringify(routeList[selectedIndex], null, 2)); }
-window.callClient = function(){
-  if(selectedIndex===null) return;
-  const item = routeList[selectedIndex];
-  const phone = item.phone || item.tel || '';
-  if(phone) window.location.href = 'tel:'+phone;
-  else alert('لا يوجد رقم هاتف');
-}
-window.whatsappClient = function(){
-  if(selectedIndex===null) return;
-  const item = routeList[selectedIndex];
-  const phone = item.phone || item.tel || '';
-  if(phone) window.open('https://wa.me/'+phone.replace(/[^0-9]/g,''), '_blank');
-  else alert('لا يوجد رقم واتساب');
-}
-window.openCard = function(){ if(selectedIndex===null) return; alert('بطاقة: ' + routeList[selectedIndex].name); }
-
 window.toggleSidebar = function(){
-  const sidebar = document.getElementById('sidebar');
-  const chevron = document.getElementById('sidebarChevron');
-  sidebar.classList.toggle('open');
-  chevron.className = sidebar.classList.contains('open') ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-left';
+  const s=document.getElementById('sidebar');
+  const c=document.getElementById('sidebarChevron');
+  s.classList.toggle('open');
+  c.className=s.classList.contains('open')?'fa-solid fa-chevron-right':'fa-solid fa-chevron-left';
 }
-
-window.addEventListener('resize', ()=>{ applyFilter(); });
+window.addEventListener('resize',()=>{ renderMap(); });
 </script>
 </body>
 </html>
