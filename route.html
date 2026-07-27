@@ -21,385 +21,228 @@
 })();
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Route - Karni Pro Premium</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Geist:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --primary:#0F766E;
-  --accent:#14B8A6;
-  --success:#22C55E;
-  --danger:#EF4444;
-  --warning:#F59E0B;
-  --info:#3B82F6;
-  --bg-1:#060d14;
-  --bg-2:#0a1628;
-  --bg-3:#122a44;
-  --glass:rgba(255,255,255,0.06);
-  --glass-2:rgba(255,255,255,0.10);
-  --border:rgba(255,255,255,0.10);
-  --text:#e6eef8;
-  --muted:#8aa0b8;
+  --primary:#0F766E; --accent:#14B8A6; --success:#22C55E; --danger:#EF4444; --warning:#F59E0B; --info:#3B82F6;
+  --bg:#060d14; --glass:rgba(255,255,255,0.07); --glass2:rgba(255,255,255,0.11); --border:rgba(255,255,255,0.10); --text:#e6eef8; --muted:#8aa0b8;
 }
-*{margin:0;padding:0;box-sizing:border-box}
+*{margin:0;padding:0;box-sizing:border-box; -webkit-tap-highlight-color:transparent}
 html{scroll-behavior:smooth}
 body{
   font-family:'IBM Plex Sans Arabic','Geist',sans-serif;
-  background:
-    radial-gradient(1200px 800px at 80% -10%, rgba(20,184,166,0.18), transparent 60%),
-    radial-gradient(900px 600px at 10% 90%, rgba(59,130,246,0.15), transparent 60%),
-    radial-gradient(800px 500px at 50% 50%, rgba(15,118,110,0.25), transparent 70%),
-    linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 50%, #0e1e32 100%);
-  color:var(--text);
-  overflow:hidden;
-  min-height:100vh;
-  -webkit-font-smoothing:antialiased;
+  background:radial-gradient(1200px 800px at 80% -10%, rgba(20,184,166,0.18), transparent 60%),
+             radial-gradient(900px 600px at 10% 90%, rgba(59,130,246,0.14), transparent 60%),
+             linear-gradient(180deg, #060d14 0%, #0a1628 100%);
+  color:var(--text); overflow:hidden; height:100dvh; display:flex; flex-direction:column;
 }
-body::before{
-  content:'';
-  position:fixed; inset:0;
-  background:
-    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px),
-    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
-  background-size:80px 80px;
-  mask-image: radial-gradient(ellipse at center, black 60%, transparent 90%);
-  pointer-events:none;
-  z-index:0;
-}
-
 /* Header */
 .header{
-  position:sticky; top:0; z-index:100;
-  display:flex; align-items:center; justify-content:space-between;
-  padding:14px 22px;
-  background:rgba(8,18,31,0.75);
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  border-bottom:1px solid var(--border);
+  flex-shrink:0; display:flex; align-items:center; justify-content:space-between;
+  padding:12px 14px; background:rgba(8,18,31,0.85);
+  backdrop-filter:blur(24px) saturate(180%); border-bottom:1px solid var(--border); z-index:100;
 }
-.header-title{
-  display:flex; align-items:center; gap:12px;
-  font-weight:700; font-size:18px; letter-spacing:-0.02em;
-}
-.header-title .logo{
-  width:36px; height:36px; border-radius:10px;
-  background:linear-gradient(135deg, var(--primary), var(--accent));
-  display:flex; align-items:center; justify-content:center;
-  box-shadow:0 0 20px rgba(20,184,166,0.35);
-}
-.header-actions{display:flex; gap:10px}
-.icon-btn{
-  width:40px; height:40px; border-radius:12px; border:1px solid var(--border);
-  background:var(--glass); color:var(--text);
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer; transition:all .25s cubic-bezier(0.16,1,0.3,1);
-  backdrop-filter:blur(12px);
-}
-.icon-btn:hover{background:var(--glass-2); transform:translateY(-1px); border-color:rgba(255,255,255,0.18)}
-.icon-btn.primary{background:linear-gradient(135deg, var(--primary), var(--accent)); border:none; box-shadow:0 8px 20px rgba(15,118,110,0.35)}
+.header-title{display:flex; align-items:center; gap:10px; font-weight:700; font-size:16px}
+.header-title .logo{width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,var(--primary),var(--accent)); display:flex; align-items:center; justify-content:center; box-shadow:0 0 18px rgba(20,184,166,0.35)}
+.icon-btn{width:38px; height:38px; border-radius:11px; border:1px solid var(--border); background:var(--glass); color:var(--text); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:.2s}
+.icon-btn:active{transform:scale(0.95)}
+.icon-btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent)); border:none}
 
-/* Stats */
+/* Filter Bar */
+.filter-bar{
+  flex-shrink:0; display:flex; gap:8px; padding:10px 14px;
+  background:rgba(255,255,255,0.03); border-bottom:1px solid var(--border);
+  overflow-x:auto; scrollbar-width:none;
+}
+.filter-bar::-webkit-scrollbar{display:none}
+.filter-chip{
+  display:flex; align-items:center; gap:6px; padding:8px 14px; border-radius:20px;
+  background:rgba(255,255,255,0.06); border:1px solid var(--border);
+  font-size:12px; font-weight:600; white-space:nowrap; cursor:pointer; transition:.2s;
+}
+.filter-chip.active{background:linear-gradient(135deg,var(--primary),var(--accent)); border-color:transparent; color:white; box-shadow:0 4px 14px rgba(15,118,110,0.35)}
+.filter-chip .count{background:rgba(255,255,255,0.15); padding:2px 7px; border-radius:10px; font-size:11px; font-family:'Geist'}
+
+/* Stats - Fixed Mobile */
 .stats{
-  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
-  padding:14px 18px;
-  position:sticky; top:68px; z-index:99;
+  flex-shrink:0; display:grid; grid-template-columns:repeat(4,1fr); gap:8px;
+  padding:10px 12px; background:transparent;
 }
 .stat-card{
-  position:relative; overflow:hidden;
-  background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:14px 16px;
-  backdrop-filter:blur(20px) saturate(180%);
-  -webkit-backdrop-filter:blur(20px) saturate(180%);
-  transition:all .4s cubic-bezier(0.16,1,0.3,1);
+  position:relative; background:linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.04));
+  border:1px solid var(--border); border-radius:14px; padding:10px 10px; text-align:center;
+  backdrop-filter:blur(20px);
 }
-.stat-card::before{
-  content:''; position:absolute; inset:0;
-  background:radial-gradient(400px 200px at 0% 0%, rgba(255,255,255,0.08), transparent);
-  pointer-events:none;
-}
-.stat-card:hover{transform:translateY(-2px); border-color:rgba(255,255,255,0.16); box-shadow:0 10px 30px rgba(0,0,0,0.3)}
-.stat-top{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px}
-.stat-icon{width:28px; height:28px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px}
-.stat-number{font-family:'Geist',sans-serif; font-size:26px; font-weight:700; letter-spacing:-0.04em; line-height:1}
-.stat-label{font-size:12px; color:var(--muted); font-weight:500; margin-top:4px}
+.stat-icon{width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:12px; margin:0 auto 6px}
+.stat-number{font-family:'Geist'; font-size:20px; font-weight:700; line-height:1}
+.stat-label{font-size:10px; color:var(--muted); margin-top:3px; line-height:1.2}
 
 /* Map */
-.map-container{
-  position:relative; width:100%;
-  height:calc(100vh - 148px);
-  overflow:auto; scrollbar-width:thin;
-  scrollbar-color:rgba(255,255,255,0.1) transparent;
-}
-.map-container::-webkit-scrollbar{width:6px}
-.map-container::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12); border-radius:10px}
-.map-content{position:relative; min-height:100%; padding-bottom:220px}
-.map-glow{
-  position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden;
-}
-.glow-orb{position:absolute; border-radius:50%; filter:blur(60px); opacity:0.5}
-.glow-1{width:600px; height:600px; background:radial-gradient(circle, rgba(20,184,166,0.15), transparent 70%); top:10%; left:20%}
-.glow-2{width:500px; height:500px; background:radial-gradient(circle, rgba(59,130,246,0.12), transparent 70%); top:40%; right:10%}
-.glow-3{width:700px; height:700px; background:radial-gradient(circle, rgba(14,118,110,0.10), transparent 70%); bottom:0; left:30%}
+.map-container{flex:1; position:relative; overflow:auto; -webkit-overflow-scrolling:touch; scrollbar-width:thin}
+.map-content{position:relative; min-height:100%; padding-top:20px; padding-bottom:240px}
+.map-glow{position:absolute; inset:0; pointer-events:none; overflow:hidden}
+.glow-orb{position:absolute; border-radius:50%; filter:blur(60px); opacity:0.45}
+.glow-1{width:500px; height:500px; background:radial-gradient(circle, rgba(20,184,166,0.14), transparent 70%); top:5%; left:10%}
+.glow-2{width:400px; height:400px; background:radial-gradient(circle, rgba(59,130,246,0.10), transparent 70%); top:30%; right:5%}
 
-/* Road */
 .route-path{position:absolute; top:0; left:0; width:100%; z-index:1; pointer-events:none}
 #routeSvg{width:100%; display:block; overflow:visible}
-.road-shadow{filter:drop-shadow(0 20px 40px rgba(0,0,0,0.6))}
-.road-edge{opacity:0.9}
-.road-asphalt{filter:url(#asphaltTexture)}
 
-/* Points - Premium Cards */
+/* Points */
 .point{
   position:absolute; transform:translate(-50%,-50%);
-  display:flex; align-items:center; gap:0;
-  z-index:10; cursor:pointer;
-  transition:all .5s cubic-bezier(0.16,1,0.3,1);
+  display:flex; align-items:center; z-index:10; cursor:pointer;
+  transition:transform .3s cubic-bezier(0.16,1,0.3,1);
+  max-width:92vw;
 }
-.point:hover{transform:translate(-50%,-52%) scale(1.02)}
+.point:active{transform:translate(-50%,-50%) scale(0.97)}
 .point-card{
-  position:relative;
-  display:flex; align-items:center; gap:12px;
-  min-width:260px; max-width:320px;
-  padding:12px 14px;
+  display:flex; align-items:center; gap:10px;
+  width:280px; max-width:72vw;
+  padding:11px 12px;
   background:linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:16px;
-  backdrop-filter:blur(24px) saturate(180%);
-  -webkit-backdrop-filter:blur(24px) saturate(180%);
-  box-shadow:
-    0 4px 24px rgba(0,0,0,0.25),
-    0 0 0 1px rgba(255,255,255,0.05) inset,
-    0 1px 0 rgba(255,255,255,0.10) inset;
-  transition:all .4s cubic-bezier(0.16,1,0.3,1);
-  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.12); border-radius:15px;
+  backdrop-filter:blur(22px) saturate(180%);
+  box-shadow:0 6px 24px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.04) inset;
+  transition:.25s;
 }
-.point-card::before{
-  content:''; position:absolute; inset:0;
-  background:linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.06) 50%, transparent 60%);
-  transform:translateX(-100%); transition:transform .8s;
-}
-.point:hover .point-card::before{transform:translateX(100%)}
 .point-card.current{
   border-color:rgba(34,197,94,0.5);
-  box-shadow:
-    0 0 0 1px rgba(34,197,94,0.3) inset,
-    0 0 30px rgba(34,197,94,0.25),
-    0 8px 32px rgba(0,0,0,0.35);
-  background:linear-gradient(180deg, rgba(34,197,94,0.12), rgba(255,255,255,0.06));
+  box-shadow:0 0 0 1px rgba(34,197,94,0.3) inset, 0 0 28px rgba(34,197,94,0.28), 0 8px 28px rgba(0,0,0,0.35);
+  background:linear-gradient(180deg, rgba(34,197,94,0.13), rgba(255,255,255,0.06));
 }
-.point-card.current::after{
-  content:''; position:absolute; inset:-1px; border-radius:16px;
-  background:linear-gradient(90deg, transparent, rgba(34,197,94,0.4), transparent);
-  mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  mask-composite:exclude; -webkit-mask-composite:xor;
-  padding:1px; animation: borderRotate 3s linear infinite;
-}
-@keyframes borderRotate{to{transform:rotate(360deg)}}
 .point-avatar{
-  width:44px; height:44px; border-radius:12px; flex-shrink:0;
+  width:40px; height:40px; border-radius:11px; flex-shrink:0;
   background:linear-gradient(135deg, #1e293b, #0f172a);
   border:1px solid rgba(255,255,255,0.10);
   display:flex; align-items:center; justify-content:center;
-  font-family:'Geist'; font-weight:700; font-size:16px; color:var(--text);
-  position:relative; overflow:hidden;
+  font-family:'Geist'; font-weight:700; font-size:15px;
 }
-.point-avatar.current{ background:linear-gradient(135deg, #22c55e, #0f766e); box-shadow:0 0 20px rgba(34,197,94,0.4) }
-.point-avatar.visited{ background:linear-gradient(135deg, #16a34a, #14532d) }
-.point-avatar.pending{ background:linear-gradient(135deg, #334155, #1e293b) }
-.point-avatar.closed{ background:linear-gradient(135deg, #1f2937, #111827) }
-.point-avatar.postponed{ background:linear-gradient(135deg, #f97316, #9a3412) }
+.point-avatar.current{background:linear-gradient(135deg, #22c55e, #0f766e); box-shadow:0 0 16px rgba(34,197,94,0.4)}
+.point-avatar.visited{background:linear-gradient(135deg, #16a34a, #14532d)}
 .point-info{flex:1; min-width:0}
-.point-name{font-weight:600; font-size:14px; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; letter-spacing:-0.01em}
-.point-meta{display:flex; gap:8px; margin-top:4px; flex-wrap:wrap}
-.meta-item{font-size:11px; color:var(--muted); display:flex; align-items:center; gap:4px; background:rgba(255,255,255,0.05); padding:2px 7px; border-radius:20px; border:1px solid rgba(255,255,255,0.06)}
-.point-status{font-size:11px; font-weight:600; padding:3px 8px; border-radius:20px; border:1px solid}
+.point-name{font-weight:600; font-size:13.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.point-meta{display:flex; gap:6px; margin-top:3px; flex-wrap:wrap}
+.meta-item{font-size:10px; color:var(--muted); background:rgba(255,255,255,0.05); padding:2px 6px; border-radius:12px; border:1px solid rgba(255,255,255,0.06)}
+.point-status{font-size:10.5px; font-weight:700; padding:2px 7px; border-radius:12px; border:1px solid; margin-top:5px; display:inline-block}
 .point-status.visited{background:rgba(34,197,94,0.15); color:#4ade80; border-color:rgba(34,197,94,0.25)}
-.point-status.current{background:rgba(59,130,246,0.15); color:#60a5fa; border-color:rgba(59,130,246,0.25); animation:pulse 2s infinite}
+.point-status.current{background:rgba(59,130,246,0.15); color:#60a5fa; border-color:rgba(59,130,246,0.25)}
 .point-status.pending{background:rgba(100,116,139,0.15); color:#94a3b8; border-color:rgba(100,116,139,0.2)}
 .point-status.closed{background:rgba(31,41,55,0.8); color:#9ca3af; border-color:rgba(55,65,81,0.5)}
 .point-status.postponed{background:rgba(249,115,22,0.15); color:#fb923c; border-color:rgba(249,115,22,0.25)}
 .point-status.refused{background:rgba(239,68,68,0.15); color:#f87171; border-color:rgba(239,68,68,0.25)}
-@keyframes pulse{0%,100%{opacity:1; transform:scale(1)} 50%{opacity:0.8; transform:scale(1.05)}}
-
-.pulse-ring{
-  position:absolute; inset:-6px; border-radius:16px;
-  border:2px solid rgba(34,197,94,0.4);
-  animation:pulseRing 2.5s cubic-bezier(0.16,1,0.3,1) infinite;
-  pointer-events:none;
-}
-@keyframes pulseRing{0%{transform:scale(0.95); opacity:0.8} 100%{transform:scale(1.15); opacity:0}}
-
-.point-dot{
-  width:36px; height:36px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center;
-  font-family:'Geist'; font-weight:700; font-size:13px;
-  border:1px solid rgba(255,255,255,0.12);
-  box-shadow:0 4px 16px rgba(0,0,0,0.25);
-  flex-shrink:0; margin:0 8px;
-  transition:all .3s;
-}
+.point-dot{width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-family:'Geist'; font-weight:700; font-size:12px; border:1px solid rgba(255,255,255,0.12); box-shadow:0 4px 14px rgba(0,0,0,0.25); flex-shrink:0; margin:0 7px}
 .point-dot.visited{background:linear-gradient(135deg, #16a34a, #15803d); color:white}
-.point-dot.current{background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; box-shadow:0 0 20px rgba(59,130,246,0.5)}
+.point-dot.current{background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; box-shadow:0 0 16px rgba(59,130,246,0.5)}
 .point-dot.pending{background:rgba(51,65,85,0.9); color:#94a3b8}
 .point-dot.closed{background:#1f2937; color:#6b7280}
 .point-dot.postponed{background:linear-gradient(135deg, #f97316, #ea580c); color:white}
+.pulse-ring{position:absolute; inset:-5px; border-radius:15px; border:2px solid rgba(34,197,94,0.4); animation:pulseRing 2.5s infinite; pointer-events:none}
+@keyframes pulseRing{0%{transform:scale(0.95); opacity:0.8} 100%{transform:scale(1.18); opacity:0}}
 
-/* Start / Finish Cards */
-.premium-terminal{
-  position:absolute; transform:translate(-50%,-50%);
-  z-index:20; display:flex; flex-direction:column; align-items:center; gap:0;
-}
-.terminal-card{
-  display:flex; align-items:center; gap:12px;
-  padding:14px 20px;
-  background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06));
-  border:1px solid rgba(255,255,255,0.14);
-  border-radius:16px;
-  backdrop-filter:blur(24px) saturate(180%);
-  box-shadow:0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(255,255,255,0.05) inset;
-  min-width:160px;
-}
-.terminal-icon{
-  width:40px; height:40px; border-radius:10px;
-  display:flex; align-items:center; justify-content:center; font-size:16px;
-}
-.start .terminal-icon{background:linear-gradient(135deg, var(--primary), var(--accent)); color:white; box-shadow:0 0 20px rgba(15,118,110,0.4)}
-.finish .terminal-icon{background:linear-gradient(135deg, #dc2626, #991b1b); color:white; box-shadow:0 0 20px rgba(220,38,38,0.4)}
-.terminal-text{font-weight:700; font-size:15px; letter-spacing:-0.01em}
-.terminal-sub{font-size:11px; color:var(--muted); margin-top:2px}
-.terminal-line{
-  width:2px; height:60px;
-  background:linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
-  margin-top:8px;
-}
+/* Terminals */
+.premium-terminal{position:absolute; transform:translate(-50%,-50%); z-index:20; display:flex; flex-direction:column; align-items:center}
+.terminal-card{display:flex; align-items:center; gap:10px; padding:12px 16px; background:linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06)); border:1px solid rgba(255,255,255,0.14); border-radius:14px; backdrop-filter:blur(24px); box-shadow:0 8px 28px rgba(0,0,0,0.35)}
+.terminal-icon{width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; font-size:15px}
+.start .terminal-icon{background:linear-gradient(135deg, var(--primary), var(--accent)); color:white}
+.finish .terminal-icon{background:linear-gradient(135deg, #dc2626, #991b1b); color:white}
+.terminal-text{font-weight:700; font-size:13px}
+.terminal-sub{font-size:10px; color:var(--muted); margin-top:2px}
+.terminal-line{width:2px; height:50px; background:linear-gradient(to bottom, rgba(255,255,255,0.2), transparent); margin-top:6px}
 
 /* Sidebar */
 .sidebar{
-  position:fixed; top:0; right:0; height:100vh; width:360px;
-  background:rgba(8,18,31,0.88);
-  backdrop-filter:blur(32px) saturate(180%);
-  -webkit-backdrop-filter:blur(32px) saturate(180%);
-  border-left:1px solid var(--border);
-  z-index:200;
-  transform:translateX(100%);
-  transition:transform .5s cubic-bezier(0.16,1,0.3,1);
-  display:flex; flex-direction:column;
-  box-shadow:-20px 0 60px rgba(0,0,0,0.5);
+  position:fixed; top:0; right:0; height:100dvh; width:360px; max-width:88vw;
+  background:rgba(8,18,31,0.92); backdrop-filter:blur(32px) saturate(180%);
+  border-left:1px solid var(--border); z-index:200;
+  transform:translateX(100%); transition:transform .45s cubic-bezier(0.16,1,0.3,1);
+  display:flex; flex-direction:column; box-shadow:-20px 0 60px rgba(0,0,0,0.5);
 }
 .sidebar.open{transform:translateX(0)}
 .sidebar-handle{
-  position:absolute; left:-48px; top:50%; transform:translateY(-50%);
-  width:44px; height:80px;
-  background:rgba(8,18,31,0.9);
-  border:1px solid var(--border);
-  border-right:none;
-  border-radius:14px 0 0 14px;
-  display:flex; align-items:center; justify-content:center;
-  cursor:pointer;
-  backdrop-filter:blur(20px);
-  transition:all .3s;
+  position:absolute; left:-44px; top:50%; transform:translateY(-50%);
+  width:42px; height:76px; background:rgba(8,18,31,0.9); border:1px solid var(--border); border-right:none;
+  border-radius:12px 0 0 12px; display:flex; align-items:center; justify-content:center; cursor:pointer;
 }
-.sidebar-handle:hover{background:rgba(15,118,110,0.2); border-color:rgba(20,184,166,0.3)}
-.sidebar-header{padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center}
-.sidebar-title{font-weight:700; font-size:16px}
-.sidebar-content{flex:1; overflow-y:auto; padding:12px; scrollbar-width:thin}
+.sidebar-header{padding:16px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center}
+.sidebar-content{flex:1; overflow-y:auto; padding:10px; -webkit-overflow-scrolling:touch}
 .sidebar-item{
-  display:flex; align-items:center; gap:10px;
-  padding:10px 12px; margin-bottom:8px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:12px;
-  cursor:grab; transition:all .25s;
+  display:flex; align-items:center; gap:10px; padding:10px 12px; margin-bottom:8px;
+  background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:12px;
+  cursor:grab; user-select:none; touch-action:none;
 }
-.sidebar-item:active{cursor:grabbing; transform:scale(0.98)}
-.sidebar-item.dragging{opacity:0.5; transform:rotate(2deg) scale(0.98)}
+.sidebar-item.dragging{opacity:0.6; transform:scale(0.98); background:rgba(20,184,166,0.12); border-color:rgba(20,184,166,0.3)}
 .sidebar-item.current{border-color:rgba(34,197,94,0.4); background:rgba(34,197,94,0.08)}
-.sidebar-item-number{width:28px; height:28px; border-radius:8px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; font-family:'Geist'}
-.sidebar-item-name{flex:1; font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-.sidebar-item-drag{color:var(--muted); opacity:0.5}
+.sidebar-item-number{width:26px; height:26px; border-radius:7px; background:rgba(255,255,255,0.08); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:'Geist'; flex-shrink:0}
+.sidebar-item-name{flex:1; font-size:12.5px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.sidebar-item-drag{color:var(--muted); opacity:0.5; padding:4px}
 
 /* Modal */
-.client-modal{
-  position:fixed; inset:0; z-index:300;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(16px);
-  display:none; align-items:center; justify-content:center; padding:20px;
-}
+.client-modal{position:fixed; inset:0; z-index:300; background:rgba(0,0,0,0.6); backdrop-filter:blur(16px); display:none; align-items:center; justify-content:center; padding:16px}
 .client-modal.active{display:flex}
-.modal-card{
-  width:100%; max-width:420px;
-  background:linear-gradient(180deg, rgba(22,34,51,0.95), rgba(10,20,34,0.98));
-  border:1px solid rgba(255,255,255,0.12);
-  border-radius:20px;
-  backdrop-filter:blur(32px);
-  box-shadow:0 24px 64px rgba(0,0,0,0.5);
-  overflow:hidden;
-  animation:modalIn .4s cubic-bezier(0.16,1,0.3,1);
-}
-@keyframes modalIn{from{opacity:0; transform:translateY(16px) scale(0.98)} to{opacity:1; transform:translateY(0) scale(1)}}
-.modal-header{padding:20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center}
-.modal-body{padding:16px; display:grid; gap:10px}
-.modal-action{
-  display:flex; align-items:center; gap:12px;
-  padding:14px 16px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid rgba(255,255,255,0.06);
-  border-radius:12px;
-  cursor:pointer; transition:all .2s;
-  font-size:14px; font-weight:500; color:var(--text);
-}
-.modal-action:hover{background:rgba(255,255,255,0.08); transform:translateY(-1px); border-color:rgba(255,255,255,0.12)}
-.modal-action.success:hover{background:rgba(34,197,94,0.12); border-color:rgba(34,197,94,0.25); color:#4ade80}
-.modal-action.danger:hover{background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.25); color:#f87171}
-.modal-action i{width:36px; height:36px; border-radius:10px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.06)}
+.modal-card{width:100%; max-width:400px; background:linear-gradient(180deg, rgba(22,34,51,0.97), rgba(10,20,34,0.99)); border:1px solid rgba(255,255,255,0.12); border-radius:20px; backdrop-filter:blur(32px); box-shadow:0 24px 64px rgba(0,0,0,0.5); overflow:hidden; animation:modalIn .35s cubic-bezier(0.16,1,0.3,1)}
+@keyframes modalIn{from{opacity:0; transform:translateY(14px) scale(0.98)} to{opacity:1; transform:translateY(0) scale(1)}}
+.modal-header{padding:18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center}
+.modal-body{padding:12px; display:grid; gap:8px; max-height:65vh; overflow-y:auto}
+.modal-action{display:flex; align-items:center; gap:12px; padding:12px 14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.06); border-radius:12px; cursor:pointer; transition:.2s; font-size:13px; font-weight:500}
+.modal-action:active{transform:scale(0.98)}
+.modal-action i{width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.06); flex-shrink:0}
 
-/* Responsive */
 @media(max-width:768px){
-  .stats{grid-template-columns:repeat(2,1fr); padding:10px 12px}
-  .sidebar{width:85vw}
-  .point-card{min-width:220px; max-width:260px; padding:10px 12px}
-  .point-name{font-size:13px}
-  .point-avatar{width:38px; height:38px}
+  .stats{grid-template-columns:repeat(4,1fr); gap:6px; padding:8px 10px}
+  .stat-card{padding:8px 6px; border-radius:12px}
+  .stat-number{font-size:18px}
+  .stat-label{font-size:9px}
+  .point-card{width:260px; max-width:68vw}
+  .header{padding:10px 12px}
+  .filter-bar{padding:8px 10px}
 }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div style="display:flex; gap:10px">
+  <div style="display:flex; gap:8px">
     <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered"></i></button>
     <button class="icon-btn" onclick="window.location.href='route-map.html'"><i class="fa-solid fa-list"></i></button>
   </div>
   <div class="header-title">
-    <div class="logo"><i class="fa-solid fa-route"></i></div>
+    <div class="logo"><i class="fa-solid fa-route" style="font-size:14px"></i></div>
     <span>Route</span>
-    <span style="font-weight:300; opacity:0.6; font-size:14px; margin-right:8px">Karni Pro</span>
+    <span style="font-weight:400; opacity:0.5; font-size:12px; margin-right:6px">Karni Pro</span>
   </div>
   <button class="icon-btn primary" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left"></i></button>
 </div>
 
+<div class="filter-bar">
+  <div class="filter-chip active" id="filterToday" onclick="setFilter('today')"><i class="fa-solid fa-coins"></i> دين اليوم <span class="count" id="countToday">0</span></div>
+  <div class="filter-chip" id="filterAll" onclick="setFilter('all')"><i class="fa-solid fa-layer-group"></i> الكل <span class="count" id="countAll">0</span></div>
+  <div class="filter-chip" id="filterPending" onclick="setFilter('pending')"><i class="fa-regular fa-clock"></i> في الانتظار <span class="count" id="countPending">0</span></div>
+  <div class="filter-chip" id="filterCurrent" onclick="setFilter('current')"><i class="fa-solid fa-location-dot"></i> الحالي <span class="count" id="countCurrent">0</span></div>
+  <div class="filter-chip" onclick="clearRoute()" style="background:rgba(239,68,68,0.12); border-color:rgba(239,68,68,0.2); color:#f87171"><i class="fa-solid fa-trash-can"></i> مسح المسار</div>
+</div>
+
 <div class="stats">
   <div class="stat-card">
-    <div class="stat-top"><div class="stat-icon" style="background:rgba(100,116,139,0.15); color:#94a3b8"><i class="fa-regular fa-clock"></i></div><i class="fa-solid fa-ellipsis" style="color:var(--muted); font-size:12px"></i></div>
+    <div class="stat-icon" style="background:rgba(100,116,139,0.15); color:#94a3b8"><i class="fa-regular fa-clock"></i></div>
     <div class="stat-number" id="pendingCount">0</div>
     <div class="stat-label">في الانتظار</div>
   </div>
   <div class="stat-card">
-    <div class="stat-top"><div class="stat-icon" style="background:rgba(59,130,246,0.15); color:#60a5fa"><i class="fa-solid fa-location-dot"></i></div><div style="width:8px; height:8px; border-radius:50%; background:var(--info); box-shadow:0 0 10px var(--info); animation:pulse 2s infinite"></div></div>
+    <div class="stat-icon" style="background:rgba(59,130,246,0.15); color:#60a5fa"><i class="fa-solid fa-location-dot"></i></div>
     <div class="stat-number" id="currentCount">0</div>
     <div class="stat-label">الزبون الحالي</div>
   </div>
   <div class="stat-card">
-    <div class="stat-top"><div class="stat-icon" style="background:rgba(34,197,94,0.15); color:#4ade80"><i class="fa-solid fa-check"></i></div><i class="fa-solid fa-arrow-trend-up" style="color:#4ade80; font-size:12px"></i></div>
+    <div class="stat-icon" style="background:rgba(34,197,94,0.15); color:#4ade80"><i class="fa-solid fa-check"></i></div>
     <div class="stat-number" id="visitedCount">0</div>
     <div class="stat-label">تم التسديد</div>
   </div>
   <div class="stat-card">
-    <div class="stat-top"><div class="stat-icon" style="background:rgba(20,184,166,0.15); color:#2dd4bf"><i class="fa-solid fa-layer-group"></i></div><span style="font-size:11px; color:var(--muted); font-family:'Geist'">TOTAL</span></div>
+    <div class="stat-icon" style="background:rgba(20,184,166,0.15); color:#2dd4bf"><i class="fa-solid fa-layer-group"></i></div>
     <div class="stat-number" id="totalCount">0</div>
     <div class="stat-label">إجمالي الزبناء</div>
   </div>
@@ -407,29 +250,10 @@ body::before{
 
 <div class="map-container" id="mapContainer">
   <div class="map-content" id="mapContent">
-    <div class="map-glow">
-      <div class="glow-orb glow-1"></div>
-      <div class="glow-orb glow-2"></div>
-      <div class="glow-orb glow-3"></div>
-    </div>
+    <div class="map-glow"><div class="glow-orb glow-1"></div><div class="glow-orb glow-2"></div></div>
     <div class="route-path" id="routePathDiv">
       <svg id="routeSvg" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <filter id="asphaltTexture" x="0%" y="0%" width="100%" height="100%">
-            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="3" stitchTiles="stitch" result="noise"/>
-            <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.04 0" in="noise" result="coloredNoise"/>
-            <feBlend in="SourceGraphic" in2="coloredNoise" mode="multiply" result="blended"/>
-          </filter>
-          <filter id="glow">
-            <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
-            <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
-          <linearGradient id="roadGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stop-color="#1e293b" stop-opacity="0"/>
-            <stop offset="15%" stop-color="#1e293b" stop-opacity="1"/>
-            <stop offset="85%" stop-color="#1e293b" stop-opacity="1"/>
-            <stop offset="100%" stop-color="#1e293b" stop-opacity="0"/>
-          </linearGradient>
           <linearGradient id="edgeGlow" x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stop-color="#14b8a6" stop-opacity="0"/>
             <stop offset="20%" stop-color="#14b8a6" stop-opacity="0.6"/>
@@ -437,15 +261,11 @@ body::before{
             <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
           </linearGradient>
         </defs>
-        <!-- Shadow -->
-        <path id="roadShadow" fill="none" stroke="rgba(0,0,0,0.6)" stroke-width="48" stroke-linecap="round" stroke-linejoin="round" style="filter:blur(12px)"/>
-        <!-- Edge glow -->
-        <path id="roadEdge" fill="none" stroke="url(#edgeGlow)" stroke-width="44" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" style="filter:blur(4px)"/>
-        <!-- Asphalt base -->
-        <path id="routePath" fill="none" stroke="#1e293b" stroke-width="36" stroke-linecap="round" stroke-linejoin="round" class="road-shadow"/>
-        <path id="roadInner" fill="none" stroke="#263449" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Center reflection -->
-        <path id="roadCenter" fill="none" stroke="rgba(255,255,255,0.04)" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="0" opacity="0.5"/>
+        <path id="roadShadow" fill="none" stroke="rgba(0,0,0,0.5)" stroke-width="46" stroke-linecap="round" stroke-linejoin="round" style="filter:blur(10px)"/>
+        <path id="roadEdge" fill="none" stroke="url(#edgeGlow)" stroke-width="42" stroke-linecap="round" stroke-linejoin="round" opacity="0.6" style="filter:blur(3px)"/>
+        <path id="routePath" fill="none" stroke="#1e293b" stroke-width="34" stroke-linecap="round" stroke-linejoin="round"/>
+        <path id="roadInner" fill="none" stroke="#263449" stroke-width="32" stroke-linecap="round" stroke-linejoin="round"/>
+        <path id="roadCenter" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" stroke-linecap="round" opacity="0.6"/>
       </svg>
     </div>
     <div id="pointsContainer"></div>
@@ -454,44 +274,42 @@ body::before{
   </div>
 </div>
 
-<!-- Sidebar -->
 <div class="sidebar" id="sidebar">
   <div class="sidebar-handle" onclick="toggleSidebar()"><i class="fa-solid fa-chevron-left" id="sidebarChevron"></i></div>
   <div class="sidebar-header">
-    <div class="sidebar-title"><i class="fa-solid fa-arrows-up-down" style="margin-left:8px; color:var(--accent)"></i>ترتيب الزبناء</div>
+    <div style="font-weight:700; font-size:14px"><i class="fa-solid fa-arrows-up-down" style="margin-left:8px; color:var(--accent)"></i>ترتيب الزبناء</div>
     <button class="icon-btn" style="width:32px; height:32px" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
   </div>
-  <div style="padding:12px; border-bottom:1px solid var(--border); font-size:12px; color:var(--muted)"><i class="fa-solid fa-grip" style="margin-left:6px"></i>اسحب لإعادة الترتيب • يحفظ تلقائيا في Firebase</div>
+  <div style="padding:10px; border-bottom:1px solid var(--border); font-size:11px; color:var(--muted)"><i class="fa-solid fa-hand" style="margin-left:6px"></i>اضغط مطولا واسحب لإعادة الترتيب • يحفظ تلقائيا</div>
   <div class="sidebar-content" id="sidebarContent"></div>
+  <div style="padding:12px; border-top:1px solid var(--border)">
+    <button onclick="saveOrder()" style="width:100%; padding:12px; border-radius:12px; border:none; background:linear-gradient(135deg,var(--primary),var(--accent)); color:white; font-weight:700; font-size:13px; cursor:pointer"><i class="fa-solid fa-floppy-disk" style="margin-left:6px"></i>حفظ الترتيب في Firebase</button>
+  </div>
 </div>
 
-<!-- Client Modal -->
 <div class="client-modal" id="clientModal" onclick="if(event.target===this) closeClientModal()">
   <div class="modal-card">
     <div class="modal-header">
-      <div>
-        <div style="font-weight:700; font-size:16px" id="modalClientName">اسم الزبون</div>
-        <div style="font-size:12px; color:var(--muted); margin-top:2px" id="modalClientMeta">رقم 1 • حالة</div>
-      </div>
-      <button class="icon-btn" style="width:36px; height:36px" onclick="closeClientModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div><div style="font-weight:700; font-size:15px" id="modalClientName">اسم الزبون</div><div style="font-size:11px; color:var(--muted); margin-top:2px" id="modalClientMeta">رقم 1</div></div>
+      <button class="icon-btn" style="width:34px; height:34px" onclick="closeClientModal()"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="modal-body">
-      <div class="modal-action success" onclick="updateStatus('visited')"><i style="background:rgba(34,197,94,0.15); color:#4ade80"><i class="fa-solid fa-check"></i></i><span>تم التسديد</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
-      <div class="modal-action danger" onclick="updateStatus('refused')"><i style="background:rgba(239,68,68,0.12); color:#f87171"><i class="fa-solid fa-ban"></i></i><span>امتنع عن التسديد</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
-      <div class="modal-action" onclick="updateStatus('closed')"><i><i class="fa-solid fa-door-closed"></i></i><span>مغلق</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
-      <div class="modal-action" onclick="updateStatus('postponed')"><i style="background:rgba(245,158,11,0.12); color:#fbbf24"><i class="fa-regular fa-clock"></i></i><span>مؤجل</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
+      <div class="modal-action" style="background:rgba(34,197,94,0.10); border-color:rgba(34,197,94,0.20)" onclick="updateStatus('visited')"><i style="background:rgba(34,197,94,0.15); color:#4ade80"><i class="fa-solid fa-check"></i></i><span>تم التسديد</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
+      <div class="modal-action" style="background:rgba(239,68,68,0.08); border-color:rgba(239,68,68,0.15)" onclick="updateStatus('refused')"><i style="background:rgba(239,68,68,0.12); color:#f87171"><i class="fa-solid fa-ban"></i></i><span>امتنع عن التسديد</span></div>
+      <div class="modal-action" onclick="updateStatus('closed')"><i><i class="fa-solid fa-door-closed"></i></i><span>مغلق</span></div>
+      <div class="modal-action" onclick="updateStatus('postponed')"><i style="background:rgba(245,158,11,0.12); color:#fbbf24"><i class="fa-regular fa-clock"></i></i><span>مؤجل</span></div>
       <div style="height:1px; background:var(--border); margin:4px 0"></div>
-      <div class="modal-action" onclick="openDetails()"><i style="background:rgba(59,130,246,0.12); color:#60a5fa"><i class="fa-solid fa-eye"></i></i><span>عرض التفاصيل</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
-      <div class="modal-action" onclick="callClient()"><i style="background:rgba(20,184,166,0.12); color:#2dd4bf"><i class="fa-solid fa-phone"></i></i><span>اتصال</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
-      <div class="modal-action" onclick="whatsappClient()"><i style="background:rgba(34,197,94,0.12); color:#4ade80"><i class="fa-brands fa-whatsapp"></i></i><span>واتساب</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
-      <div class="modal-action" onclick="openCard()"><i><i class="fa-regular fa-address-card"></i></i><span>فتح البطاقة</span><i class="fa-solid fa-chevron-left" style="margin-right:auto; opacity:0.4"></i></div>
+      <div class="modal-action" onclick="openDetails()"><i style="background:rgba(59,130,246,0.12); color:#60a5fa"><i class="fa-solid fa-eye"></i></i><span>عرض التفاصيل</span></div>
+      <div class="modal-action" onclick="callClient()"><i style="background:rgba(20,184,166,0.12); color:#2dd4bf"><i class="fa-solid fa-phone"></i></i><span>اتصال</span></div>
+      <div class="modal-action" onclick="whatsappClient()"><i style="background:rgba(34,197,94,0.12); color:#4ade80"><i class="fa-brands fa-whatsapp"></i></i><span>واتساب</span></div>
+      <div class="modal-action" onclick="openCard()"><i><i class="fa-regular fa-address-card"></i></i><span>فتح البطاقة</span></div>
     </div>
   </div>
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js";
-import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
+import { getDatabase, ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBCVOOouLET3GDGyHj2i7ncvUZBjUUVB7Y",
@@ -507,26 +325,83 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
 let routeList = [];
+let filteredList = [];
 let selectedIndex = null;
+let currentFilter = 'today'; // today = دين اليوم فقط
 
 onValue(ref(db, 'routeManual'), (snapshot)=>{
     routeList = snapshot.exists()? snapshot.val() : [];
-    if(!Array.isArray(routeList)) routeList = Object.values(routeList);
-    renderMap();
-    renderSidebar();
+    if(!Array.isArray(routeList)) routeList = Object.values(routeList || {});
+    applyFilter();
 });
 
+function isDueToday(item){
+  // منطق دين اليوم:
+  // 1. إذا كان عليه دين >0
+  // 2. إذا كان dueDate / payDate / nextPay هو اليوم أو فارغ (يعني مستحق)
+  // 3. إذا status ليس visited/closed
+  const debt = parseFloat(item.debt || item.balance || item.rest || item.credit || 0);
+  if(debt <= 0 && (item.debt !== undefined)) return false;
+  // إذا visited أو closed لا يظهر
+  if(item.status === 'visited' || item.status === 'closed') return false;
+  
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  
+  const dateFields = [item.dueDate, item.payDate, item.nextPay, item.dateEcheance, item.echeance, item.due_date];
+  for(let f of dateFields){
+    if(!f) continue;
+    try{
+      let d = new Date(f);
+      d.setHours(0,0,0,0);
+      if(d.getTime() === today.getTime()) return true;
+      // إذا التاريخ فات (متأخر) يعتبر دين اليوم أيضا
+      if(d < today) return true;
+    }catch(e){}
+  }
+  // إذا لا يوجد تاريخ، لكن عليه دين أو حالة pending/current/postponed/refused يظهر
+  if(debt > 0) return true;
+  if(['pending','current','postponed','refused'].includes(item.status)) return true;
+  // إذا لا يوجد دين محدد، نعتبره دين اليوم افتراضيا إذا pending
+  return item.status === 'pending' || item.status === 'current';
+}
+
+function applyFilter(){
+  if(currentFilter === 'today'){
+    filteredList = routeList.filter(isDueToday);
+  } else if(currentFilter === 'pending'){
+    filteredList = routeList.filter(i=>i.status==='pending');
+  } else if(currentFilter === 'current'){
+    filteredList = routeList.filter(i=>i.status==='current');
+  } else {
+    filteredList = [...routeList];
+  }
+  renderMap();
+  renderSidebar();
+  updateFilterCounts();
+}
+
+function updateFilterCounts(){
+  document.getElementById('countAll').innerText = routeList.length;
+  document.getElementById('countToday').innerText = routeList.filter(isDueToday).length;
+  document.getElementById('countPending').innerText = routeList.filter(i=>i.status==='pending').length;
+  document.getElementById('countCurrent').innerText = routeList.filter(i=>i.status==='current').length;
+}
+
+window.setFilter = function(type){
+  currentFilter = type;
+  document.querySelectorAll('.filter-chip').forEach(c=>c.classList.remove('active'));
+  document.getElementById('filter'+type.charAt(0).toUpperCase()+type.slice(1)).classList.add('active');
+  applyFilter();
+}
+
+window.clearRoute = async function(){
+  if(!confirm('هل تريد مسح جميع الزبناء من المسار؟ سيتم حذف routeManual بالكامل')) return;
+  await set(ref(db, 'routeManual'), []);
+}
+
 function getArabicStatus(status){
-  const map = {
-    'current':'الزبون الحالي',
-    'visited':'تم التسديد',
-    'pending':'في الانتظار',
-    'closed':'مغلق',
-    'postponed':'مؤجل',
-    'refused':'امتنع عن التسديد',
-    'Note':'ملاحظة',
-    'closed-note':'مغلق'
-  };
+  const map = {'current':'الزبون الحالي','visited':'تم التسديد','pending':'في الانتظار','closed':'مغلق','postponed':'مؤجل','refused':'امتنع عن التسديد','Note':'ملاحظة','closed-note':'مغلق'};
   return map[status] || status;
 }
 
@@ -547,18 +422,24 @@ function renderMap(){
     finishContainer.innerHTML = '';
     let pending = 0, current = 0, visited = 0;
 
-    if(routeList.length === 0){
+    const listToRender = filteredList;
+
+    if(listToRender.length === 0){
         [path, roadShadow, roadEdge, roadInner, roadCenter].forEach(p=>p.setAttribute('d',''));
         document.getElementById('totalCount').innerText = 0;
         document.getElementById('pendingCount').innerText = 0;
         document.getElementById('currentCount').innerText = 0;
         document.getElementById('visitedCount').innerText = 0;
+        mapContent.style.height = '600px';
+        if(currentFilter==='today'){
+          container.innerHTML = '<div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; padding:20px; background:rgba(255,255,255,0.06); border:1px solid var(--border); border-radius:16px; backdrop-filter:blur(20px)"><div style="font-size:36px; margin-bottom:10px; opacity:0.5"><i class="fa-solid fa-coins"></i></div><div style="font-weight:700">لا يوجد دين اليوم</div><div style="font-size:12px; color:var(--muted); margin-top:4px">جميع الزبناء سددوا أو لا يوجد مستحق اليوم</div><button onclick="setFilter(\'all\')" style="margin-top:12px; padding:8px 16px; border-radius:10px; border:none; background:var(--primary); color:white; font-weight:600; cursor:pointer">عرض الكل</button></div>';
+        }
         return;
     }
 
     let points = [];
-    let itemHeight = 148;
-    let totalHeight = (routeList.length * itemHeight) + 380;
+    let itemHeight = window.innerWidth < 768 ? 132 : 148;
+    let totalHeight = (listToRender.length * itemHeight) + 360;
     mapContent.style.height = totalHeight + 'px';
     document.getElementById('routePathDiv').style.height = totalHeight + 'px';
     routeSvg.setAttribute('height', totalHeight);
@@ -566,23 +447,22 @@ function renderMap(){
 
     let width = document.getElementById('mapContainer').offsetWidth || window.innerWidth;
 
-    routeList.forEach((item, index)=>{
-        let y = 120 + (index * itemHeight);
-        let x = width/2 + Math.sin(index * 0.85) * (width * 0.30);
-        // Add subtle secondary wave for premium curve
-        x += Math.sin(index * 0.35) * (width * 0.06);
+    listToRender.forEach((item, index)=>{
+        let y = 100 + (index * itemHeight);
+        let x = width/2 + Math.sin(index * 0.85) * (width * 0.28);
+        x += Math.sin(index * 0.35) * (width * 0.05);
         points.push({x, y});
     });
 
     if(points.length > 1){
         let firstPoint = points[0];
         startContainer.innerHTML = `
-        <div class="premium-terminal start" style="top:${firstPoint.y - 70}px; left:${firstPoint.x}px">
+        <div class="premium-terminal start" style="top:${firstPoint.y - 65}px; left:${firstPoint.x}px">
             <div class="terminal-card">
                 <div class="terminal-icon"><i class="fa-solid fa-house"></i></div>
                 <div>
                     <div class="terminal-text">الانطلاق</div>
-                    <div class="terminal-sub">نقطة البداية • ${routeList.length} زبون</div>
+                    <div class="terminal-sub">${listToRender.length} زبون • دين اليوم</div>
                 </div>
             </div>
             <div class="terminal-line"></div>
@@ -590,44 +470,44 @@ function renderMap(){
 
         let d = `M ${points[0].x} ${points[0].y}`;
         for(let i = 1; i < points.length; i++){
-            let prev = points[i-1];
-            let curr = points[i];
+            let prev = points[i-1]; let curr = points[i];
             let cpX1 = prev.x + (curr.x - prev.x) * 0.35;
-            let cpY1 = prev.y + 60;
+            let cpY1 = prev.y + 55;
             let cpX2 = prev.x + (curr.x - prev.x) * 0.65;
-            let cpY2 = curr.y - 20;
+            let cpY2 = curr.y - 18;
             d += ` C ${cpX1} ${cpY1}, ${cpX2} ${cpY2}, ${curr.x} ${curr.y}`;
         }
         let lastPoint = points[points.length-1];
-        d += ` L ${lastPoint.x} ${lastPoint.y + 160}`;
-
+        d += ` L ${lastPoint.x} ${lastPoint.y + 150}`;
         [path, roadShadow, roadEdge, roadInner, roadCenter].forEach(p=>p.setAttribute('d', d));
+    } else if(points.length===1){
+        let d = `M ${points[0].x} ${points[0].y} L ${points[0].x} ${points[0].y+150}`;
+        [path, roadShadow, roadEdge, roadInner, roadCenter].forEach(p=>p.setAttribute('d', d));
+        startContainer.innerHTML = `<div class="premium-terminal start" style="top:${points[0].y-65}px; left:${points[0].x}px"><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-house"></i></div><div><div class="terminal-text">الانطلاق</div><div class="terminal-sub">زبون واحد</div></div></div><div class="terminal-line"></div></div>`;
     }
 
-    routeList.forEach((item, index)=>{
+    listToRender.forEach((item, index)=>{
         if(item.status === 'pending') pending++;
         if(item.status === 'current') current++;
         if(item.status === 'visited') visited++;
 
         if(pending > 0 && item.status === 'pending' && current === 0){
+            // أول pending يصبح current
             item.status = 'current';
-            current = 1;
-            pending--;
+            current = 1; pending--;
         }
 
         let point = points[index];
         let statusArabic = getArabicStatus(item.status);
         let isLeft = index % 2 === 0;
-        
-        let debt = item.debt || item.balance || 0;
+        let debt = item.debt || item.balance || item.rest || 0;
         let city = item.city || item.ville || '';
-        let lastVisit = item.lastVisit || item.last || '';
 
         let statusClass = item.status;
         if(item.status === 'refused') statusClass = 'refused';
 
         container.innerHTML += `
-        <div class="point" style="top:${point.y}px;left:${point.x}px;flex-direction:${isLeft?'row-reverse':'row'}" onclick="openClientModal(${index})">
+        <div class="point" style="top:${point.y}px;left:${point.x}px;flex-direction:${isLeft?'row-reverse':'row'}" onclick="openClientModalFiltered(${index})">
             ${item.status === 'current' ? '<div class="pulse-ring"></div>' : ''}
             <div class="point-dot ${item.status}">${index+1}</div>
             <div class="point-card ${item.status === 'current' ? 'current' : ''}">
@@ -635,11 +515,11 @@ function renderMap(){
                 <div class="point-info">
                     <div class="point-name">${item.name || 'بدون اسم'}</div>
                     <div class="point-meta">
-                        <span class="meta-item"><i class="fa-solid fa-hashtag" style="font-size:9px"></i> ${index+1}</span>
-                        ${city ? `<span class="meta-item"><i class="fa-solid fa-location-dot" style="font-size:9px"></i> ${city}</span>` : ''}
-                        ${debt ? `<span class="meta-item" style="color:#fbbf24"><i class="fa-solid fa-coins" style="font-size:9px"></i> ${debt}</span>` : ''}
+                        <span class="meta-item">#${index+1}</span>
+                        ${city ? `<span class="meta-item">${city}</span>` : ''}
+                        ${debt ? `<span class="meta-item" style="color:#fbbf24; background:rgba(251,191,36,0.12)">${debt} درهم</span>` : ''}
                     </div>
-                    <div style="margin-top:6px"><span class="point-status ${statusClass}">${statusArabic}</span></div>
+                    <div style="margin-top:5px"><span class="point-status ${statusClass}">${statusArabic}</span></div>
                 </div>
             </div>
         </div>
@@ -649,89 +529,164 @@ function renderMap(){
     if(points.length > 0){
         let lastPoint = points[points.length-1];
         finishContainer.innerHTML = `
-        <div class="premium-terminal finish" style="top:${lastPoint.y + 180}px;left:${lastPoint.x}px">
+        <div class="premium-terminal finish" style="top:${lastPoint.y + 170}px;left:${lastPoint.x}px">
             <div class="terminal-line" style="transform:rotate(180deg); margin-top:0; margin-bottom:8px"></div>
             <div class="terminal-card">
                 <div class="terminal-icon"><i class="fa-solid fa-flag-checkered"></i></div>
-                <div>
-                    <div class="terminal-text">النهاية</div>
-                    <div class="terminal-sub">اكتمل المسار • ${routeList.length} زبون</div>
-                </div>
+                <div><div class="terminal-text">النهاية</div><div class="terminal-sub">اكتمل • ${listToRender.length} زبون</div></div>
             </div>
         </div>
         `;
     }
 
-    animateCounter('totalCount', routeList.length);
-    animateCounter('visitedCount', visited);
-    animateCounter('currentCount', current);
-    animateCounter('pendingCount', pending);
+    document.getElementById('totalCount').innerText = listToRender.length;
+    document.getElementById('visitedCount').innerText = visited;
+    document.getElementById('currentCount').innerText = current;
+    document.getElementById('pendingCount').innerText = pending;
 
     setTimeout(()=>{
         const currentDot = document.querySelector('.point-dot.current');
         if(currentDot){
             currentDot.scrollIntoView({behavior:'smooth', block:'center'});
+        } else if(points.length>0){
+            document.getElementById('mapContainer').scrollTop = 0;
         }
-    }, 400);
+    }, 350);
 }
 
-function animateCounter(id, target){
-  const el = document.getElementById(id);
-  const start = parseInt(el.innerText) || 0;
-  if(start === target) return;
-  let current = start;
-  const step = target > start ? 1 : -1;
-  const interval = setInterval(()=>{
-    current += step;
-    el.innerText = current;
-    if(current === target) clearInterval(interval);
-  }, 40);
-}
-
+// Sidebar with proper drag & drop for mobile + desktop
 function renderSidebar(){
   const container = document.getElementById('sidebarContent');
   container.innerHTML = '';
-  routeList.forEach((item, index)=>{
+  filteredList.forEach((item, index)=>{
     const div = document.createElement('div');
     div.className = `sidebar-item ${item.status === 'current' ? 'current' : ''}`;
-    div.draggable = true;
-    div.dataset.index = index;
+    div.dataset.filteredIndex = index;
+    div.dataset.realIndex = routeList.indexOf(item);
     div.innerHTML = `
       <div class="sidebar-item-number">${index+1}</div>
-      <div class="sidebar-item-name">${item.name||'بدون اسم'}</div>
+      <div class="sidebar-item-name">${item.name||'بدون اسم'} ${item.debt? '• '+item.debt+' درهم':''}</div>
       <div class="sidebar-item-drag"><i class="fa-solid fa-grip-lines"></i></div>
     `;
-    div.addEventListener('click', ()=>{ openClientModal(index); });
+    div.addEventListener('click', (e)=>{ if(!div.classList.contains('dragging')) openClientModalFiltered(index); });
+    
+    // Mouse events
+    div.draggable = true;
     div.addEventListener('dragstart', handleDragStart);
     div.addEventListener('dragover', handleDragOver);
     div.addEventListener('drop', handleDrop);
     div.addEventListener('dragend', handleDragEnd);
+    
+    // Touch events for mobile
+    div.addEventListener('touchstart', handleTouchStart, {passive:false});
+    div.addEventListener('touchmove', handleTouchMove, {passive:false});
+    div.addEventListener('touchend', handleTouchEnd);
+    
     container.appendChild(div);
   });
 }
 
 let draggedIndex = null;
-function handleDragStart(e){ draggedIndex = parseInt(this.dataset.index); this.classList.add('dragging'); }
-function handleDragOver(e){ e.preventDefault(); }
+let draggedRealIndex = null;
+let touchStartY = 0;
+let currentTouchElement = null;
+
+function handleDragStart(e){ 
+  draggedIndex = parseInt(this.dataset.filteredIndex);
+  draggedRealIndex = parseInt(this.dataset.realIndex);
+  this.classList.add('dragging'); 
+  e.dataTransfer.effectAllowed = 'move';
+}
+function handleDragOver(e){ e.preventDefault(); e.dataTransfer.dropEffect = 'move'; this.style.borderTop = '2px solid var(--accent)'; }
 function handleDrop(e){
   e.preventDefault();
-  const targetIndex = parseInt(this.dataset.index);
-  if(draggedIndex === null || draggedIndex === targetIndex) return;
-  const newList = [...routeList];
-  const [moved] = newList.splice(draggedIndex, 1);
-  newList.splice(targetIndex, 0, moved);
-  routeList = newList;
+  this.style.borderTop = '';
+  const targetFilteredIndex = parseInt(this.dataset.filteredIndex);
+  if(draggedIndex === null || draggedIndex === targetFilteredIndex) return;
+  reorderArray(draggedIndex, targetFilteredIndex);
+}
+function handleDragEnd(){ this.classList.remove('dragging'); draggedIndex = null; draggedRealIndex = null; document.querySelectorAll('.sidebar-item').forEach(el=>el.style.borderTop=''); }
+
+function handleTouchStart(e){
+  touchStartY = e.touches[0].clientY;
+  currentTouchElement = this;
+  draggedIndex = parseInt(this.dataset.filteredIndex);
+  draggedRealIndex = parseInt(this.dataset.realIndex);
+  setTimeout(()=>{ if(currentTouchElement) currentTouchElement.classList.add('dragging'); }, 150);
+}
+function handleTouchMove(e){
+  if(!currentTouchElement) return;
+  e.preventDefault();
+  const touchY = e.touches[0].clientY;
+  const elementBelow = document.elementFromPoint(e.touches[0].clientX, touchY);
+  const itemBelow = elementBelow?.closest('.sidebar-item');
+  document.querySelectorAll('.sidebar-item').forEach(el=>el.style.borderTop='');
+  if(itemBelow && itemBelow !== currentTouchElement){
+    itemBelow.style.borderTop = '2px solid var(--accent)';
+  }
+}
+function handleTouchEnd(e){
+  if(!currentTouchElement) return;
+  currentTouchElement.classList.remove('dragging');
+  const touchY = e.changedTouches[0].clientY;
+  const elementBelow = document.elementFromPoint(e.changedTouches[0].clientX, touchY);
+  const itemBelow = elementBelow?.closest('.sidebar-item');
+  document.querySelectorAll('.sidebar-item').forEach(el=>el.style.borderTop='');
+  if(itemBelow && draggedIndex !== null){
+    const targetFilteredIndex = parseInt(itemBelow.dataset.filteredIndex);
+    if(targetFilteredIndex !== draggedIndex){
+      reorderArray(draggedIndex, targetFilteredIndex);
+    }
+  }
+  currentTouchElement = null;
+  draggedIndex = null;
+  draggedRealIndex = null;
+}
+
+function reorderArray(from, to){
+  // نعيد ترتيب filteredList ثم نطبقه على routeList الأصلي
+  const newFiltered = [...filteredList];
+  const [moved] = newFiltered.splice(from, 1);
+  newFiltered.splice(to, 0, moved);
+  
+  // إذا كنا في فلتر اليوم، نعيد ترتيب routeList بناء على الترتيب الجديد
+  if(currentFilter === 'today'){
+    // نحذف العناصر المفلترة من routeList ونعيد إدخالها بالترتيب الجديد في نفس الأماكن
+    let newRoute = [...routeList];
+    // نزيل كل العناصر المفلترة
+    newRoute = newRoute.filter(item => !isDueToday(item));
+    // نجد أول index لعنصر due today في الأصلي
+    let firstDueIndex = routeList.findIndex(isDueToday);
+    if(firstDueIndex === -1) firstDueIndex = 0;
+    // ندخل الترتيب الجديد
+    newFiltered.forEach((item, i)=>{
+      newRoute.splice(firstDueIndex + i, 0, item);
+    });
+    routeList = newRoute;
+  } else {
+    routeList = newFiltered;
+  }
+  filteredList = newFiltered;
+  renderMap();
+  renderSidebar();
+  // حفظ تلقائي
   set(ref(db, 'routeManual'), routeList);
 }
-function handleDragEnd(){ this.classList.remove('dragging'); draggedIndex = null; }
 
-window.openClientModal = function(index){
-  selectedIndex = index;
-  const item = routeList[index];
+window.saveOrder = async function(){
+  await set(ref(db, 'routeManual'), routeList);
+  alert('تم حفظ الترتيب');
+}
+
+window.openClientModalFiltered = function(filteredIndex){
+  selectedIndex = routeList.indexOf(filteredList[filteredIndex]);
+  if(selectedIndex === -1) selectedIndex = filteredIndex;
+  const item = filteredList[filteredIndex];
   document.getElementById('modalClientName').innerText = item.name || 'بدون اسم';
-  document.getElementById('modalClientMeta').innerText = `رقم ${index+1} • ${getArabicStatus(item.status)} ${item.city ? '• '+item.city : ''}`;
+  document.getElementById('modalClientMeta').innerText = `رقم ${filteredIndex+1} • ${getArabicStatus(item.status)} ${item.city ? '• '+item.city : ''} ${item.debt ? '• '+item.debt+' درهم' : ''}`;
   document.getElementById('clientModal').classList.add('active');
 }
+window.openClientModal = function(index){ window.openClientModalFiltered(index); }
 window.closeClientModal = function(){ document.getElementById('clientModal').classList.remove('active'); selectedIndex = null; }
 
 window.updateStatus = async function(newStatus){
@@ -740,10 +695,7 @@ window.updateStatus = async function(newStatus){
   await set(ref(db, 'routeManual'), routeList);
   closeClientModal();
 }
-window.openDetails = function(){
-  if(selectedIndex===null) return;
-  alert('تفاصيل الزبون: ' + JSON.stringify(routeList[selectedIndex], null, 2));
-}
+window.openDetails = function(){ if(selectedIndex===null) return; alert(JSON.stringify(routeList[selectedIndex], null, 2)); }
 window.callClient = function(){
   if(selectedIndex===null) return;
   const item = routeList[selectedIndex];
@@ -758,24 +710,16 @@ window.whatsappClient = function(){
   if(phone) window.open('https://wa.me/'+phone.replace(/[^0-9]/g,''), '_blank');
   else alert('لا يوجد رقم واتساب');
 }
-window.openCard = function(){
-  if(selectedIndex===null) return;
-  const item = routeList[selectedIndex];
-  alert('فتح بطاقة: ' + item.name);
-}
+window.openCard = function(){ if(selectedIndex===null) return; alert('بطاقة: ' + routeList[selectedIndex].name); }
 
 window.toggleSidebar = function(){
   const sidebar = document.getElementById('sidebar');
   const chevron = document.getElementById('sidebarChevron');
   sidebar.classList.toggle('open');
-  if(sidebar.classList.contains('open')){
-    chevron.className = 'fa-solid fa-chevron-right';
-  } else {
-    chevron.className = 'fa-solid fa-chevron-left';
-  }
+  chevron.className = sidebar.classList.contains('open') ? 'fa-solid fa-chevron-right' : 'fa-solid fa-chevron-left';
 }
 
-window.addEventListener('resize', renderMap);
+window.addEventListener('resize', ()=>{ applyFilter(); });
 </script>
 </body>
 </html>
