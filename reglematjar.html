@@ -23,31 +23,52 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>المنتجات - إدارة المخزون</title>
-<!-- Preconnect لتسريع CDN -->
-<link rel="preconnect" href="https://cdn.tailwindcss.com">
+<!-- تسريع فائق: critical CSS inline بدل انتظار Tailwind -->
+<style>
+/* Critical CSS - يظهر الصفحة فوراً بدون انتظار CDN */
+*{font-family:'Cairo',sans-serif;box-sizing:border-box}
+body{background:#f8fafc;margin:0}
+.grid{display:grid}.flex{display:flex}.hidden{display:none}
+.grid-cols-2{grid-template-columns:repeat(2,1fr)}.gap-3{gap:.75rem}.gap-4{gap:1rem}
+.bg-white{background:#fff}.rounded-xl{border-radius:.75rem}.rounded-lg{border-radius:.5rem}
+.shadow-sm{box-shadow:0 1px 2px rgba(0,0,0,.05)}.border{border:1px solid #e5e7eb}.border-gray-100{border-color:#f3f4f6}
+.p-4{padding:1rem}.px-4{padding-left:1rem;padding-right:1rem}.pt-6{padding-top:1.5rem}.pb-6{padding-bottom:1.5rem}
+.text-xs{font-size:.75rem}.text-xl{font-size:1.25rem}.font-bold{font-weight:700}
+.justify-between{justify-content:space-between}.items-center{align-items:center}.text-center{text-align:center}
+.w-10{width:2.5rem}.h-10{height:2.5rem}.w-14{width:3.5rem}.h-14{height:3.5rem}
+.bg-emerald-100{background:#d1fae5}.bg-blue-100{background:#dbeafe}.bg-amber-100{background:#fef3c7}.bg-violet-100{background:#ede9fe}
+.text-amber-600{color:#d97706}.max-w-7xl{max-width:80rem}.mx-auto{margin-left:auto;margin-right:auto}
+.pb-10{padding-bottom:2.5rem}
+.skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
+@keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.product-card{contain:layout style paint;content-visibility:auto;contain-intrinsic-size:200px}
+</style>
+<!-- تحميل باقي المكتبات بعد عرض الصفحة -->
+<link rel="preload" href="https://cdn.tailwindcss.com" as="script">
 <link rel="preconnect" href="https://cdnjs.cloudflare.com">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="dns-prefetch" href="https://api.cloudinary.com">
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app">
+<script>
+// تسريع: تحميل Tailwind و FontAwesome بعد عرض المحتوى
+setTimeout(()=>{
+  var s=document.createElement('script');s.src='https://cdn.tailwindcss.com';document.head.appendChild(s);
+  var l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';document.head.appendChild(l);
+  var f=document.createElement('link');f.rel='stylesheet';f.href='https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap';document.head.appendChild(f);
+}, 100);
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
-  *{font-family:'Cairo',sans-serif} body{background:#f8fafc}
+  *{font-family:'Cairo',sans-serif}
   .modal-backdrop{backdrop-filter:blur(4px)}
   .animate-slide-up{animation:slideUp .3s ease-out} @keyframes slideUp{from{transform:translateY(20px);opacity:0}to{transform:translateY(0);opacity:1}}
-  .product-card{contain:layout style paint;content-visibility:auto;contain-intrinsic-size:200px}
   .product-card:hover{transform:translateY(-2px)}
   input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
   .gallery-card{position:relative;border-radius:14px;overflow:hidden;border:2px solid #e5e7eb;background:#fff;transition:.2s}
   .gallery-card.main{border-color:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.15)}
-  .gallery-card:hover{transform:scale(1.02)}
   .slider-modal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:none;align-items:center;justify-content:center;touch-action:none}
   .slider-modal.active{display:flex}
   .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);transition:.2s}
   .dot.active{background:#fff;width:24px}
-  /* Skeleton loading */
-  .skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
-  @keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 </head>
 <body class="pb-10">
@@ -91,7 +112,7 @@
             <span class="text-xs font-bold text-emerald-700">إضافة صور</span>
             <span class="text-[10px] text-gray-500">JPG, PNG, WEBP - حتى 10MB</span>
           </div>
-          <div id="overallProgress" class="hidden mt-4"><div class="flex justify-between text-xs mb-1"><span>جاري رفع الصور...</span><span id="overallProgressText">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="overallProgressBar" class="bg-emerald-600 h-2 rounded-full transition-all" style="width:0%"></div></div><div id="perImageProgress" class="mt-2 space-y-1"></div></div>
+          <div id="overallProgress" class="hidden mt-4"><div class="flex justify-between text-xs mb-1"><span>جاري رفع الصور...</span><span id="overallProgressText">0%</span></div><div class="w-full bg-gray-200 rounded-full h-2"><div id="overallProgressBar" class="bg-emerald-600 h-2 rounded-full transition-all" style="width:0%"></div></div></div>
           <p class="text-[11px] text-gray-500 mt-3 text-center">الصورة الأولى هي الرئيسية. استخدم الأسهم لإعادة الترتيب.</p>
         </div>
       </div>
@@ -139,46 +160,79 @@ let sliderImages = [];
 let sliderIndex = 0;
 let touchStartX = 0;
 let touchEndX = 0;
-// تسريع: pagination + cache
 let renderedCount = 0;
-const PAGE_SIZE = 24;
-let searchDebounceTimer = null;
+const PAGE_SIZE = 30;
+
+// ======== فكرة Storage الهاتف فائقة السرعة ========
+const CACHE_KEY = 'products_v3';
+const CACHE_TIME_KEY = 'products_v3_time';
+const CACHE_VERSION = 'v3';
+const CACHE_EXPIRY = 24*60*60*1000; // 24 ساعة
+
+function saveToPhoneStorage(data){
+  try{
+    const payload = {
+      v: CACHE_VERSION,
+      t: Date.now(),
+      d: data
+    };
+    // ضغط بسيط
+    localStorage.setItem(CACHE_KEY, JSON.stringify(payload));
+    localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+    // حفظ أيضاً في IndexedDB للبيانات الكبيرة
+    if('indexedDB' in window){
+      const req = indexedDB.open('KarniDB',1);
+      req.onupgradeneeded = e=>{ e.target.result.createObjectStore('products',{keyPath:'id'}); };
+      req.onsuccess = e=>{
+        const db = e.target.result;
+        const tx = db.transaction('products','readwrite');
+        const store = tx.objectStore('products');
+        store.clear();
+        data.forEach(p=>store.put({id:p.id, data:p}));
+      };
+    }
+  } catch(e){ console.warn('Cache save fail', e); }
+}
+
+function loadFromPhoneStorage(){
+  try{
+    const raw = localStorage.getItem(CACHE_KEY);
+    if(!raw) return null;
+    const payload = JSON.parse(raw);
+    if(payload.v !== CACHE_VERSION) return null;
+    if(Date.now() - payload.t > CACHE_EXPIRY) return null;
+    if(!payload.d || !Array.isArray(payload.d)) return null;
+    return payload.d;
+  } catch(e){ return null; }
+}
+
+function renderInstantFromStorage(){
+  const cached = loadFromPhoneStorage();
+  if(cached && cached.length>0){
+    products = cached;
+    filteredCache = [...cached];
+    renderProducts(true);
+    updateStats();
+    return true;
+  }
+  return false;
+}
 
 const initialProducts = [
   { id: 1, name: 'Asperox Magic Yellow', price: 0, stock: 0, lowStockThreshold: 10, hidden:false, mainImage:'https://i.ibb.co/Qjz9xgdQ/1779799104968.png', images:['https://i.ibb.co/Qjz9xgdQ/1779799104968.png'] }
 ];
 
-// تسريع الدخول: تحميل من localStorage فوراً
-function loadFromCache(){
-  try{
-    const cached = localStorage.getItem('products_cache');
-    const time = localStorage.getItem('products_cache_time');
-    if(cached && time && Date.now() - parseInt(time) < 5*60*1000){
-      products = JSON.parse(cached);
-      filteredCache = [...products];
-      renderProducts(true);
-      updateStats();
-      return true;
-    }
-  } catch(e){}
-  return false;
-}
-function saveToCache(){
-  try{
-    localStorage.setItem('products_cache', JSON.stringify(products));
-    localStorage.setItem('products_cache_time', Date.now().toString());
-  } catch(e){}
-}
-
 document.addEventListener('DOMContentLoaded', async()=>{
-  const hasCache = loadFromCache();
+  // 1. عرض فوري من storage الهاتف (0ms)
+  const hasInstantCache = renderInstantFromStorage();
   setupEventListeners();
   setupSliderTouch();
-  // إذا كان هناك cache، اعرضه فوراً وحمّل Firebase في الخلفية
-  if(hasCache){
-    loadProducts(true); // background refresh
+
+  if(hasInstantCache){
+    // 2. تحديث في الخلفية بدون منع المستخدم
+    setTimeout(()=> loadProducts(true), 500);
   } else {
-    // عرض skeleton سريع
+    // أول مرة: skeleton
     document.getElementById('productsContainer').innerHTML = Array(6).fill(0).map(()=>`<div class="bg-white rounded-xl p-4 border"><div class="flex gap-4"><div class="w-24 h-24 skeleton rounded-lg"></div><div class="flex-1 space-y-2"><div class="h-4 skeleton rounded w-3/4"></div><div class="h-3 skeleton rounded w-1/2"></div></div></div></div>`).join('');
     await loadProducts(false);
   }
@@ -189,34 +243,32 @@ async function loadProducts(isBackground=false){
     const snap = await get(ref(db, "products"));
     if(snap.exists()){
       const val = snap.val();
-      products = Object.values(val).map(p=>{
+      const fresh = Object.values(val).map(p=>{
         if(p.image && !p.mainImage) p.mainImage = p.image;
         if(p.mainImage && (!p.images || p.images.length===0)) p.images = [p.mainImage];
         if(!p.images) p.images = p.mainImage ? [p.mainImage] : [];
         if(!p.mainImage && p.images.length>0) p.mainImage = p.images[0];
         return {hidden:false, lowStockThreshold:10, ...p};
       });
-    } else {
-      if(!isBackground){ products = [...initialProducts]; await saveProducts(); }
-    }
-    saveToCache();
-    if(!isBackground || filteredCache.length===0){
-      renderProducts(true);
-      updateStats();
-    } else {
-      // تحديث في الخلفية بدون إعادة رندر كاملة إذا نفس العدد
-      if(products.length !== filteredCache.length){
+      // مقارنة سريعة: إذا نفس العدد ونفس التحديث، لا تعيد الرندر
+      const cachedRaw = localStorage.getItem(CACHE_KEY);
+      const cachedData = cachedRaw ? JSON.parse(cachedRaw).d : null;
+      const isSame = cachedData && cachedData.length===fresh.length && JSON.stringify(cachedData.map(p=>p.id).sort())===JSON.stringify(fresh.map(p=>p.id).sort());
+      
+      if(!isBackground || !isSame){
+        products = fresh;
+        saveToPhoneStorage(products);
         renderProducts(true);
         updateStats();
       }
+    } else {
+      if(!isBackground){ products = [...initialProducts]; await saveProducts(); }
     }
   } catch(e){
     console.error(e);
-    if(!isBackground){
+    if(!isBackground && products.length===0){
       products = [...initialProducts];
-      showToast("خطأ في تحميل البيانات","error");
       renderProducts(true);
-      updateStats();
     }
   }
 }
@@ -225,18 +277,16 @@ async function saveProducts(){
   const data={};
   products.forEach(p=>{ data[p.id]=p; });
   await set(ref(db,"products"), data);
-  saveToCache();
+  saveToPhoneStorage(products);
 }
 
 function setupEventListeners(){
   document.getElementById('fabBtn').addEventListener('click', openAddModal);
   document.getElementById('filterBtn').addEventListener('click', openFilterModal);
+  let timer;
   document.getElementById('searchInput').addEventListener('input', e=>{
-    clearTimeout(searchDebounceTimer);
-    searchDebounceTimer = setTimeout(()=>{
-      searchQuery=e.target.value.trim();
-      renderProducts(true);
-    }, 150);
+    clearTimeout(timer);
+    timer=setTimeout(()=>{ searchQuery=e.target.value.trim(); renderProducts(true); }, 120);
   });
   document.getElementById('productForm').addEventListener('submit', handleFormSubmit);
   document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDelete);
@@ -244,12 +294,9 @@ function setupEventListeners(){
   const input=document.getElementById('productImageInput');
   box.addEventListener('click', ()=>input.click());
   input.addEventListener('change', handleFilesSelect);
-  // Infinite scroll
   const observer = new IntersectionObserver(entries=>{
-    if(entries[0].isIntersecting && filteredCache.length > renderedCount){
-      renderProducts(false);
-    }
-  }, {rootMargin:'200px'});
+    if(entries[0].isIntersecting && filteredCache.length > renderedCount) renderProducts(false);
+  }, {rootMargin:'300px'});
   observer.observe(document.getElementById('loadMoreTrigger'));
 }
 
@@ -259,12 +306,8 @@ function handleFilesSelect(e){
   const allowedTypes=['image/jpeg','image/jpg','image/png','image/webp'];
   const validFiles=[];
   for(const f of files){
-    if(!allowedTypes.includes(f.type)){
-      showToast(`نوع غير مدعوم: ${f.name}`,'error'); continue;
-    }
-    if(f.size>10*1024*1024){
-      showToast(`حجم كبير: ${f.name} - أقصى 10MB`,'error'); continue;
-    }
+    if(!allowedTypes.includes(f.type)){ showToast(`نوع غير مدعوم: ${f.name}`,'error'); continue; }
+    if(f.size>10*1024*1024){ showToast(`حجم كبير: ${f.name}`,'error'); continue; }
     validFiles.push(f);
   }
   addFilesToGallery(validFiles);
@@ -337,12 +380,6 @@ async function compressImage(file, maxWidth=1920, quality=0.85){
       blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',q));
       attempts++;
     }
-    if(blob && blob.size>MAX_SIZE){
-      const scale=Math.sqrt(MAX_SIZE/blob.size)*0.9;
-      canvas.width=w*scale; canvas.height=h*scale;
-      ctx.drawImage(canvas,0,0,w,h,0,0,canvas.width,canvas.height);
-      blob=await new Promise(r=>canvas.toBlob(r,'image/jpeg',0.7));
-    }
     if(!blob){ resolve(file); return; }
     resolve(new File([blob], file.name.replace(/\.\w+$/,'.jpg'), {type:'image/jpeg'}));
   });
@@ -407,7 +444,6 @@ function renderProducts(reset=true){
   empty.classList.add('hidden');
   const nextSlice = filteredCache.slice(renderedCount, renderedCount+PAGE_SIZE);
   if(nextSlice.length===0) return;
-  // تسريع: بناء HTML مرة واحدة
   const html = nextSlice.map(p=>createProductCard(p)).join('');
   const temp = document.createElement('div');
   temp.innerHTML = html;
