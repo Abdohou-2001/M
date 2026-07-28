@@ -139,7 +139,7 @@ body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(2
 
 <script type="module">
 import { auth, db } from './firebase.js';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, fetchSignInMethodsForEmail, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, updateProfile, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 emailjs.init("m5C05A9CqCq2Ux4cu");
@@ -189,7 +189,6 @@ function startTimers(){
       clearInterval(expiryInt); 
       eTimer.textContent='00:00'; eTimer.style.color='#ef4444'; 
       showToast('انتهت صلاحية الرمز','error');
-      // مسح OTP بعد انتهاء الوقت
       clearOtpData();
     }
   },1000);
@@ -199,16 +198,26 @@ function clearTimers(){ if(resendInt) clearInterval(resendInt); if(expiryInt) cl
 function getFirebaseErrorMessage(error){
   if(!navigator.onLine) return 'لا يوجد اتصال بالإنترنت';
   const code=error.code||'';
+  const msg=(error.message||'').toLowerCase();
   switch(code){
-    case 'auth/invalid-email': return 'البريد غير صحيح';
+    case 'auth/invalid-email': return 'البريد الإلكتروني غير صحيح';
     case 'auth/user-not-found': return 'البريد غير موجود';
-    case 'auth/wrong-password':
-    case 'auth/invalid-credential': return 'كلمة المرور غير صحيحة';
+    case 'auth/wrong-password': return 'كلمة المرور غير صحيحة';
+    case 'auth/invalid-credential': return 'البريد أو كلمة المرور غير صحيحة';
     case 'auth/email-already-in-use': return 'البريد مستخدم مسبقاً';
-    case 'auth/weak-password': return 'كلمة المرور ضعيفة';
-    case 'auth/too-many-requests': return 'محاولات كثيرة، حاول لاحقاً';
-    case 'auth/network-request-failed': return 'لا يوجد اتصال بالإنترنت';
-    default: return 'حدث خطأ غير متوقع';
+    case 'auth/weak-password': return 'كلمة المرور ضعيفة جداً';
+    case 'auth/too-many-requests': return 'محاولات كثيرة جداً، حاول مرة أخرى لاحقاً';
+    case 'auth/network-request-failed': return 'فشل الاتصال بالشبكة، تحقق من الإنترنت';
+    case 'auth/missing-email': return 'الرجاء إدخال البريد الإلكتروني';
+    case 'auth/user-disabled': return 'تم تعطيل هذا الحساب';
+    case 'auth/operation-not-allowed': return 'هذه العملية غير مسموحة';
+    case 'auth/invalid-verification-code': return 'رمز التحقق غير صالح';
+    case 'auth/missing-password': return 'الرجاء إدخال كلمة المرور';
+    default:
+      if(msg.includes('user-not-found')) return 'البريد غير موجود';
+      if(msg.includes('invalid-email')) return 'البريد غير صحيح';
+      if(msg.includes('network')) return 'لا يوجد اتصال بالإنترنت';
+      return error.message || 'حدث خطأ غير متوقع';
   }
 }
 
@@ -243,8 +252,7 @@ window.handleAuth=async function(){
     if(isSending) return;
     try{
       isSending=true; isProcessing=true; setLoading(true);
-      const methods=await fetchSignInMethodsForEmail(auth,email);
-      if(methods.length>0){ showToast('البريد مستخدم مسبقاً','error'); return; }
+      // لا نستخدم fetchSignInMethodsForEmail - نعتمد على Firebase نفسه
       otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000; pendingData={fullName,email,password}; forgotFlow=false;
       await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:fullName,otp_code:otpCode,user_name:fullName,email:email,message:`رمز التحقق: ${otpCode}`});
       document.getElementById('otpEmailDisplay').textContent=email;
@@ -258,16 +266,12 @@ window.handleAuth=async function(){
     try{
       isProcessing=true; setLoading(true);
       const cred=await signInWithEmailAndPassword(auth,email,password);
-      // المصدر الحقيقي هو auth.currentUser وليس localStorage
       if(!auth.currentUser){ showToast('فشل تسجيل الدخول','error'); return; }
-      // حفظ مؤقت فقط لتحسين السرعة
       localStorage.setItem('loggedIn','true');
       localStorage.setItem('appVersion','10');
-      // سيتم تحديث الاسم والبريد الحقيقي من onAuthStateChanged
       localStorage.setItem('userName_temp', auth.currentUser.displayName || email.split('@')[0]);
       localStorage.setItem('userEmail_temp', auth.currentUser.email || email);
       showToast('تم تسجيل الدخول بنجاح','success');
-      // لا يتم الانتقال إلا بعد التأكد أن auth.currentUser موجود
       setTimeout(()=>{
         if(auth.currentUser){
           window.location.href='index.html';
@@ -291,9 +295,11 @@ window.verifyOtp=async function(){
       await sendPasswordResetEmail(auth, forgotEmailForReset);
       clearTimers();
       closeOtpModal();
-      showToast('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك','success');
+      showToast('✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك','success');
       clearOtpData();
-    }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
+    }catch(error){
+      showToast(getFirebaseErrorMessage(error),"error");
+    }
     finally{ document.getElementById('verifyOtpBtn').disabled=false; document.getElementById('verifyOtpBtn').textContent='تأكيد الرمز'; }
   } else {
     try{
@@ -301,14 +307,11 @@ window.verifyOtp=async function(){
       const cred=await createUserWithEmailAndPassword(auth, pendingData.email, pendingData.password);
       const uid=cred.user.uid;
       await updateProfile(cred.user,{displayName:pendingData.fullName});
-      // حفظ بهذا الشكل: users/{uid}/profile وليس مباشرة داخل users/{uid}
       await set(ref(db,`users/${uid}/profile`),{
         displayName:pendingData.fullName,
         email:pendingData.email,
         createdAt:new Date().toISOString()
       });
-      // إنشاء مجلدات فارغة مستقلة لكل مستخدم منذ أول تسجيل
-      const emptyInit={_init:true, createdAt:new Date().toISOString()};
       await Promise.all([
         set(ref(db,`users/${uid}/customers`), {_init:true}),
         set(ref(db,`users/${uid}/reports`), {_init:true}),
@@ -322,7 +325,6 @@ window.verifyOtp=async function(){
       clearTimers(); closeOtpModal();
       clearOtpData();
       showToast('تم إنشاء الحساب بنجاح','success');
-      // التأكد أن auth.currentUser موجود قبل الانتقال
       setTimeout(()=>{
         if(auth.currentUser){
           window.location.href='index.html';
@@ -348,10 +350,8 @@ window.resendOtp=async function(){
 window.closeOtpModal=function(){ 
   document.getElementById('otpModal').classList.remove('active'); 
   clearTimers(); 
-  // مسح OTP عند إغلاق النافذة
   const input=document.getElementById('otpInput');
   if(input) input.value='';
-  // لا نمسح pendingData هنا حتى لا نفقد بيانات التسجيل إذا أغلق بالخطأ، لكن نمسح الكود فقط بعد انتهاء الوقت أو النجاح
   if(forgotFlow){
     clearOtpData();
   }
@@ -367,9 +367,8 @@ window.sendForgotOtp=async function(){
   if(!isValidEmail(email)){ showToast('البريد غير صحيح','error'); return; }
   if(isSending) return;
   try{
-    isSending=true; btn.disabled=true; btn.textContent='جاري التحقق...';
-    const methods=await fetchSignInMethodsForEmail(auth,email);
-    if(!methods||methods.length===0){ showToast('البريد غير موجود','error'); return; }
+    isSending=true; btn.disabled=true; btn.textContent='جاري الإرسال...';
+    // الحل الصحيح: لا نتحقق بـ fetchSignInMethodsForEmail - نرسل OTP مباشرة و Firebase يتحقق لاحقاً
     forgotEmailForReset=email; otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000; forgotFlow=true;
     await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:email.split('@')[0],otp_code:otpCode,user_name:email.split('@')[0],email:email,message:`رمز إعادة التعيين: ${otpCode}`});
     closeForgotModal();
@@ -386,30 +385,13 @@ document.getElementById('otpModal')?.addEventListener('click',(e)=>{ if(e.target
 document.getElementById('forgotModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeForgotModal(); });
 document.getElementById('otpInput')?.addEventListener('input',(e)=>{ e.target.value=e.target.value.replace(/\D/g,'').slice(0,6); });
 
-// onAuthStateChanged - مراقبة كاملة للمستخدم
 onAuthStateChanged(auth, (user)=>{
   if(user){
-    // مستخدم مسجل دخول - تحديث البيانات الحقيقية من Firebase فقط
     const displayName=user.displayName || '';
     const email=user.email || '';
-    // حفظ مؤقت فقط لتحسين السرعة، لكن المصدر الحقيقي هو auth.currentUser
     if(displayName) localStorage.setItem('userName_temp', displayName);
     if(email) localStorage.setItem('userEmail_temp', email);
-    // إذا كنا في صفحة login والمستخدم مسجل دخول بالفعل، اسمح بالدخول بعد تأخير قصير لتجنب الحلقة
-    if(window.location.pathname.includes('login.html') || window.location.pathname==='/' || window.location.pathname===''){
-      // لا ننتقل تلقائياً هنا لتجنب التعارض، بل نترك handleAuth يقرر، لكن إذا كان المستخدم مسجل دخول بالفعل لمدة طويلة
-      const lastLogin=localStorage.getItem('lastLoginTime');
-      if(lastLogin && Date.now() - parseInt(lastLogin) < 1000){
-        // تم تسجيل الدخول للتو، لا تفعل شيئاً
-      }
-    }
     localStorage.setItem('lastLoginTime', Date.now().toString());
-  } else {
-    // لا يوجد مستخدم - إذا لم نكن في login.html، ارجع إليه
-    // هذا يمنع الوصول بدون تسجيل دخول
-    if(!window.location.pathname.includes('login.html') && !window.location.pathname.includes('rapport.html')){
-      // لا ننفذ في rapport.html لأنه قد يكون صفحة فرعية، لكن في login نحن بالفعل هنا
-    }
   }
 });
 
