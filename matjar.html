@@ -23,7 +23,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>متجري - الطلب</title>
-<!-- Critical CSS فوري -->
 <style>
 *{font-family:'Cairo',sans-serif;box-sizing:border-box}body{background:#f8fafc;margin:0}
 .flex{display:flex}.grid{display:grid}.hidden{display:none}
@@ -41,7 +40,6 @@
 @keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
 </style>
 <script>
-// تحميل المكتبات بعد عرض الصفحة مباشرة
 setTimeout(()=>{
   var s=document.createElement('script');s.src='https://cdn.tailwindcss.com';document.head.appendChild(s);
   var l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';document.head.appendChild(l);
@@ -168,20 +166,9 @@ setTimeout(()=>{
 <div id="toast" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-[100]"><div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3"><i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400"></i><span id="toastMessage" class="text-sm"></span></div></div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, get, push } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-  authDomain: "karnipromaroc.firebaseapp.com",
-  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "karnipromaroc",
-  storageBucket: "karnipromaroc.firebasestorage.app",
-  messagingSenderId: "6746147726",
-  appId: "1:6746147726:web:6e3a2d29941ab93ef432df"
-};
-const fbApp = initializeApp(firebaseConfig);
-const db = getDatabase(fbApp);
+import { auth, db } from "./firebase.js";
+import { ref, get, push } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 let products = [];
 let filteredProducts = [];
@@ -194,19 +181,25 @@ let allClients = [];
 let renderedCount = 0;
 const PAGE_SIZE = 20;
 
-// ===== Storage الهاتف لـ matjar =====
-const PROD_CACHE_KEY = 'products_v3';
-const CLIENT_CACHE_KEY = 'clients_cache_v2';
-const CLIENT_TIME_KEY = 'clients_cache_time';
+let currentUid = null;
+let productsRef = null;
+let customersRef = null;
+let ordersRef = null;
+
+function getProdCacheKey(){ return `products_${currentUid}`; }
+function getClientCacheKey(){ return `clients_${currentUid}`; }
+function getClientTimeKey(){ return `clients_time_${currentUid}`; }
 
 function saveProductsToPhone(data){
   try{
-    localStorage.setItem(PROD_CACHE_KEY, JSON.stringify({v:'v3', t:Date.now(), d:data}));
+    if(!currentUid) return;
+    localStorage.setItem(getProdCacheKey(), JSON.stringify({v:'v3', t:Date.now(), d:data}));
   } catch(e){}
 }
 function loadProductsFromPhone(){
   try{
-    const raw = localStorage.getItem(PROD_CACHE_KEY);
+    if(!currentUid) return null;
+    const raw = localStorage.getItem(getProdCacheKey());
     if(!raw) return null;
     const p = JSON.parse(raw);
     if(Date.now() - p.t > 24*60*60*1000) return null;
@@ -215,14 +208,16 @@ function loadProductsFromPhone(){
 }
 function saveClientsToPhone(clients){
   try{
-    localStorage.setItem(CLIENT_CACHE_KEY, JSON.stringify(clients));
-    localStorage.setItem(CLIENT_TIME_KEY, Date.now().toString());
+    if(!currentUid) return;
+    localStorage.setItem(getClientCacheKey(), JSON.stringify(clients));
+    localStorage.setItem(getClientTimeKey(), Date.now().toString());
   } catch(e){}
 }
 function loadClientsFromPhone(){
   try{
-    const raw = localStorage.getItem(CLIENT_CACHE_KEY);
-    const time = localStorage.getItem(CLIENT_TIME_KEY);
+    if(!currentUid) return null;
+    const raw = localStorage.getItem(getClientCacheKey());
+    const time = localStorage.getItem(getClientTimeKey());
     if(!raw || !time) return null;
     if(Date.now() - parseInt(time) > 24*60*60*1000) return null;
     return JSON.parse(raw);
@@ -231,7 +226,6 @@ function loadClientsFromPhone(){
 
 function renderInstant(){
   let hasData = false;
-  // منتجات من الهاتف
   const cachedProds = loadProductsFromPhone();
   if(cachedProds && cachedProds.length>0){
     products = cachedProds.filter(p=>!p.hidden);
@@ -239,7 +233,6 @@ function renderInstant(){
     renderProducts(true);
     hasData = true;
   }
-  // عملاء من الهاتف
   const cachedClients = loadClientsFromPhone();
   if(cachedClients && cachedClients.length>0){
     allClients = cachedClients;
@@ -257,65 +250,52 @@ function renderInstant(){
 }
 
 async function loadClients(){
-  let clients = [];
-  // من localStorage keys
+  if(!currentUid || !customersRef) return;
   try{
-    ['clients','customers','allClients','clientList'].forEach(k=>{
-      try{
-        const data = localStorage.getItem(k);
-        if(data){
-          const arr = JSON.parse(data);
-          if(Array.isArray(arr)) arr.forEach(c=>{ if(typeof c==='string') clients.push(c); else if(c.name) clients.push(c.name); });
-        }
-      } catch(e){}
-    });
-  } catch(e){}
-  // من Firebase
-  const paths = ["clients","customers","clientsList","customersList","users","customer","client"];
-  for(const path of paths){
-    try{
-      const snap = await get(ref(db, path));
-      if(snap.exists()){
-        const val = snap.val();
-        Object.values(val).forEach(c=>{
-          if(!c) return;
-          if(typeof c==='string') clients.push(c);
-          else if(c.name) clients.push(c.name);
-          else if(c.clientName) clients.push(c.clientName);
-        });
-      }
-    } catch(e){}
-  }
-  clients = [...new Set(clients.map(c=>c.trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
-  if(clients.length>0){
-    allClients = clients;
-    saveClientsToPhone(clients);
-    document.getElementById('clientsLoading').textContent = `تم تحميل ${clients.length} عميل`;
-    setTimeout(()=>document.getElementById('clientsLoading').classList.add('hidden'), 1200);
-    if(activeClient && clients.includes(activeClient)){
-      document.getElementById('activeClientName').textContent = activeClient;
-      document.getElementById('activeClientBar').classList.remove('hidden');
-      document.getElementById('orderClientLabel').textContent = `(${activeClient})`;
-      document.getElementById('clientSearchInput').value = activeClient;
+    const snap = await get(customersRef);
+    let clients = [];
+    if(snap.exists()){
+      const val = snap.val();
+      if(val._init) delete val._init;
+      Object.values(val).forEach(c=>{
+        if(!c || !c.name) return;
+        if(c.name) clients.push(c.name.trim());
+      });
     }
-  } else if(allClients.length===0){
-    document.getElementById('clientsLoading').innerHTML = '<span class="text-red-400 text-xs">لا يوجد عملاء</span>';
+    clients = [...new Set(clients.filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ar'));
+    if(clients.length>0){
+      allClients = clients;
+      saveClientsToPhone(clients);
+      document.getElementById('clientsLoading').textContent = `تم تحميل ${clients.length} عميل`;
+      setTimeout(()=>document.getElementById('clientsLoading').classList.add('hidden'), 1200);
+      if(activeClient && clients.includes(activeClient)){
+        document.getElementById('activeClientName').textContent = activeClient;
+        document.getElementById('activeClientBar').classList.remove('hidden');
+        document.getElementById('orderClientLabel').textContent = `(${activeClient})`;
+        document.getElementById('clientSearchInput').value = activeClient;
+      }
+    } else if(allClients.length===0){
+      document.getElementById('clientsLoading').innerHTML = '<span class="text-red-400 text-xs">لا يوجد عملاء</span>';
+    }
+  }catch(e){
+    console.error(e);
   }
 }
 
 async function loadProducts(){
+  if(!currentUid || !productsRef) return;
   try{
-    const snap = await get(ref(db, "products"));
+    const snap = await get(productsRef);
     if(snap.exists()){
       const val = snap.val();
-      const fresh = Object.values(val).map(p=>{
+      if(val._init) delete val._init;
+      const fresh = Object.values(val).filter(v=>v && typeof v==='object' && !v._init).map(p=>{
         if(p.image && !p.mainImage) p.mainImage = p.image;
         if(p.mainImage && (!p.images || p.images.length===0)) p.images=[p.mainImage];
         if(!p.images) p.images = p.mainImage ? [p.mainImage] : [];
         if(!p.mainImage && p.images.length>0) p.mainImage = p.images[0];
         return {hidden:false, ...p};
       }).filter(p=>!p.hidden);
-      // إذا مختلف عن الكاش، حدث
       if(JSON.stringify(fresh.map(p=>p.id).sort()) !== JSON.stringify(products.map(p=>p.id).sort())){
         products = fresh;
         filteredProducts = [...fresh];
@@ -330,12 +310,8 @@ function renderProducts(reset=true){
   const container = document.getElementById('productsContainer');
   const empty = document.getElementById('emptyState');
   if(reset){
-    let list = filteredProducts;
-    const q = document.getElementById('searchInput').value.toLowerCase();
-    if(q) list = list.filter(p=>(p.name||'').toLowerCase().includes(q));
-    filteredProducts = filteredProducts; // keep
-    // إعادة حساب
     let filtered = products;
+    const q = document.getElementById('searchInput').value.toLowerCase().trim();
     if(q) filtered = filtered.filter(p=>(p.name||'').toLowerCase().includes(q));
     window._lastFiltered = filtered;
     renderedCount = 0;
@@ -439,19 +415,20 @@ function updateProgress(){
   bar.classList.remove('hidden');
   countEl.classList.remove('hidden');
   countEl.textContent = currentOrder.length;
-  document.getElementById('progressText').textContent = `${currentOrder.length} / ${filteredProducts.length||products.length}`;
-  const total = filteredProducts.length||products.length||1;
+  document.getElementById('progressText').textContent = `${currentOrder.length} / ${window._lastFiltered?.length||products.length||0}`;
+  const total = window._lastFiltered?.length||products.length||1;
   document.getElementById('progressBar').style.width = `${(currentOrder.length/total)*100}%`;
   document.getElementById('orderSummary').innerHTML = currentOrder.map(o=>`<div class="bg-gray-50 rounded-lg p-2.5 flex justify-between items-center"><span class="font-bold text-xs truncate">${o.name}</span><div class="flex items-center gap-2"><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold text-xs">${o.qty}</span><button onclick="deleteFromOrder('${o.productId}')" class="w-6 h-6 bg-red-50 text-red-500 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-[10px]"></i></button></div></div>`).join('');
 }
 
 window.finishOrder = async function(){
+  if(!currentUid){ location.href="login.html"; return; }
   if(!activeClient){ showToast('اختر العميل أولاً','error'); return; }
   if(currentOrder.length===0){ showToast('لا يوجد طلبات','error'); return; }
   try{
     const orderData = {clientName:activeClient, items:currentOrder, totalItems:currentOrder.length, totalQty:currentOrder.reduce((s,i)=>s+i.qty,0), totalValue:currentOrder.reduce((s,i)=>s+(parseFloat(i.price)||0)*i.qty,0), createdAt:new Date().toISOString(), status:'pending'};
-    await push(ref(db, "orders"), orderData);
-    await push(ref(db, `clientBons/${activeClient}/orders`), orderData);
+    await push(ref(db, `users/${currentUid}/orders`), orderData);
+    await push(ref(db, `users/${currentUid}/clientBons/${activeClient}/orders`), orderData);
     showToast(`✅ تم إرسال طلب ${activeClient} - ${currentOrder.length} منتج`,'success');
     currentOrder=[]; updateProgress(); renderProducts(true);
     setTimeout(()=>{ window.location.href='reports.html'; }, 800);
@@ -483,7 +460,6 @@ function setActiveClient(name){
   updateProgress();
 }
 
-/* Gallery */
 window.openGalleryFromOrder = function(){ openGallery(galleryImages, galleryIndex); }
 function openGallery(images, startIdx=0){ galleryImages=images; galleryIndex=startIdx; showGallery(); document.getElementById('galleryModal').classList.add('active'); }
 function showGallery(){
@@ -498,28 +474,37 @@ window.prevGallery=function(){ galleryIndex=(galleryIndex-1+galleryImages.length
 window.goGallery=function(i){ galleryIndex=i; showGallery(); }
 window.closeGallery=function(){ document.getElementById('galleryModal').classList.remove('active'); }
 
-document.addEventListener('DOMContentLoaded', async()=>{
-  // 1. عرض فوري من الهاتف
-  const hasCache = renderInstant();
-  // إعداد الأحداث
-  document.getElementById('clientSearchInput').addEventListener('input', e=>renderClientDropdown(e.target.value));
-  document.getElementById('clientSearchInput').addEventListener('focus', e=>renderClientDropdown(e.target.value));
-  document.addEventListener('click', e=>{ if(!e.target.closest('#clientSearchInput') && !e.target.closest('#clientDropdown')) document.getElementById('clientDropdown').classList.add('hidden'); });
-  document.getElementById('searchClientBtn').addEventListener('click', ()=>{ const v=document.getElementById('clientSearchInput').value.trim(); if(v) setActiveClient(v); });
-  document.getElementById('changeClientBtn').addEventListener('click', ()=>{ document.getElementById('activeClientBar').classList.add('hidden'); document.getElementById('clientSearchInput').value=''; activeClient=''; localStorage.removeItem('activeClient'); updateProgress(); });
-  document.getElementById('searchInput').addEventListener('input', ()=>{ renderProducts(true); });
-  document.getElementById('finishOrderBtn').addEventListener('click', finishOrder);
-  document.getElementById('clearOrderBtn').addEventListener('click', clearOrder);
-  document.getElementById('reportsBtn').addEventListener('click', ()=>window.location.href='reports.html');
-  const observer = new IntersectionObserver(entries=>{ if(entries[0].isIntersecting) renderProducts(false); }, {rootMargin:'300px'});
-  observer.observe(document.getElementById('loadMoreTrigger'));
+document.addEventListener('DOMContentLoaded', ()=>{
+  onAuthStateChanged(auth, async (user)=>{
+    if(!user){
+      location.href="login.html";
+      return;
+    }
+    currentUid = user.uid;
+    productsRef = ref(db, `users/${currentUid}/products`);
+    customersRef = ref(db, `users/${currentUid}/customers`);
+    ordersRef = ref(db, `users/${currentUid}/orders`);
 
-  if(hasCache){
-    setTimeout(()=>{ loadClients(); loadProducts(); }, 300);
-  } else {
-    document.getElementById('productsContainer').innerHTML = Array(4).fill(0).map(()=>`<div class="bg-white rounded-2xl p-4 border"><div class="w-full h-48 skeleton rounded-xl mb-2"></div><div class="h-3 skeleton rounded w-3/4 mx-auto"></div></div>`).join('');
-    await Promise.all([loadClients(), loadProducts()]);
-  }
+    const hasCache = renderInstant();
+    document.getElementById('clientSearchInput').addEventListener('input', e=>renderClientDropdown(e.target.value));
+    document.getElementById('clientSearchInput').addEventListener('focus', e=>renderClientDropdown(e.target.value));
+    document.addEventListener('click', e=>{ if(!e.target.closest('#clientSearchInput') && !e.target.closest('#clientDropdown')) document.getElementById('clientDropdown').classList.add('hidden'); });
+    document.getElementById('searchClientBtn').addEventListener('click', ()=>{ const v=document.getElementById('clientSearchInput').value.trim(); if(v) setActiveClient(v); });
+    document.getElementById('changeClientBtn').addEventListener('click', ()=>{ document.getElementById('activeClientBar').classList.add('hidden'); document.getElementById('clientSearchInput').value=''; activeClient=''; localStorage.removeItem('activeClient'); updateProgress(); });
+    document.getElementById('searchInput').addEventListener('input', ()=>{ renderProducts(true); });
+    document.getElementById('finishOrderBtn').addEventListener('click', finishOrder);
+    document.getElementById('clearOrderBtn').addEventListener('click', clearOrder);
+    document.getElementById('reportsBtn').addEventListener('click', ()=>window.location.href='reports.html');
+    const observer = new IntersectionObserver(entries=>{ if(entries[0].isIntersecting) renderProducts(false); }, {rootMargin:'300px'});
+    observer.observe(document.getElementById('loadMoreTrigger'));
+
+    if(hasCache){
+      setTimeout(()=>{ loadClients(); loadProducts(); }, 300);
+    } else {
+      document.getElementById('productsContainer').innerHTML = Array(4).fill(0).map(()=>`<div class="bg-white rounded-2xl p-4 border"><div class="w-full h-48 skeleton rounded-xl mb-2"></div><div class="h-3 skeleton rounded w-3/4 mx-auto"></div></div>`).join('');
+      await Promise.all([loadClients(), loadProducts()]);
+    }
+  });
 });
 
 function showToast(msg,type='success'){
