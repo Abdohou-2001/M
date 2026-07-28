@@ -69,7 +69,6 @@
     .h-btn-ok{background:#2563eb;color:white}
     .h-btn-edit{background:#f1f5f9;color:#64748b}
     .h-btn-del{background:#fff1f2;color:#e11d48}
-    /* Toast Pro */
     .toast{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-120px);background:rgba(255,255,255,0.95);backdrop-filter:blur(16px);color:#1e293b;padding:14px 18px;border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,0.14);display:flex;align-items:center;gap:12px;z-index:4000;transition:all 0.45s cubic-bezier(0.4,0,0.2,1);opacity:0;border:1px solid rgba(0,0,0,0.06);min-width:280px;max-width:90vw}
     .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
     .toast-icon{width:32px;height:32px;border-radius:10px;background:#00b894;color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -78,7 +77,6 @@
     .toast-msg{flex:1;font-size:13px;font-weight:700;line-height:1.4}
     .toast-progress{position:absolute;bottom:0;left:0;height:3px;background:#00b894;border-radius:0 0 16px 16px;animation:progress 2.8s linear forwards}
     @keyframes progress{from{width:100%}to{width:0%}}
-    /* Modal Pro */
     .modal-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(12px);z-index:5000;display:none;align-items:center;justify-content:center;padding:16px}
     .modal-overlay.active{display:flex;animation:fadeIn 0.2s}
     @keyframes fadeIn{from{opacity:0}to{opacity:1}}
@@ -145,7 +143,6 @@
     </div>
 </div>
 
-<!-- Professional Modal -->
 <div class="modal-overlay" id="customModal">
     <div class="modal-box">
         <div class="modal-icon info" id="modalIcon"><i class="fas fa-info"></i></div>
@@ -163,24 +160,9 @@
 <div class="toast" id="toast"><div class="toast-icon"><i class="fas fa-check"></i></div><div class="toast-msg" id="toastMsg">تم</div><div class="toast-progress"></div></div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, get, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-  authDomain: "karnipromaroc.firebaseapp.com",
-  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "karnipromaroc",
-  storageBucket: "karnipromaroc.firebasestorage.app",
-  messagingSenderId: "6746147726",
-  appId: "1:6746147726:web:6e3a2d29941ab93ef432df",
-  measurementId: "G-3Q1L0LC9TE"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-const auth = getAuth(app);
+import { auth, db } from "./firebase.js";
+import { ref, get, update } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const urlParams = new URLSearchParams(window.location.search);
 const customerId = urlParams.get('id');
@@ -189,14 +171,14 @@ const content = document.getElementById('content');
 
 if(!customerId){ showToast('خطأ: ما كاينش id', 'error'); setTimeout(()=>window.location.href='index.html',800); }
 
-const customerRef = ref(db, 'customers/' + customerId);
-const allCustomersRef = ref(db, 'customers');
+let customerRef = null;
+let allCustomersRef = null;
+let currentUid = null;
 
 let customerOperations = [];
 let customerDataCache = null;
 let baseAmount = 0;
 
-// Modal System - بدل prompt/confirm/alert
 let modalResolve = null;
 function showModal({title='تنبيه', message='', icon='info', iconClass='info', hasInput=false, inputValue='', hasDate=false, dateValue='', confirmText='حفظ', cancelText='إلغاء', confirmClass='confirm', danger=false}){
     return new Promise((resolve)=>{
@@ -240,10 +222,13 @@ document.getElementById('customModal').onclick = (e)=>{ if(e.target===e.currentT
 
 onAuthStateChanged(auth, async (user)=>{
     if(!user){
-        if(!localStorage.getItem('loggedIn')){ window.location.href='login.html'; return; }
-        setTimeout(()=>{ if(!auth.currentUser) window.location.href='login.html'; },1500);
+        window.location.href='login.html';
         return;
     }
+    currentUid = user.uid;
+    customerRef = ref(db, `users/${currentUid}/customers/${customerId}`);
+    allCustomersRef = ref(db, `users/${currentUid}/customers`);
+
     loading.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التحميل...';
     await loadAllCities();
     await loadCustomer();
@@ -251,10 +236,14 @@ onAuthStateChanged(auth, async (user)=>{
 
 async function loadAllCities(){
     try{
+        if(!allCustomersRef || !currentUid) return;
         const snap = await get(allCustomersRef);
         const citiesSet = new Set();
         if(snap.exists()){
-            Object.values(snap.val()).forEach(c=>{
+            const val = snap.val();
+            if(val._init) delete val._init;
+            Object.values(val).forEach(c=>{
+                if(!c || !c.name) return;
                 if(c.city && c.city.trim()) citiesSet.add(c.city.trim());
                 if(c.ville && c.ville.trim()) citiesSet.add(c.ville.trim());
             });
@@ -269,10 +258,23 @@ async function loadAllCities(){
 
 async function loadCustomer(){
     try{
+        if(!customerRef || !currentUid){
+            window.location.href='login.html';
+            return;
+        }
         const snapshot = await get(customerRef);
-        loading.style.display='none'; content.style.display='block';
-        if(!snapshot.exists()){ await showModal({title:'غير موجود', message:'الزبون غير موجود', icon:'exclamation', iconClass:'danger', confirmText:'رجوع'}); window.location.href='index.html'; return; }
+        if(!snapshot.exists()){
+            await showModal({title:'غير موجود', message:'الزبون غير موجود', icon:'exclamation', iconClass:'danger', confirmText:'رجوع'});
+            window.location.href='index.html';
+            return;
+        }
         const data = snapshot.val();
+        if(!data || (data._init && Object.keys(data).length===1)){
+            await showModal({title:'غير موجود', message:'الزبون غير موجود', icon:'exclamation', iconClass:'danger', confirmText:'رجوع'});
+            window.location.href='index.html';
+            return;
+        }
+        loading.style.display='none'; content.style.display='block';
         customerDataCache = data;
         baseAmount = parseFloat(data.amount) || 0;
         const name = data.name || 'بدون اسم';
@@ -301,8 +303,12 @@ async function loadCustomer(){
         showHistory(data);
     }catch(error){
         console.error(error);
-        if(error.message?.includes('Permission denied')) window.location.href='login.html';
-        else { await showModal({title:'خطأ', message:error.message, icon:'times', iconClass:'danger'}); window.location.href='index.html'; }
+        if(error.message?.includes('Permission denied')){
+            window.location.href='login.html';
+        } else {
+            await showModal({title:'خطأ', message:error.message, icon:'times', iconClass:'danger'});
+            window.location.href='index.html';
+        }
     }
 }
 
@@ -352,7 +358,6 @@ function showToast(msg, type='success'){
     toast.className = 'toast '+type+' show';
     icon.innerHTML = type==='error' ? '<i class="fas fa-times"></i>' : '<i class="fas fa-check"></i>';
     document.getElementById('toastMsg').textContent = msg;
-    // restart progress animation
     const prog = toast.querySelector('.toast-progress');
     prog.style.animation='none'; prog.offsetHeight; prog.style.animation='progress 2.8s linear forwards';
     setTimeout(()=>toast.classList.remove('show'), 2800);
@@ -363,6 +368,7 @@ document.getElementById('paid').addEventListener('input', calculateTotal);
 document.getElementById('received').addEventListener('input', calculateTotal);
 
 document.getElementById('saveBtn').addEventListener('click', async ()=>{
+    if(!currentUid || !customerRef){ window.location.href='login.html'; return; }
     const btn = document.getElementById('saveBtn');
     const original = btn.innerHTML;
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...'; btn.disabled=true;
@@ -379,15 +385,13 @@ document.getElementById('saveBtn').addEventListener('click', async ()=>{
 
     const newTotal = (()=>{ let p=0,r=0; operations.forEach(o=>{ if(o.type==='paid') p+=Number(o.amount)||0; else r+=Number(o.amount)||0; }); return baseAmount + p - r; })();
 
-    // الحل لمشكلة اختلاف index و person: نحفظ الرصيد الحقيقي في حقل amount الحالي وفي currentBalance
     const updateData = {
         date: date,
         paymentDate: date,
         city: city,
         ville: city,
         operations: operations,
-        currentBalance: newTotal, // للتوافق مع index الجديد
-        // إذا الرصيد 0 نحتفظ بالمبلغ الأصلي في amount الأصلي لكن index سيقرأ currentBalance
+        currentBalance: newTotal,
         updatedAt: new Date().toISOString()
     };
 
@@ -411,6 +415,7 @@ document.getElementById('saveBtn').addEventListener('click', async ()=>{
 });
 
 window.deleteOperation = async function(index){
+    if(!currentUid || !customerRef) return;
     const ok = await showModal({title:'حذف العملية', message:'هل أنت متأكد من حذف هذه العملية؟ لا يمكن التراجع.', icon:'trash', iconClass:'danger', confirmText:'حذف', cancelText:'إلغاء', danger:true});
     if(!ok) return;
     customerOperations.splice(index,1);
@@ -422,6 +427,7 @@ window.deleteOperation = async function(index){
 }
 
 window.editOperation = async function(index){
+    if(!currentUid || !customerRef) return;
     const op = customerOperations[index];
     const result = await showModal({
         title:'تعديل العملية',
@@ -468,7 +474,13 @@ document.getElementById('backBtn').addEventListener('click', ()=>{ window.locati
 </script>
 <script>
 const appVersion="10";
-if(localStorage.getItem("appVersion") && localStorage.getItem("appVersion")!==appVersion){ localStorage.clear(); window.location.href="login.html"; }
+if(localStorage.getItem("appVersion") && localStorage.getItem("appVersion")!==appVersion){
+    const theme=localStorage.getItem("theme");
+    localStorage.clear();
+    if(theme) localStorage.setItem("theme",theme);
+    localStorage.setItem("appVersion",appVersion);
+    window.location.href="login.html";
+}
 </script>
 </body>
 </html>
