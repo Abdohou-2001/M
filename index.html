@@ -77,7 +77,6 @@
         .autocomplete-list{position:absolute;top:calc(100% + 8px);left:0;right:0;background:var(--card);border-radius:18px;box-shadow:var(--shadow-lg);border:1px solid var(--border);max-height:320px;overflow-y:auto;z-index:96;display:none}
         .autocomplete-list.active{display:block}
         .autocomplete-item{padding:12px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);cursor:pointer}
-        .autocomplete-no{padding:16px;text-align:center;color:var(--text-muted);font-size:13px}
         .filter-tabs{display:flex;gap:8px;padding:8px 14px 12px;overflow-x:auto;scrollbar-width:none}
         .filter-tabs::-webkit-scrollbar{display:none}
         .filter-tab{background:var(--card);border:1.5px solid var(--border);padding:8px 14px;border-radius:100px;font-size:11.5px;font-weight:700;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:6px;color:var(--text-muted);box-shadow:var(--shadow-xs);transition:var(--transition)}
@@ -87,13 +86,11 @@
         .customer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);pointer-events:none}
         .customer-card:active{transform:scale(0.985)}
         .customer-card.overdue{border-right:3px solid #ef4444}
-        /* إصلاح شارة الحالة: تبقى في الزاوية ولا يمر فوقها أي عنصر */
         .badge{position:absolute;top:12px;left:12px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;display:flex;align-items:center;gap:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);border:1px solid rgba(255,255,255,0.6);backdrop-filter:blur(8px);z-index:20;pointer-events:none}
         .badge.overdue{background:#fee2e2;color:#dc2626} .badge.today{background:#dcfce7;color:#16a34a} .badge.upcoming{background:#dbeafe;color:#2563eb}
         .customer-header{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
         .customer-avatar{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:800;color:var(--primary);flex-shrink:0;box-shadow:inset 0 1px 2px rgba(0,0,0,0.06)}
         .customer-info{flex:1;min-width:0;padding-top:2px}
-        /* إصلاح زر تعديل الاسم: بجانب الاسم فقط ولا يقترب من الشارة */
         .customer-name-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;max-width:100%}
         .customer-name-text{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0}
         .edit-name-btn{width:30px;height:30px;border-radius:9px;background:rgba(15,118,110,0.10);border:1px solid var(--border);color:var(--primary);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:var(--transition);z-index:5}
@@ -166,7 +163,7 @@
                 <div class="drawer-avatar" id="drawerUserAvatar">A</div>
                 <div class="drawer-user-info">
                     <div class="drawer-user-name" id="drawerUserName">Abde</div>
-                    <div class="drawer-user-email" id="drawerUserEmail">abde@gmail.com</div>
+                    <div class="drawer-user-email" id="drawerUserEmail">abdelalihounar64@gmail.com</div>
                     <span class="drawer-badge" id="drawerUserRole">User</span>
                 </div>
             </div>
@@ -217,24 +214,10 @@
     <div class="toast-pro" id="toastPro"><div class="toast-pro-icon"><i class="fas fa-check"></i></div><div class="toast-pro-msg" id="toastProMsg">تم</div><div class="toast-pro-progress"></div></div>
 
     <script type="module">
-        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-        import { getDatabase, ref, onValue, set, push, remove, update } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-        import { getAuth, onAuthStateChanged, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+        import { auth, db } from './firebase.js';
+        import { ref, onValue, set, push, remove, update } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js';
+        import { onAuthStateChanged, signOut, sendPasswordResetEmail } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 
-        const firebaseConfig = {
-          apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-          authDomain: "karnipromaroc.firebaseapp.com",
-          databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "karnipromaroc",
-          storageBucket: "karnipromaroc.firebasestorage.app",
-          messagingSenderId: "6746147726",
-          appId: "1:6746147726:web:6e3a2d29941ab93ef432df",
-          measurementId: "G-3Q1L0LC9TE"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const auth = getAuth(app);
         const customersRef = ref(db, 'customers');
         let allCustomers = {};
         let currentFilter = 'all';
@@ -328,7 +311,7 @@
 
         window.toggleDrawer = ()=>{ document.getElementById('drawer').classList.toggle('active'); document.getElementById('drawerOverlay').classList.toggle('active'); }
 
-        // إصلاح القائمة الجانبية - جلب البيانات من Firebase Authentication مباشرة
+        // إصلاح عرض اسم المستخدم والبريد الحقيقي من Firebase Authentication
         function initUserProfile(){
             const updateDrawerUI = (displayName, email, role='User') => {
                 const avatarEl = document.getElementById('drawerUserAvatar');
@@ -336,76 +319,52 @@
                 const emailEl = document.getElementById('drawerUserEmail');
                 const roleEl = document.getElementById('drawerUserRole');
                 if(!avatarEl || !nameEl || !emailEl) return;
-
-                let finalName = displayName;
-                let finalEmail = email || '';
-
-                // إذا لم يكن DisplayName موجوداً، اعرض الجزء الأول من البريد
-                if(!finalName || !finalName.trim()){
-                    if(finalEmail && finalEmail.includes('@')){
+                let finalName = displayName?.trim() || '';
+                let finalEmail = email?.trim() || '';
+                if(!finalName){
+                    if(finalEmail.includes('@')){
                         const prefix = finalEmail.split('@')[0];
                         finalName = prefix.charAt(0).toUpperCase() + prefix.slice(1);
                     } else {
                         finalName = 'Abde';
                     }
                 }
-
-                // تنسيق الاسم: Abde بدل abde
-                if(finalName && finalName.includes('@')){
-                    const prefix = finalName.split('@')[0];
-                    finalName = prefix.charAt(0).toUpperCase() + prefix.slice(1);
+                if(finalName.includes('@')){
+                    const p = finalName.split('@')[0];
+                    finalName = p.charAt(0).toUpperCase() + p.slice(1);
                 }
-
-                // إذا كان الاسم صغير بالكامل مثل abde -> Abde
-                if(finalName && finalName === finalName.toLowerCase()){
-                    finalName = finalName.charAt(0).toUpperCase() + finalName.slice(1);
-                }
-
-                const firstLetter = finalName.charAt(0).toUpperCase();
-
+                const firstLetter = finalName.charAt(0).toUpperCase() || 'A';
                 avatarEl.textContent = firstLetter;
                 nameEl.textContent = finalName;
-                emailEl.textContent = finalEmail || 'abde@gmail.com';
+                emailEl.textContent = finalEmail || 'abdelalihounar64@gmail.com';
                 if(roleEl) roleEl.textContent = role;
-
-                // حفظ للاستخدام السريع
                 localStorage.setItem('userName', finalName);
                 if(finalEmail) localStorage.setItem('userEmail', finalEmail);
             };
 
             onAuthStateChanged(auth, (user)=>{
                 if(user){
-                    // جلب البيانات مباشرة من Firebase Authentication
                     const displayName = user.displayName || '';
-                    const email = user.email || localStorage.getItem('userEmail') || '';
+                    const email = user.email || '';
                     const role = email.includes('admin') ? 'Administrator' : 'User';
-                    
-                    // إذا كان DisplayName موجوداً اعرضه، وإلا اعرض الجزء الأول من البريد
                     let nameToShow = displayName;
-                    if(!nameToShow || !nameToShow.trim()){
-                        if(email && email.includes('@')){
-                            const prefix = email.split('@')[0];
-                            nameToShow = prefix.charAt(0).toUpperCase() + prefix.slice(1);
-                        } else {
-                            nameToShow = 'Abde';
-                        }
+                    if(!nameToShow.trim() && email.includes('@')){
+                        const prefix = email.split('@')[0];
+                        nameToShow = prefix.charAt(0).toUpperCase() + prefix.slice(1);
                     }
-
                     updateDrawerUI(nameToShow, email, role);
                     localStorage.setItem('lastLoginTime', Date.now().toString());
                 } else {
-                    // لا يوجد مستخدم - محاولة من localStorage
                     const storedName = localStorage.getItem('userName') || 'Abde';
-                    const storedEmail = localStorage.getItem('userEmail') || localStorage.getItem('email') || 'abde@gmail.com';
+                    const storedEmail = localStorage.getItem('userEmail') || 'abdelalihounar64@gmail.com';
                     updateDrawerUI(storedName, storedEmail, 'User');
                 }
             });
 
-            // تحديث فوري من localStorage حتى قبل وصول Firebase
             const quickName = localStorage.getItem('userName');
-            const quickEmail = localStorage.getItem('userEmail') || localStorage.getItem('email');
+            const quickEmail = localStorage.getItem('userEmail');
             if(quickName || quickEmail){
-                updateDrawerUI(quickName || 'Abde', quickEmail || 'abde@gmail.com');
+                updateDrawerUI(quickName || 'Abde', quickEmail || 'abdelalihounar64@gmail.com');
             }
         }
 
@@ -454,7 +413,6 @@
             return (parseFloat(c.amount)||0)+p-r;
         }
 
-        // إصلاح ترتيب البطاقة: شارة - صورة - اسم+زر تعديل - رصيد - هاتف - تاريخ - مدينة - أزرار
         function renderCustomers(customers){
             const list=document.getElementById('customersList'); list.innerHTML='';
             if(!customers || Object.keys(customers).length===0){ list.innerHTML='<div style="text-align:center;padding:48px;color:var(--text-muted)"><i class="fas fa-users" style="font-size:32px;opacity:0.2;display:block;margin-bottom:8px"></i>لا توجد زبناء</div>'; updateStats({totalAmount:0,customersCount:0,todayCount:0,overdueCount:0,upcomingCount:0}); return; }
@@ -469,11 +427,8 @@
                 if(customer.date===today) badgeHtml='<div class="badge today"><i class="fas fa-circle" style="font-size:6px"></i> اليوم</div>';
                 else if(customer.date && customer.date<today) badgeHtml='<div class="badge overdue"><i class="fas fa-circle" style="font-size:6px"></i> متأخر</div>';
                 else if(customer.date && customer.date>today) badgeHtml='<div class="badge upcoming"><i class="fas fa-circle" style="font-size:6px"></i> قادم</div>';
-
                 const hasBadge = badgeHtml !== '';
-                // إضافة مسافة داخلية إضافية عند وجود شارة حتى لا يتداخل أي عنصر معها
                 const cardPadding = hasBadge ? 'padding-top:44px;' : '';
-
                 const card = `
                 <div class="customer-card ${overdueClass}" data-customer-id="${key}" style="animation-delay:${idx*0.03}s;${cardPadding}">
                     ${badgeHtml}
@@ -519,18 +474,14 @@
         window.closeModal = ()=> document.getElementById('customerModal').classList.remove('active');
         window.saveCustomer = async (e)=>{ e.preventDefault(); const cityVal=document.getElementById('customerCity').value.trim(); const data={ name:document.getElementById('customerName').value.trim(), amount:0, phone:document.getElementById('customerPhone').value.trim(), city:cityVal, ville:cityVal, date:document.getElementById('customerDate').value, updatedAt:new Date().toISOString() }; await addCustomer(data); closeModal(); }
         
-        // إصلاح تغيير اسم الزبون - تحديث مباشر بدون إعادة تحميل
         window.renameCustomer = async (id)=>{
             const currentName = allCustomers[id]?.name || '';
             const newName = await openDialog({title:'تغيير اسم الزبون', message:'أدخل الاسم الجديد', icon:'pen', iconType:'edit', showInput:true, inputType:'text', inputValue:currentName, placeholder:'الاسم الجديد', confirmText:'حفظ الاسم'});
             if(newName && newName.trim() && newName.trim() !== currentName){
                 const trimmedName = newName.trim();
                 await update(ref(db,'customers/'+id), {name:trimmedName, updatedAt:new Date().toISOString()});
-                // تحديث محلي فوري بدون انتظار Firebase
                 if(allCustomers[id]) allCustomers[id].name = trimmedName;
-                showToastPro('تم تحديث الاسم إلى '+trimmedName);
-                // إعادة الرسم سيحدث تلقائياً عبر onValue لكن نحدث مباشرة أيضاً
-                // لا حاجة لإعادة تحميل الصفحة
+                showToastPro('تم تحديث الاسم');
             }
         }
 
