@@ -106,37 +106,102 @@
 </div>
 <div id="toast" class="hidden fixed top-20 left-1/2 z-[100]" style="transform:translateX(-50%)"><div class="bg-gray-900 text-white px-6 py-3 rounded-xl"><span id="toastMessage" class="text-sm"></span></div></div>
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase, ref, get, set, remove } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-const firebaseConfig = {
-  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-  authDomain: "karnipromaroc.firebaseapp.com",
-  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "karnipromaroc",
-  storageBucket: "karnipromaroc.firebasestorage.app",
-  messagingSenderId: "6746147726",
-  appId: "1:6746147726:web:6e3a2d29941ab93ef432df"
-};
-const fbApp = initializeApp(firebaseConfig);
-const db = getDatabase(fbApp);
+import { auth, db } from "./firebase.js";
+import { ref, get, set, remove } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
 let allOrders = [];
 let allProducts = [];
 let groupedByClient = {};
 let aggregatedTotal = {};
 let currentViewingClient = null;
 let currentBonItems = [];
-const CACHE_KEY = 'reports_orders_v2';
-const PROD_KEY = 'products_v3';
-function saveCache(){ try{ localStorage.setItem(CACHE_KEY, JSON.stringify({t:Date.now(), orders:allOrders, grouped:groupedByClient, agg:aggregatedTotal})); }catch(e){} }
-function loadCache(){ try{ var raw=localStorage.getItem(CACHE_KEY); if(!raw) return null; var p=JSON.parse(raw); if(Date.now()-p.t>10*60*1000) return null; return p; }catch(e){ return null; } }
-function renderInstant(){ var c=loadCache(); if(c&&c.orders){ allOrders=c.orders; groupedByClient=c.grouped; aggregatedTotal=c.agg; try{ var pr=localStorage.getItem(PROD_KEY); if(pr) allProducts=JSON.parse(pr).d||[]; }catch(e){} renderPersons(); renderTotal(); updateStats(); return true; } return false; }
-window.loadFirebase = async function(){
-  try{ var snapProd=await get(ref(db,"products")); if(snapProd.exists()) allProducts=Object.values(snapProd.val()); }catch(e){}
-  allOrders=[];
-  try{ var snap=await get(ref(db,"orders")); if(snap.exists()){ var val=snap.val(); Object.keys(val).forEach(function(k){ var o=val[k]; o.id=k; allOrders.push(o); }); } }catch(e){}
-  try{ var snapB=await get(ref(db,"clientBons")); if(snapB.exists()){ var vb=snapB.val(); Object.keys(vb).forEach(function(clientName){ var bon=vb[clientName]; if(bon&&bon.items) allOrders.push({id:'bon_'+clientName, clientName:clientName, items:bon.items, isEditedBon:true}); else if(Array.isArray(bon)) allOrders.push({id:'bon_'+clientName, clientName:clientName, items:bon, isEditedBon:true}); }); } }catch(e){}
-  processData(); saveCache();
+let currentUid = null;
+
+function getOrdersCacheKey(){ return `reports_orders_${currentUid}`; }
+function getProdCacheKey(){ return `products_${currentUid}`; }
+
+function saveCache(){
+  try{
+    if(!currentUid) return;
+    localStorage.setItem(getOrdersCacheKey(), JSON.stringify({t:Date.now(), orders:allOrders, grouped:groupedByClient, agg:aggregatedTotal}));
+  }catch(e){}
 }
+function loadCache(){
+  try{
+    if(!currentUid) return null;
+    var raw=localStorage.getItem(getOrdersCacheKey());
+    if(!raw) return null;
+    var p=JSON.parse(raw);
+    if(Date.now()-p.t>10*60*1000) return null;
+    return p;
+  }catch(e){ return null; }
+}
+function renderInstant(){
+  var c=loadCache();
+  if(c&&c.orders){
+    allOrders=c.orders;
+    groupedByClient=c.grouped;
+    aggregatedTotal=c.agg;
+    try{
+      var pr=localStorage.getItem(getProdCacheKey());
+      if(pr){
+        var parsed = JSON.parse(pr);
+        allProducts = parsed.d || parsed || [];
+      }
+    }catch(e){}
+    renderPersons();
+    renderTotal();
+    updateStats();
+    return true;
+  }
+  return false;
+}
+
+window.loadFirebase = async function(){
+  if(!currentUid) return;
+  try{
+    var snapProd=await get(ref(db, `users/${currentUid}/products`));
+    if(snapProd.exists()){
+      var val = snapProd.val();
+      if(val._init) delete val._init;
+      allProducts=Object.values(val).filter(v=>v && typeof v==='object' && !v._init);
+      try{ localStorage.setItem(getProdCacheKey(), JSON.stringify({v:'v3', t:Date.now(), d:allProducts})); }catch(e){}
+    }
+  }catch(e){}
+  allOrders=[];
+  try{
+    var snap=await get(ref(db, `users/${currentUid}/orders`));
+    if(snap.exists()){
+      var val=snap.val();
+      if(val._init) delete val._init;
+      Object.keys(val).forEach(function(k){
+        if(k==='_init') return;
+        var o=val[k];
+        if(!o) return;
+        o.id=k;
+        allOrders.push(o);
+      });
+    }
+  }catch(e){}
+  try{
+    var snapB=await get(ref(db, `users/${currentUid}/clientBons`));
+    if(snapB.exists()){
+      var vb=snapB.val();
+      if(vb._init) delete vb._init;
+      Object.keys(vb).forEach(function(clientName){
+        if(clientName==='_init') return;
+        var bon=vb[clientName];
+        if(!bon) return;
+        if(bon&&bon.items) allOrders.push({id:'bon_'+clientName, clientName:clientName, items:bon.items, isEditedBon:true});
+        else if(Array.isArray(bon)) allOrders.push({id:'bon_'+clientName, clientName:clientName, items:bon, isEditedBon:true});
+      });
+    }
+  }catch(e){}
+  processData();
+  saveCache();
+}
+
 function processData(){
   groupedByClient={}; aggregatedTotal={};
   allOrders.forEach(function(order){
@@ -167,7 +232,7 @@ function renderPersons(){
   clients.forEach(function(client){
     var orders=groupedByClient[client]; var totalQty=0,totalVal=0;
     orders.forEach(function(o){ (o.items||[]).forEach(function(i){ totalQty+=parseInt(i.qty)||0; totalVal+=(parseFloat(i.price)||0)*(parseInt(i.qty)||0); }); });
-    html+='<div class="card bg-white rounded-2xl border p-4 cursor-pointer" onclick="openBon(\''+client.replace(/'/g,"\\'")+'\')"><div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center"><span class="font-bold">'+client.charAt(0)+'</span></div><div><h3 class="font-bold">'+client+'</h3><p class="text-xs text-gray-500">'+orders.length+' بون • '+totalQty+' منتج</p></div></div><div><p class="font-bold text-emerald-600">'+totalVal.toFixed(2)+' درهم</p></div></div></div>';
+    html+='<div class="card bg-white rounded-2xl border p-4 cursor-pointer" onclick="openBon(\''+client.replace(/\'/g,"\\'")+'\')"><div class="flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center"><span class="font-bold">'+client.charAt(0)+'</span></div><div><h3 class="font-bold">'+client+'</h3><p class="text-xs text-gray-500">'+orders.length+' بون • '+totalQty+' منتج</p></div></div><div><p class="font-bold text-emerald-600">'+totalVal.toFixed(2)+' درهم</p></div></div></div>';
   });
   container.innerHTML=html;
 }
@@ -216,19 +281,22 @@ window.updateQtyInput = function(idx,v){ currentBonItems[idx].qty=Math.max(0,par
 window.updatePrice = function(idx,v){ currentBonItems[idx].price=parseFloat(v)||0; renderBonItems(); }
 window.removeItem = function(idx){ currentBonItems.splice(idx,1); renderBonItems(); }
 window.saveBonEdits = async function(){
-  if(!currentViewingClient) return;
-  try{ await set(ref(db,'clientBons/'+currentViewingClient), {items: currentBonItems, updatedAt: new Date().toISOString()}); showToast('تم الحفظ'); await loadFirebase(); renderBonItems(); }catch(e){}
+  if(!currentViewingClient || !currentUid) return;
+  try{ await set(ref(db, `users/${currentUid}/clientBons/${currentViewingClient}`), {items: currentBonItems, updatedAt: new Date().toISOString()}); showToast('تم الحفظ'); await loadFirebase(); renderBonItems(); }catch(e){ showToast('خطأ: '+e.message); }
 }
 window.deleteClientBon = async function(){
-  if(!currentViewingClient) return;
+  if(!currentViewingClient || !currentUid) return;
   if(!confirm('حذف بون '+currentViewingClient+'؟')) return;
   try{
-    await remove(ref(db,'clientBons/'+currentViewingClient));
-    for(var i=0;i<(groupedByClient[currentViewingClient]||[]).length;i++){ var order=groupedByClient[currentViewingClient][i]; if(order.id&&order.id.indexOf('bon_')!==0) await remove(ref(db,'orders/'+order.id)).catch(function(){}); }
-    localStorage.removeItem(CACHE_KEY);
+    await remove(ref(db, `users/${currentUid}/clientBons/${currentViewingClient}`));
+    for(var i=0;i<(groupedByClient[currentViewingClient]||[]).length;i++){
+      var order=groupedByClient[currentViewingClient][i];
+      if(order.id&&order.id.indexOf('bon_')!==0) await remove(ref(db, `users/${currentUid}/orders/${order.id}`)).catch(function(){});
+    }
+    localStorage.removeItem(getOrdersCacheKey());
     closeBon();
     await loadFirebase();
-  }catch(e){}
+  }catch(e){ showToast('خطأ: '+e.message); }
 }
 window.openAddProductToBon = function(){ document.getElementById('addProductModal').classList.add('active'); renderProductsToAdd(''); }
 window.closeAddProductModal = function(){ document.getElementById('addProductModal').classList.remove('active'); }
@@ -255,12 +323,10 @@ window.addToBon = function(id){
 }
 window.closeBon = function(){ document.getElementById('bonModal').classList.remove('active'); currentViewingClient=null; }
 
-// ===== تصميم KARMI PRO طبق الأصل للصورة =====
 function buildPrintHTML(width){
   var now = new Date();
   var dateStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
   var timeStr = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
-  // رقم فاتورة تلقائي من اسم العميل + التاريخ
   var invNum = '000000';
   try{
     var hash = 0;
@@ -280,27 +346,15 @@ function buildPrintHTML(width){
   });
 
   var html='';
-  html+='<div style="font-family:Arial,sans-serif;direction:ltr;text-align:left;padding:4mm 3mm;color:#000;background:#fff">';
-  // Header KARMI PRO
-  html+='<div style="text-align:center;font-weight:900;font-size:22px;letter-spacing:0.5px;margin-bottom:6px">KARNI PRO</div>';
-  html+='<div style="border-top:2px dashed #000;margin:6px 0"></div>';
-  // Info: اسم العميل على اليمين + التاريخ والوقت ورقم الفاتورة
-  html+='<div style="display:flex;justify-content:space-between;font-size:11px;line-height:1.7;margin-bottom:6px">';
-  html+='<div style="text-align:left;direction:ltr"><div><span style="font-weight:bold">العميل:</span> '+currentViewingClient+'</div><div><span style="font-weight:bold">رقم الفاتورة:</span> '+invNum+'</div></div>';
-  html+='<div style="text-align:right;direction:rtl"><div><span>التاريخ:</span> '+dateStr+' <span style="margin-left:20px"></span></div><div><span>الوقت:</span> '+timeStr+' <span style="margin-left:20px"></span></div></div>';
-  html+='</div>';
-  // في التصميم الأصلي التاريخ والوقت ورقم الفاتورة على اليسار بالعربية - نطابق الصورة:
   html='<div style="font-family:Arial,sans-serif;direction:rtl;text-align:right;padding:4mm 3mm;color:#000;background:#fff">';
   html+='<div style="text-align:center;font-weight:900;font-size:22px;letter-spacing:0.5px;margin-bottom:6px">KARNI PRO</div>';
   html+='<div style="border-top:2px dashed #000;margin:8px 0"></div>';
-  // معلومات كما في الصورة + اسم العميل على اليمين
   html+='<table style="width:100%;font-size:11px;line-height:1.8;border-collapse:collapse;margin-bottom:6px">';
   html+='<tr><td style="text-align:right">التاريخ:</td><td style="text-align:left;direction:ltr">'+dateStr+'</td><td style="text-align:right">العميل:</td><td style="text-align:left;font-weight:bold">'+currentViewingClient+'</td></tr>';
   html+='<tr><td style="text-align:right">الوقت:</td><td style="text-align:left;direction:ltr">'+timeStr+'</td><td style="text-align:right"></td><td></td></tr>';
   html+='<tr><td style="text-align:right">رقم الفاتورة:</td><td style="text-align:left;direction:ltr">'+invNum+'</td><td></td><td></td></tr>';
   html+='</table>';
   html+='<div style="border-top:2px solid #000;margin:8px 0"></div>';
-  // جدول المنتجات - نفس الصورة
   html+='<table style="width:100%;border-collapse:collapse;font-size:11px;text-align:center">';
   html+='<thead><tr style="border-bottom:2px solid #000"><th style="padding:6px 3px;text-align:right">المنتج</th><th style="padding:6px 3px;text-align:center;width:12%">الكمية</th><th style="padding:6px 3px;text-align:center;width:18%">الثمن</th><th style="padding:6px 3px;text-align:center;width:20%">المجموع</th></tr></thead>';
   html+='<tbody style="border-top:2px solid #000">';
@@ -352,13 +406,21 @@ function showToast(msg){
   toast.classList.remove('hidden');
   setTimeout(function(){ toast.classList.add('hidden'); },2500);
 }
+
 document.addEventListener('DOMContentLoaded', function(){
-  if(renderInstant()){
-    setTimeout(function(){ loadFirebase(); },500);
-  }else{
-    document.getElementById('personsContainer').innerHTML='<div class="bg-white rounded-2xl p-4 border"><div class="flex gap-3"><div class="w-12 h-12 skeleton rounded-full"></div><div class="flex-1 space-y-2"><div class="h-4 skeleton rounded w-1/3"></div><div class="h-3 skeleton rounded w-1/2"></div></div></div></div>';
-    loadFirebase();
-  }
+  onAuthStateChanged(auth, (user)=>{
+    if(!user){
+      location.href="login.html";
+      return;
+    }
+    currentUid = user.uid;
+    if(renderInstant()){
+      setTimeout(function(){ loadFirebase(); },500);
+    }else{
+      document.getElementById('personsContainer').innerHTML='<div class="bg-white rounded-2xl p-4 border"><div class="flex gap-3"><div class="w-12 h-12 skeleton rounded-full"></div><div class="flex-1 space-y-2"><div class="h-4 skeleton rounded w-1/3"></div><div class="h-3 skeleton rounded w-1/2"></div></div></div></div>';
+      loadFirebase();
+    }
+  });
 });
 </script>
 </body>
