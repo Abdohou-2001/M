@@ -144,30 +144,19 @@ body{font-family:'Cairo',sans-serif;background:radial-gradient(900px 600px at 80
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-// نفس Firebase اللي في index.html
-const firebaseConfig = {
-  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-  authDomain: "karnipromaroc.firebaseapp.com",
-  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "karnipromaroc",
-  storageBucket: "karnipromaroc.firebasestorage.app",
-  messagingSenderId: "6746147726",
-  appId: "1:6746147726:web:6e3a2d29941ab93ef432df"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import { auth, db } from "./firebase.js";
+import { ref, onValue, set, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 let allCustomers = {};
 let routeList = [];
 let filteredList = [];
 let selectedRealIndex = null;
 let selectedFilteredIndex = null;
+let currentUid = null;
+let customersRef = null;
+let routeRef = null;
 
-// الزبناء المحذوفين
 const BLOCKED_NAMES = ['Rmdan Ikaml','Ouchen abdellah','Salh biranzaran','Salh tegir','Youssef biranzaran','Ahmed','احمد','Ahb','Agsb','Aissa','Hafidi','Rmdan','Ouchen'];
 
 function isBlocked(name){
@@ -189,44 +178,56 @@ function isDueTodayFromIndex(customer){
   if(balance <= 0) return false;
   const today = new Date().toISOString().split('T')[0];
   const date = customer.date;
-  // دين اليوم = اليوم أو متأخر
   if(date === today) return true;
-  if(date && date < today) return true; // متأخر يعتبر دين اليوم
-  // إذا لا يوجد تاريخ لكن عليه دين يظهر
+  if(date && date < today) return true;
   if(!date && balance > 0) return true;
   return false;
 }
 
-// قراءة customers من karnipromaroc (نفس index)
-const customersRef = ref(db, 'customers');
-const routeRef = ref(db, 'routeManual');
+onAuthStateChanged(auth, (user)=>{
+  if(!user){
+    window.location.href='login.html';
+    return;
+  }
+  currentUid = user.uid;
+  customersRef = ref(db, `users/${currentUid}/customers`);
+  routeRef = ref(db, `users/${currentUid}/routeManual`);
 
-onValue(customersRef, (snapshot)=>{
-  allCustomers = snapshot.val() || {};
-  console.log('Customers loaded:', Object.keys(allCustomers).length);
-  // إذا routeManual فارغ، نبنيه من customers دين اليوم
-  get(routeRef).then(snap=>{
-    if(!snap.exists() || !snap.val() || snap.val().length===0){
-      buildRouteFromToday();
-    } else {
-      routeList = snap.val();
+  onValue(customersRef, (snapshot)=>{
+    let data = snapshot.val() || {};
+    if(data._init) delete data._init;
+    Object.keys(data).forEach(k=>{
+      if(data[k] && data[k]._init && Object.keys(data[k]).length===1){
+        delete data[k];
+      }
+    });
+    allCustomers = data;
+    get(routeRef).then(snap=>{
+      if(!snap.exists() || !snap.val() || snap.val().length===0){
+        buildRouteFromToday();
+      } else {
+        routeList = snap.val();
+        if(!Array.isArray(routeList)) routeList = Object.values(routeList);
+        applyFilter();
+      }
+    });
+  });
+
+  onValue(routeRef, (snapshot)=>{
+    if(snapshot.exists()){
+      routeList = snapshot.val();
       if(!Array.isArray(routeList)) routeList = Object.values(routeList);
       applyFilter();
     }
   });
 });
 
-onValue(routeRef, (snapshot)=>{
-  if(snapshot.exists()){
-    routeList = snapshot.val();
-    if(!Array.isArray(routeList)) routeList = Object.values(routeList);
-    applyFilter();
-  }
-});
-
 window.buildRouteFromToday = window.syncFromIndex = async function(){
+  if(!currentUid || !customersRef || !routeRef){
+    window.location.href='login.html';
+    return;
+  }
   const todayCustomers = [];
-  const today = new Date().toISOString().split('T')[0];
   Object.keys(allCustomers).forEach(key=>{
     const c = allCustomers[key];
     if(isDueTodayFromIndex(c) && !isBlocked(c.name)){
@@ -244,7 +245,6 @@ window.buildRouteFromToday = window.syncFromIndex = async function(){
       });
     }
   });
-  // ترتيب حسب المدينة ثم الاسم
   todayCustomers.sort((a,b)=> (a.city||'').localeCompare(b.city||'') || a.name.localeCompare(b.name));
   if(todayCustomers.length>0) todayCustomers[0].status='current';
   routeList = todayCustomers;
@@ -254,7 +254,6 @@ window.buildRouteFromToday = window.syncFromIndex = async function(){
 }
 
 function applyFilter(){
-  // فقط دين اليوم، مع حذف المحظورين
   filteredList = routeList.filter(item => {
     if(isBlocked(item.name)) return false;
     if(!['pending','current'].includes(item.status)) return false;
@@ -265,6 +264,7 @@ function applyFilter(){
 }
 
 window.clearRoute = async function(){
+  if(!currentUid || !routeRef) return;
   if(!confirm('مسح جميع الزبناء من المسار؟')) return;
   await set(routeRef, []);
   routeList=[]; filteredList=[];
@@ -272,6 +272,7 @@ window.clearRoute = async function(){
 }
 
 window.resetRoute = async function(){
+  if(!currentUid || !routeRef) return;
   if(!confirm('إعادة التعيين - البدء من جديد؟ سيتم إرجاع أول زبون إلى الحالي والباقي في الانتظار')) return;
   let first=true;
   routeList = routeList.filter(i=>!isBlocked(i.name)).map(item=>{
@@ -366,6 +367,7 @@ function renderSidebar(){
 }
 
 function reorder(from,to){
+  if(!routeRef || !currentUid) return;
   const arr=[...filteredList]; const [m]=arr.splice(from,1); arr.splice(to,0,m); filteredList=arr;
   let newRoute = routeList.filter(item=> !filteredList.some(f=>f.customerId===item.customerId) && !filteredList.some(f=>f.id===item.id));
   let firstIdx = routeList.findIndex(item=> filteredList.length>0 && (item.customerId===filteredList[0].customerId || item.id===filteredList[0].id));
@@ -373,10 +375,14 @@ function reorder(from,to){
   filteredList.forEach((item,idx)=>{ newRoute.splice(firstIdx+idx,0,item); });
   routeList=newRoute;
   renderMap(); renderSidebar();
-  set(ref(db,'routeManual'), routeList);
+  set(routeRef, routeList);
 }
 
-window.saveOrder = async function(){ await set(ref(db,'routeManual'), routeList); alert('تم حفظ الترتيب'); }
+window.saveOrder = async function(){
+  if(!routeRef || !currentUid) return;
+  await set(routeRef, routeList);
+  alert('تم حفظ الترتيب');
+}
 
 window.openModal = function(i){
   const item=filteredList[i];
@@ -389,15 +395,11 @@ window.openModal = function(i){
 }
 window.closeModal = function(){ document.getElementById('clientModal').classList.remove('active'); }
 window.updateStatus = async function(newStatus){
+  if(!routeRef || !currentUid) return;
   if(window.selectedRealIndex!==null && window.selectedRealIndex!==-1){
     routeList[window.selectedRealIndex].status=newStatus;
-    // تحديث customers أيضا إذا أمكن
-    const custId = routeList[window.selectedRealIndex].customerId;
-    if(custId && allCustomers[custId]){
-      // يمكنك تحديث حالة العميل هنا إذا أردت
-    }
   }
-  await set(ref(db,'routeManual'), routeList);
+  await set(routeRef, routeList);
   closeModal();
 }
 window.openDetails = function(){
