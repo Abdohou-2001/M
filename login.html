@@ -67,6 +67,11 @@ body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(2
 .otp-single{width:100%;height:56px;border:2px solid var(--border);border-radius:14px;text-align:center;font-size:22px;font-weight:900;letter-spacing:8px;background:rgba(255,255,255,0.9);outline:none;transition:all 0.3s;margin:16px 0}
 .otp-single:focus{border-color:var(--primary-light);background:white;box-shadow:0 0 0 4px rgba(20,184,166,0.14)}
 .otp-icon{width:68px;height:68px;background:linear-gradient(135deg,#e0f2f1,#b2dfdb);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;color:var(--primary)}
+.success-icon{width:84px;height:84px;background:linear-gradient(135deg,#dcfce7,#bbf7d0);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:36px;color:#16a34a;box-shadow:0 8px 24px rgba(22,163,74,0.18)}
+.steps-list{text-align:right;background:#f8fafc;border:1px solid var(--border);border-radius:16px;padding:16px;margin:14px 0}
+.steps-list li{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;gap:10px;align-items:flex-start;line-height:1.6}
+.steps-list li:last-child{margin-bottom:0}
+.steps-list li span.num{width:24px;height:24px;background:var(--gradient);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
 </style>
 </head>
 <body>
@@ -104,7 +109,7 @@ body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(2
   </div>
 </div>
 
-<!-- OTP Modal - خانة واحدة صغيرة -->
+<!-- OTP Modal -->
 <div id="otpModal" class="modal">
   <div class="modal-card">
     <div class="otp-icon"><i class="fa-solid fa-shield-halved"></i></div>
@@ -121,7 +126,7 @@ body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(2
   </div>
 </div>
 
-<!-- Forgot Password - Stage 1: Email -->
+<!-- Forgot Password - Email -->
 <div id="forgotModal" class="modal">
   <div class="modal-card" style="text-align:right">
     <div style="text-align:center;margin-bottom:14px">
@@ -134,6 +139,36 @@ body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(2
       <button onclick="closeForgotModal()" style="padding:12px;border-radius:12px;border:1.5px solid var(--border);background:#f0fdfa;font-weight:700;font-family:'Cairo';cursor:pointer">إلغاء</button>
       <button id="forgotSendBtn" onclick="sendForgotOtp()" class="btn-primary">متابعة</button>
     </div>
+  </div>
+</div>
+
+<!-- Success Instructions Modal - NEW -->
+<div id="successInstructionsModal" class="modal">
+  <div class="modal-card" style="max-width:440px;text-align:right">
+    <div style="text-align:center">
+      <div class="success-icon"><i class="fa-solid fa-check"></i></div>
+      <h3 style="font-size:20px;font-weight:900;color:#0f172a">✅ تم الإرسال بنجاح</h3>
+      <p style="font-size:13px;color:var(--text-muted);margin-top:6px;font-weight:600">تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني</p>
+      <p id="successEmailDisplay" style="font-size:13px;font-weight:800;color:var(--primary);margin-top:8px;background:#f0fdfa;padding:8px 12px;border-radius:12px;border:1px solid var(--border)"></p>
+    </div>
+
+    <div style="background:linear-gradient(135deg,#f0fdfa,#ecfdf5);border:1px solid var(--border);border-radius:16px;padding:14px;margin:16px 0;text-align:right">
+      <p style="font-size:13px;font-weight:800;color:var(--primary);margin-bottom:8px"><i class="fa-solid fa-envelope ml-2"></i>📧 افتح بريدك الإلكتروني واضغط على الرابط المرسل من Firebase.</p>
+      <p style="font-size:11.5px;color:var(--text-muted);font-weight:600;line-height:1.6">بعد إنشاء كلمة مرور جديدة يمكنك العودة إلى التطبيق وتسجيل الدخول مباشرة.</p>
+    </div>
+
+    <ul class="steps-list">
+      <li><span class="num">1</span><span>افتح بريدك الإلكتروني</span></li>
+      <li><span class="num">2</span><span>افتح الرسالة القادمة من Firebase (noreply@...)</span></li>
+      <li><span class="num">3</span><span>اضغط على زر <b>Reset Password</b></span></li>
+      <li><span class="num">4</span><span>سيتم فتح صفحة Firebase الرسمية</span></li>
+      <li><span class="num">5</span><span>أدخل كلمة المرور الجديدة وأكدها</span></li>
+      <li><span class="num">6</span><span>اضغط Save</span></li>
+      <li><span class="num">7</span><span>ارجع إلى تطبيق Karni Pro وسجل الدخول بكلمة المرور الجديدة</span></li>
+    </ul>
+
+    <button id="openEmailBtn" onclick="openEmailProvider()" class="btn-primary" style="margin-bottom:10px"><i class="fa-solid fa-envelope-open"></i> فتح البريد الإلكتروني</button>
+    <button onclick="closeSuccessInstructionsModal()" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:white;font-weight:800;font-family:'Cairo';cursor:pointer;color:var(--text)">العودة لتسجيل الدخول</button>
   </div>
 </div>
 
@@ -150,6 +185,7 @@ let otpCode=null, otpExpiry=null, pendingData=null;
 let resendInt=null, expiryInt=null;
 let forgotFlow=false;
 let forgotEmailForReset='';
+let lastResetEmail='';
 
 function showToast(msg,type='info'){
   const c=document.getElementById('toastContainer');
@@ -158,7 +194,7 @@ function showToast(msg,type='info'){
   const icons={success:'fa-check',error:'fa-xmark',info:'fa-info'};
   t.innerHTML=`<div class="toast-icon"><i class="fa-solid ${icons[type]||'fa-info'}"></i></div><div style="flex:1">${msg}</div>`;
   c.appendChild(t);
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(-10px)'; setTimeout(()=>t.remove(),300); },4000);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(-10px)'; setTimeout(()=>t.remove(),300); },4500);
 }
 
 function clearOtpData(){
@@ -252,7 +288,6 @@ window.handleAuth=async function(){
     if(isSending) return;
     try{
       isSending=true; isProcessing=true; setLoading(true);
-      // لا نستخدم fetchSignInMethodsForEmail - نعتمد على Firebase نفسه
       otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000; pendingData={fullName,email,password}; forgotFlow=false;
       await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:fullName,otp_code:otpCode,user_name:fullName,email:email,message:`رمز التحقق: ${otpCode}`});
       document.getElementById('otpEmailDisplay').textContent=email;
@@ -285,7 +320,7 @@ window.handleAuth=async function(){
 window.verifyOtp=async function(){
   const input=document.getElementById('otpInput').value.trim();
   if(input.length!==6 || !/^\d{6}$/.test(input)){ showToast('الرجاء إدخال رمز مكون من 6 أرقام','error'); return; }
-  if(!otpExpiry || Date.now()>otpExpiry){ showToast('انتهت صلاحية الرمز','error'); clearOtpData(); return; }
+  if(!otpExpiry || Date.now()>otpExpiry){ showToast('انتهت صلاحية الرمز','error'); clearOtpData(); clearTimers(); return; }
   if(!otpCode || input!==otpCode){ showToast('رمز غير صحيح','error'); return; }
 
   if(forgotFlow){
@@ -293,10 +328,25 @@ window.verifyOtp=async function(){
       document.getElementById('verifyOtpBtn').disabled=true;
       document.getElementById('verifyOtpBtn').textContent='جاري الإرسال...';
       await sendPasswordResetEmail(auth, forgotEmailForReset);
+      // نجاح - إغلاق كل شيء ومسح المتغيرات
+      const emailForInstructions = forgotEmailForReset;
+      lastResetEmail = emailForInstructions;
+      
+      document.getElementById('otpModal').classList.remove('active');
       clearTimers();
-      closeOtpModal();
-      showToast('✅ تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك','success');
       clearOtpData();
+      otpCode=null;
+      otpExpiry=null;
+      forgotFlow=false;
+      forgotEmailForReset=null;
+      pendingData=null;
+      
+      showToast('✅ تم إرسال رابط إعادة تعيين كلمة المرور بنجاح','success');
+      
+      // إظهار نافذة التعليمات الجديدة
+      document.getElementById('successEmailDisplay').textContent = emailForInstructions;
+      document.getElementById('successInstructionsModal').classList.add('active');
+      
     }catch(error){
       showToast(getFirebaseErrorMessage(error),"error");
     }
@@ -324,6 +374,7 @@ window.verifyOtp=async function(){
       localStorage.setItem('appVersion','10');
       clearTimers(); closeOtpModal();
       clearOtpData();
+      otpCode=null; otpExpiry=null; forgotFlow=false; forgotEmailForReset=null; pendingData=null;
       showToast('تم إنشاء الحساب بنجاح','success');
       setTimeout(()=>{
         if(auth.currentUser){
@@ -368,7 +419,6 @@ window.sendForgotOtp=async function(){
   if(isSending) return;
   try{
     isSending=true; btn.disabled=true; btn.textContent='جاري الإرسال...';
-    // الحل الصحيح: لا نتحقق بـ fetchSignInMethodsForEmail - نرسل OTP مباشرة و Firebase يتحقق لاحقاً
     forgotEmailForReset=email; otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000; forgotFlow=true;
     await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:email.split('@')[0],otp_code:otpCode,user_name:email.split('@')[0],email:email,message:`رمز إعادة التعيين: ${otpCode}`});
     closeForgotModal();
@@ -381,8 +431,31 @@ window.sendForgotOtp=async function(){
   finally{ btn.disabled=false; btn.textContent='متابعة'; isSending=false; }
 }
 
+window.openEmailProvider=function(){
+  const email = lastResetEmail || document.getElementById('successEmailDisplay').textContent || '';
+  const domain = email.split('@')[1]?.toLowerCase() || '';
+  let url = '';
+  if(domain.includes('gmail') || domain.includes('googlemail')){
+    url='https://mail.google.com';
+  } else if(domain.includes('outlook') || domain.includes('hotmail') || domain.includes('live')){
+    url='https://outlook.live.com/mail/';
+  } else if(domain.includes('yahoo')){
+    url='https://mail.yahoo.com';
+  } else {
+    showToast('📧 الرجاء فتح بريدك الإلكتروني يدوياً','info');
+    return;
+  }
+  window.open(url,'_blank');
+}
+
+window.closeSuccessInstructionsModal=function(){
+  document.getElementById('successInstructionsModal').classList.remove('active');
+  lastResetEmail='';
+}
+
 document.getElementById('otpModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeOtpModal(); });
 document.getElementById('forgotModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeForgotModal(); });
+document.getElementById('successInstructionsModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeSuccessInstructionsModal(); });
 document.getElementById('otpInput')?.addEventListener('input',(e)=>{ e.target.value=e.target.value.replace(/\D/g,'').slice(0,6); });
 
 onAuthStateChanged(auth, (user)=>{
