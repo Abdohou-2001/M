@@ -288,7 +288,11 @@ window.handleAuth=async function(){
       document.getElementById('otpModal').classList.add('active');
       document.getElementById('otpInput').value=''; setTimeout(()=>document.getElementById('otpInput').focus(),100);
       startTimers(); showToast('تم إرسال رمز التحقق','success');
-    }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
+    }catch(error){
+    alert(error.code);
+    alert(error.message);
+    console.error(error);
+}
     finally{ setLoading(false); isProcessing=false; isSending=false; }
   } else {
     try{
