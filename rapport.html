@@ -147,36 +147,24 @@ body{font-family:'Cairo',sans-serif;background:radial-gradient(1200px 600px at 8
 </div>
 
 <script type="module">
-import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-  authDomain: "karnipromaroc.firebaseapp.com",
-  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "karnipromaroc",
-  storageBucket: "karnipromaroc.firebasestorage.app",
-  messagingSenderId: "6746147726",
-  appId: "1:6746147726:web:6e3a2d29941ab93ef432df"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+import { auth, db } from "./firebase.js";
+import { ref, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
 let allCustomers = {};
-let allOperations = []; // flat list for performance
+let allOperations = [];
 let filteredReceive = [];
 let filteredPay = [];
+let currentUid = null;
+let customersRef = null;
 
 function parseDateTime(op){
-  // op may have createdAt ISO, or date + time, or timestamp
   try{
     if(op.createdAt) return new Date(op.createdAt);
     if(op.timestamp) return new Date(op.timestamp);
     if(op.date){
       let d = op.date;
       let t = op.time || '00:00:00';
-      // date format YYYY-MM-DD
       return new Date(d + 'T' + t);
     }
     return new Date();
@@ -196,12 +184,13 @@ function rebuildOperations(){
   allOperations = [];
   Object.keys(allCustomers).forEach(cid=>{
     const c = allCustomers[cid];
+    if(!c || !c.name) return;
     if(c.operations && Array.isArray(c.operations)){
       c.operations.forEach((op, idx)=>{
         allOperations.push({
           cid,
           cname: c.name || 'بدون اسم',
-          type: op.type, // paid / received
+          type: op.type,
           amount: Number(op.amount)||0,
           dt: parseDateTime(op),
           balance: getRealBalance(c),
@@ -217,7 +206,7 @@ function isInFilter(opDt){
   const filterDate = document.getElementById('filterDate').value;
   const start = document.getElementById('startTime').value;
   const end = document.getElementById('endTime').value;
-  if(!filterDate) return true; // no filter
+  if(!filterDate) return true;
   const fDate = new Date(filterDate);
   const fY = fDate.getFullYear(), fM = fDate.getMonth(), fD = fDate.getDate();
   if(opDt.getFullYear()!==fY || opDt.getMonth()!==fM || opDt.getDate()!==fD) return false;
@@ -254,21 +243,6 @@ function applyAll(){
 
   filteredReceive = Object.values(mapReceive);
   filteredPay = Object.values(mapPay);
-
-  // If no operations, fallback to customers with amount today (for compatibility with your current system where no operations yet but amount field exists)
-  if(allOperations.length===0){
-    const filterDate = document.getElementById('filterDate').value;
-    const today = filterDate || new Date().toISOString().split('T')[0];
-    Object.keys(allCustomers).forEach(cid=>{
-      const c = allCustomers[cid];
-      if(search && !(c.name||'').toLowerCase().includes(search)) return;
-      if(c.date && filterDate && c.date!==filterDate) return;
-      const bal = getRealBalance(c);
-      if(bal>0){
-        // treat as no operation yet - skip for stats until operations exist
-      }
-    });
-  }
 
   document.getElementById('totalReceive').textContent = Math.round(totalR) + ' درهم';
   document.getElementById('totalPay').textContent = Math.round(totalP) + ' درهم';
@@ -324,25 +298,21 @@ function renderPay(){
   `).join('');
 }
 
-function setToday(){
+window.setToday = function(){
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('filterDate').value = today;
   applyAll();
 }
-window.setToday = setToday;
-function clearFilter(){
+window.clearFilter = function(){
   applyAll();
 }
-window.clearFilter = clearFilter;
 
-function clearSearchInput(){
+window.clearSearchInput = function(){
   document.getElementById('searchInput').value='';
   document.getElementById('clearSearch').style.display='none';
   applyAll();
 }
-window.clearSearchInput = clearSearchInput;
 
-// Events
 document.getElementById('filterDate').addEventListener('change', applyAll);
 document.getElementById('startTime').addEventListener('change', applyAll);
 document.getElementById('endTime').addEventListener('change', applyAll);
@@ -351,17 +321,30 @@ document.getElementById('searchInput').addEventListener('input', (e)=>{
   applyAll();
 });
 
-// Firebase realtime - قراءة واحدة فقط
-onValue(ref(db,'customers'), (snap)=>{
-  allCustomers = snap.val() || {};
-  rebuildOperations();
-  applyAll();
+onAuthStateChanged(auth, (user)=>{
+  if(!user){
+    location.href='login.html';
+    return;
+  }
+  currentUid = user.uid;
+  customersRef = ref(db, `users/${currentUid}/customers`);
+
+  onValue(customersRef, (snap)=>{
+    let data = snap.val() || {};
+    if(data._init) delete data._init;
+    Object.keys(data).forEach(k=>{
+      if(data[k] && data[k]._init && Object.keys(data[k]).length===1){
+        delete data[k];
+      }
+    });
+    allCustomers = data;
+    rebuildOperations();
+    applyAll();
+  });
 });
 
-// Set default date to today
 document.getElementById('filterDate').value = new Date().toISOString().split('T')[0];
 
-// Export WhatsApp
 window.exportWhatsApp = function(){
   const date = document.getElementById('filterDate').value || new Date().toLocaleDateString('ar-MA');
   const start = document.getElementById('startTime').value;
@@ -385,7 +368,6 @@ window.exportWhatsApp = function(){
   window.open(url,'_blank');
 }
 
-// Export PDF
 window.exportPDF = function(){
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({orientation:'p',unit:'mm',format:'a4'});
@@ -417,7 +399,6 @@ window.exportPDF = function(){
   doc.save(`Raport-Pro-${date}.pdf`);
 }
 
-// Export Excel
 window.exportExcel = function(){
   const data = [];
   data.push(['Raport Pro', document.getElementById('filterDate').value, `${document.getElementById('startTime').value} - ${document.getElementById('endTime').value}`]);
