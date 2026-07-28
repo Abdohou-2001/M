@@ -32,7 +32,7 @@
   --gradient:linear-gradient(135deg,#0f766e 0%,#14b8a6 100%);
   --bg:#f0fdfa; --card:rgba(255,255,255,0.90); --card-solid:#ffffff;
   --text:#0f172a; --text-muted:#64748b; --border:rgba(15,118,110,0.12);
-  --shadow-sm:0 4px 16px rgba(15,118,110,0.08); --shadow-md:0 12px 32px rgba(15,118,110,0.14); --shadow-lg:0 20px 50px rgba(15,118,110,0.20);
+  --shadow-sm:0 4px 16px rgba(15,118,110,0.08); --shadow-lg:0 20px 50px rgba(15,118,110,0.20);
 }
 *{font-family:'Cairo',sans-serif;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(20,184,166,0.20),transparent 60%),radial-gradient(800px 500px at -20% 20%,rgba(15,118,110,0.12),transparent 50%),var(--bg);display:flex;align-items:center;justify-content:center;padding:16px}
@@ -64,13 +64,9 @@ body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(2
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .modal-card{background:rgba(255,255,255,0.97);backdrop-filter:blur(24px);border-radius:26px;padding:26px;width:100%;max-width:400px;box-shadow:0 24px 60px rgba(0,0,0,0.22);border:1px solid var(--border);animation:modalIn 0.4s cubic-bezier(0.16,1,0.3,1);text-align:center}
 @keyframes modalIn{from{opacity:0;transform:translateY(20px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
-.otp-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:18px 0}
-.otp-box{height:50px;border:2px solid var(--border);border-radius:12px;text-align:center;font-size:19px;font-weight:900;background:rgba(255,255,255,0.9);transition:all 0.25s;outline:none}
-.otp-box:focus{border-color:var(--primary-light);background:white;box-shadow:0 0 0 4px rgba(20,184,166,0.14);transform:scale(1.06)}
+.otp-single{width:100%;height:56px;border:2px solid var(--border);border-radius:14px;text-align:center;font-size:22px;font-weight:900;letter-spacing:8px;background:rgba(255,255,255,0.9);outline:none;transition:all 0.3s;margin:16px 0}
+.otp-single:focus{border-color:var(--primary-light);background:white;box-shadow:0 0 0 4px rgba(20,184,166,0.14)}
 .otp-icon{width:68px;height:68px;background:linear-gradient(135deg,#e0f2f1,#b2dfdb);border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:26px;color:var(--primary)}
-.step-dots{display:flex;gap:6px;justify-content:center;margin-bottom:12px}
-.step-dot{width:24px;height:6px;border-radius:20px;background:var(--border);transition:all 0.3s}
-.step-dot.active{background:var(--primary)}
 </style>
 </head>
 <body>
@@ -103,126 +99,57 @@ body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(2
       <label class="input-label">تأكيد كلمة المرور</label>
       <div style="position:relative"><input id="confirmPasswordInput" type="password" class="input-field" placeholder="••••••••"><i class="fa-solid fa-lock input-icon"></i></div>
     </div>
-    <div id="forgotWrapper" class="forgot-wrapper"><button onclick="openForgotStage1()" class="forgot-btn">نسيت كلمة المرور؟</button></div>
+    <div id="forgotWrapper" class="forgot-wrapper"><button onclick="openForgotModal()" class="forgot-btn">نسيت كلمة المرور؟</button></div>
     <button id="actionBtn" onclick="handleAuth()" class="btn-primary"><i id="actionIcon" class="fa-solid fa-right-to-bracket"></i><span id="actionText">تسجيل الدخول</span></button>
   </div>
 </div>
 
-<!-- OTP Signup Modal -->
-<div id="otpSignupModal" class="modal">
+<!-- OTP Modal - خانة واحدة صغيرة -->
+<div id="otpModal" class="modal">
   <div class="modal-card">
     <div class="otp-icon"><i class="fa-solid fa-shield-halved"></i></div>
-    <h3 style="font-size:19px;font-weight:800">رمز التحقق</h3>
+    <h3 style="font-size:19px;font-weight:800" id="otpTitle">رمز التحقق</h3>
     <p style="font-size:12.5px;color:var(--text-muted);margin-top:4px">تم إرسال رمز مكون من 6 أرقام إلى</p>
-    <p id="otpSignupEmail" style="font-size:13px;font-weight:800;color:var(--primary);margin:6px 0"></p>
-    <div class="otp-grid" id="otpSignupGrid">
-      <input type="text" class="otp-box" data-group="signup" data-index="0" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="signup" data-index="1" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="signup" data-index="2" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="signup" data-index="3" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="signup" data-index="4" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="signup" data-index="5" inputmode="numeric" maxlength="1">
-    </div>
+    <p id="otpEmailDisplay" style="font-size:13px;font-weight:800;color:var(--primary);margin:6px 0"></p>
+    <input id="otpInput" type="text" maxlength="6" inputmode="numeric" pattern="[0-9]*" class="otp-single" placeholder="123456">
     <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);font-weight:600;margin-bottom:14px">
-      <span>الصلاحية: <span id="expirySignup" style="color:var(--primary);font-weight:800">05:00</span></span><span>5 دقائق</span>
+      <span>الصلاحية: <span id="expiryTimer" style="color:var(--primary);font-weight:800">05:00</span></span><span>5 دقائق</span>
     </div>
-    <button onclick="verifySignupOtp()" class="btn-primary" style="margin-bottom:10px">تأكيد الرمز</button>
-    <button id="resendSignupBtn" onclick="resendSignupOtp()" disabled style="width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#f8fafc;color:#94a3b8;font-weight:700;font-family:'Cairo';cursor:not-allowed">إعادة الإرسال (<span id="resendSignupTimer">60</span>ث)</button>
-    <button onclick="closeSignupOtp()" style="width:100%;margin-top:10px;background:none;border:none;color:var(--text-muted);font-weight:700;font-size:13px;cursor:pointer">إلغاء</button>
+    <button id="verifyOtpBtn" onclick="verifyOtp()" class="btn-primary" style="margin-bottom:10px">تأكيد الرمز</button>
+    <button id="resendBtn" onclick="resendOtp()" disabled style="width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#f8fafc;color:#94a3b8;font-weight:700;font-family:'Cairo';cursor:not-allowed">إعادة الإرسال (<span id="resendTimer">60</span>ث)</button>
+    <button onclick="closeOtpModal()" style="width:100%;margin-top:10px;background:none;border:none;color:var(--text-muted);font-weight:700;font-size:13px;cursor:pointer">إلغاء</button>
   </div>
 </div>
 
-<!-- Forgot Stage 1: Enter Email -->
-<div id="forgotStage1" class="modal">
+<!-- Forgot Password - Stage 1: Email -->
+<div id="forgotModal" class="modal">
   <div class="modal-card" style="text-align:right">
     <div style="text-align:center;margin-bottom:14px">
       <div style="width:60px;height:60px;background:#e0f2f1;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px"><i class="fa-solid fa-key" style="color:var(--primary);font-size:22px"></i></div>
       <h3 style="font-size:18px;font-weight:800">نسيت كلمة المرور؟</h3>
-      <p style="font-size:12px;color:var(--text-muted);margin-top:4px">أدخل بريدك للتحقق أولاً</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:4px">أدخل بريدك للتحقق</p>
     </div>
     <div class="input-group has-label"><label class="input-label">البريد الإلكتروني</label><div style="position:relative"><input id="forgotEmailInput" type="email" class="input-field" placeholder="example@mail.com"><i class="fa-solid fa-envelope input-icon"></i></div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
-      <button onclick="closeForgotStage1()" style="padding:12px;border-radius:12px;border:1.5px solid var(--border);background:var(--bg);font-weight:700;font-family:'Cairo';cursor:pointer">إلغاء</button>
-      <button id="forgotStage1Btn" onclick="handleForgotStage1()" class="btn-primary">متابعة</button>
+      <button onclick="closeForgotModal()" style="padding:12px;border-radius:12px;border:1.5px solid var(--border);background:#f0fdfa;font-weight:700;font-family:'Cairo';cursor:pointer">إلغاء</button>
+      <button id="forgotSendBtn" onclick="sendForgotOtp()" class="btn-primary">متابعة</button>
     </div>
-  </div>
-</div>
-
-<!-- Forgot Stage 2: OTP -->
-<div id="forgotStage2" class="modal">
-  <div class="modal-card">
-    <div class="step-dots"><div class="step-dot active"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
-    <div class="otp-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
-    <h3 style="font-size:18px;font-weight:800">تحقق من بريدك</h3>
-    <p style="font-size:12px;color:var(--text-muted);margin-top:4px">أرسلنا رمز إلى</p>
-    <p id="forgotOtpEmail" style="font-size:13px;font-weight:800;color:var(--primary);margin:6px 0"></p>
-    <div class="otp-grid" id="otpForgotGrid">
-      <input type="text" class="otp-box" data-group="forgot" data-index="0" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="forgot" data-index="1" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="forgot" data-index="2" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="forgot" data-index="3" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="forgot" data-index="4" inputmode="numeric" maxlength="1">
-      <input type="text" class="otp-box" data-group="forgot" data-index="5" inputmode="numeric" maxlength="1">
-    </div>
-    <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);font-weight:600;margin-bottom:14px">
-      <span>الصلاحية: <span id="expiryForgot" style="color:var(--primary);font-weight:800">05:00</span></span><span>5 دقائق</span>
-    </div>
-    <button onclick="verifyForgotOtp()" class="btn-primary" style="margin-bottom:10px">تأكيد الرمز</button>
-    <button id="resendForgotBtn" onclick="resendForgotOtp()" disabled style="width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#f8fafc;color:#94a3b8;font-weight:700;font-family:'Cairo';cursor:not-allowed">إعادة الإرسال (<span id="resendForgotTimer">60</span>ث)</button>
-    <button onclick="closeForgotStage2()" style="width:100%;margin-top:10px;background:none;border:none;color:var(--text-muted);font-weight:700;font-size:13px;cursor:pointer">إلغاء</button>
-  </div>
-</div>
-
-<!-- Forgot Stage 3: New Password -->
-<div id="forgotStage3" class="modal">
-  <div class="modal-card" style="text-align:right">
-    <div style="text-align:center;margin-bottom:14px">
-      <div style="width:60px;height:60px;background:#dcfce7;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px"><i class="fa-solid fa-lock-open" style="color:#16a34a;font-size:22px"></i></div>
-      <div class="step-dots" style="margin-bottom:10px"><div class="step-dot active"></div><div class="step-dot active"></div><div class="step-dot active"></div></div>
-      <h3 style="font-size:18px;font-weight:800">تعيين كلمة مرور جديدة</h3>
-      <p style="font-size:12px;color:var(--text-muted);margin-top:4px">أدخل كلمة المرور الجديدة</p>
-    </div>
-    <div class="input-group has-label"><label class="input-label">كلمة المرور الجديدة</label><div style="position:relative"><input id="newPasswordInput" type="password" class="input-field" placeholder="••••••••"><i class="fa-solid fa-lock input-icon"></i></div></div>
-    <div class="input-group has-label"><label class="input-label">تأكيد كلمة المرور</label><div style="position:relative"><input id="confirmNewPasswordInput" type="password" class="input-field" placeholder="••••••••"><i class="fa-solid fa-lock input-icon"></i></div></div>
-    <button id="saveNewPasswordBtn" onclick="saveNewPassword()" class="btn-primary" style="margin-top:14px">حفظ كلمة المرور</button>
-    <button onclick="closeForgotStage3()" style="width:100%;margin-top:10px;background:none;border:none;color:var(--text-muted);font-weight:700;font-size:13px;cursor:pointer">إلغاء</button>
   </div>
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, fetchSignInMethodsForEmail, updatePassword, signInWithEmailAndPassword as signIn } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
-  authDomain: "karnipromaroc.firebaseapp.com",
-  databaseURL: "https://karnipromaroc-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "karnipromaroc",
-  storageBucket: "karnipromaroc.firebasestorage.app",
-  messagingSenderId: "6746147726",
-  appId: "1:6746147726:web:b2c311df9ff3c778f432df",
-  measurementId: "G-MBGWSDYHGY"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
+import { auth, db } from './firebase.js';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, fetchSignInMethodsForEmail, updateProfile, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 emailjs.init("m5C05A9CqCq2Ux4cu");
 
 let currentMode='login';
-let isProcessing=false;
-let isSending=false;
-
-// Signup OTP vars
-let signupOtp=null, signupExpiry=null, pendingSignup=null;
-let signupResendInt=null, signupExpiryInt=null;
-
-// Forgot vars
-let forgotEmail='', forgotOtp=null, forgotExpiry=null;
-let forgotResendInt=null, forgotExpiryInt=null;
-let forgotOldPasswordCache=null; // لحل مشكل تحديث كلمة المرور بدون معرفة القديمة
+let isProcessing=false, isSending=false;
+let otpCode=null, otpExpiry=null, pendingData=null;
+let resendInt=null, expiryInt=null;
+let forgotFlow=false; // هل نحن في وضع نسيت كلمة المرور؟
+let forgotEmailForReset='';
 
 function showToast(msg,type='info'){
   const c=document.getElementById('toastContainer');
@@ -231,8 +158,9 @@ function showToast(msg,type='info'){
   const icons={success:'fa-check',error:'fa-xmark',info:'fa-info'};
   t.innerHTML=`<div class="toast-icon"><i class="fa-solid ${icons[type]||'fa-info'}"></i></div><div style="flex:1">${msg}</div>`;
   c.appendChild(t);
-  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(-10px)'; setTimeout(()=>t.remove(),300); },3800);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transform='translateY(-10px)'; setTimeout(()=>t.remove(),300); },4000);
 }
+window.showToast=showToast;
 
 window.switchMode=function(mode){
   currentMode=mode;
@@ -248,77 +176,41 @@ window.switchMode=function(mode){
 
 function isValidEmail(e){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
 function genOtp(){ return Math.floor(100000+Math.random()*900000).toString(); }
-function getOtp(group){
-  let code=''; document.querySelectorAll(`.otp-box[data-group="${group}"]`).forEach(b=>code+=b.value); return code;
-}
-function clearOtp(group){ document.querySelectorAll(`.otp-box[data-group="${group}"]`).forEach(b=>b.value=''); }
 
-// OTP Boxes - Auto move, backspace, paste
-document.addEventListener('input',(e)=>{
-  if(!e.target.classList.contains('otp-box')) return;
-  const group=e.target.dataset.group;
-  let idx=parseInt(e.target.dataset.index);
-  if(e.target.value.length>1){
-    // Paste handling - توزيع 6 أرقام
-    const pasted=e.target.value.replace(/\D/g,'').slice(0,6).split('');
-    if(pasted.length>1){
-      document.querySelectorAll(`.otp-box[data-group="${group}"]`).forEach((box,i)=>{
-        if(pasted[i]) box.value=pasted[i];
-      });
-      const lastIdx=Math.min(pasted.length,6)-1;
-      document.querySelector(`.otp-box[data-group="${group}"][data-index="${lastIdx}"]`)?.focus();
-      return;
-    }
-    e.target.value=e.target.value.slice(-1);
-  }
-  if(e.target.value && idx<5){
-    document.querySelector(`.otp-box[data-group="${group}"][data-index="${idx+1}"]`)?.focus();
-  }
-});
-document.addEventListener('keydown',(e)=>{
-  if(!e.target.classList.contains('otp-box')) return;
-  if(e.key==='Backspace' && !e.target.value){
-    const group=e.target.dataset.group;
-    const idx=parseInt(e.target.dataset.index);
-    if(idx>0) document.querySelector(`.otp-box[data-group="${group}"][data-index="${idx-1}"]`)?.focus();
-  }
-});
-
-function startSignupTimers(){
-  clearSignupTimers();
-  let resend=60, expiry=5*60;
-  const rBtn=document.getElementById('resendSignupBtn');
-  const rTimer=document.getElementById('resendSignupTimer');
-  const eTimer=document.getElementById('expirySignup');
-  rBtn.disabled=true; rBtn.style.cursor='not-allowed'; rTimer.textContent=resend; eTimer.textContent='05:00';
-  signupResendInt=setInterval(()=>{
+function startTimers(){
+  clearTimers();
+  let resend=60, expiry=300;
+  const rBtn=document.getElementById('resendBtn');
+  const rTimer=document.getElementById('resendTimer');
+  const eTimer=document.getElementById('expiryTimer');
+  rBtn.disabled=true; rBtn.style.cursor='not-allowed'; rBtn.style.background='#f8fafc'; rBtn.style.color='#94a3b8';
+  rTimer.textContent=resend; eTimer.textContent='05:00'; eTimer.style.color='#0f766e';
+  resendInt=setInterval(()=>{
     resend--; rTimer.textContent=resend;
-    if(resend<=0){ clearInterval(signupResendInt); rBtn.disabled=false; rBtn.style.cursor='pointer'; rBtn.style.background='white'; rBtn.style.color='#0f766e'; rBtn.innerHTML='إعادة إرسال الرمز'; }
+    if(resend<=0){ clearInterval(resendInt); rBtn.disabled=false; rBtn.style.cursor='pointer'; rBtn.style.background='white'; rBtn.style.color='#0f766e'; rBtn.innerHTML='إعادة إرسال الرمز'; }
   },1000);
-  signupExpiryInt=setInterval(()=>{
+  expiryInt=setInterval(()=>{
     expiry--; const m=Math.floor(expiry/60).toString().padStart(2,'0'); const s=(expiry%60).toString().padStart(2,'0'); eTimer.textContent=`${m}:${s}`;
-    if(expiry<=0){ clearInterval(signupExpiryInt); eTimer.textContent='00:00'; eTimer.style.color='#ef4444'; showToast('❌ انتهت صلاحية الرمز','error'); }
+    if(expiry<=0){ clearInterval(expiryInt); eTimer.textContent='00:00'; eTimer.style.color='#ef4444'; showToast('انتهت صلاحية الرمز','error'); }
   },1000);
 }
-function clearSignupTimers(){ if(signupResendInt) clearInterval(signupResendInt); if(signupExpiryInt) clearInterval(signupExpiryInt); }
+function clearTimers(){ if(resendInt) clearInterval(resendInt); if(expiryInt) clearInterval(expiryInt); }
 
-function startForgotTimers(){
-  clearForgotTimers();
-  let resend=60, expiry=5*60;
-  const rBtn=document.getElementById('resendForgotBtn');
-  const rTimer=document.getElementById('resendForgotTimer');
-  const eTimer=document.getElementById('expiryForgot');
-  rBtn.disabled=true; rBtn.style.cursor='not-allowed'; rTimer.textContent=resend; eTimer.textContent='05:00';
-  forgotResendInt=setInterval(()=>{
-    resend--; rTimer.textContent=resend;
-    if(resend<=0){ clearInterval(forgotResendInt); rBtn.disabled=false; rBtn.style.cursor='pointer'; rBtn.style.background='white'; rBtn.style.color='#0f766e'; rBtn.innerHTML='إعادة إرسال الرمز'; }
-  },1000);
-  forgotExpiryInt=setInterval(()=>{
-    expiry--; const m=Math.floor(expiry/60).toString().padStart(2,'0'); const s=(expiry%60).toString().padStart(2,'0'); eTimer.textContent=`${m}:${s}`;
-    if(expiry<=0){ clearInterval(forgotExpiryInt); eTimer.textContent='00:00'; showToast('❌ انتهت صلاحية الرمز','error'); }
-  },1000);
+function getFirebaseErrorMessage(error){
+  if(!navigator.onLine) return 'لا يوجد اتصال بالإنترنت';
+  const code=error.code||'';
+  switch(code){
+    case 'auth/invalid-email': return 'البريد غير صحيح';
+    case 'auth/user-not-found': return 'البريد غير موجود';
+    case 'auth/wrong-password':
+    case 'auth/invalid-credential': return 'كلمة المرور غير صحيحة';
+    case 'auth/email-already-in-use': return 'البريد مستخدم مسبقاً';
+    case 'auth/weak-password': return 'كلمة المرور ضعيفة';
+    case 'auth/too-many-requests': return 'محاولات كثيرة، حاول لاحقاً';
+    case 'auth/network-request-failed': return 'لا يوجد اتصال بالإنترنت';
+    default: return error.message || 'حدث خطأ غير متوقع';
+  }
 }
-function clearForgotTimers(){ if(forgotResendInt) clearInterval(forgotResendInt); if(forgotExpiryInt) clearInterval(forgotExpiryInt); }
 
 window.handleAuth=async function(){
   if(isProcessing) return;
@@ -330,188 +222,117 @@ window.handleAuth=async function(){
   if(!isValidEmail(email)){ showToast('البريد غير صحيح','error'); return; }
 
   if(currentMode==='signup'){
-    if(!fullName){ showToast('أدخل الاسم الكامل','error'); return; }
+    if(!fullName){ showToast('الرجاء إدخال الاسم الكامل','error'); return; }
     if(password.length<6){ showToast('كلمة المرور ضعيفة - 6 أحرف على الأقل','error'); return; }
     if(password!==confirm){ showToast('كلمة المرور غير متطابقة','error'); return; }
     if(isSending) return;
     try{
       isSending=true; isProcessing=true; setLoading(true);
       const methods=await fetchSignInMethodsForEmail(auth,email);
-      if(methods.length>0){ showToast('❌ هذا البريد الإلكتروني مستخدم بالفعل، قم بتسجيل الدخول بدلاً من إنشاء حساب.','error'); setLoading(false); isProcessing=false; isSending=false; return; }
-      signupOtp=genOtp(); signupExpiry=Date.now()+5*60*1000; pendingSignup={fullName,email,password};
-      await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:fullName,otp_code:signupOtp,user_name:fullName,email:email,message:`رمز التحقق الخاص بك هو: ${signupOtp} - صالح 5 دقائق`});
-      document.getElementById('otpSignupEmail').textContent=email;
-      document.getElementById('otpSignupModal').classList.add('active');
-      clearOtp('signup'); setTimeout(()=>document.querySelector('.otp-box[data-group="signup"][data-index="0"]')?.focus(),150);
-      startSignupTimers();
-      showToast('✅ تم إرسال رمز التحقق','success');
-    }catch(e){ console.error(e); showToast('❌ فشل إرسال الرمز','error'); }
+      if(methods.length>0){ showToast('البريد مستخدم مسبقاً','error'); setLoading(false); isProcessing=false; isSending=false; return; }
+      otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000; pendingData={fullName,email,password}; forgotFlow=false;
+      await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:fullName,otp_code:otpCode,user_name:fullName,email:email,message:`رمز التحقق: ${otpCode}`});
+      document.getElementById('otpEmailDisplay').textContent=email;
+      document.getElementById('otpTitle').textContent='تأكيد إنشاء الحساب';
+      document.getElementById('otpModal').classList.add('active');
+      document.getElementById('otpInput').value=''; setTimeout(()=>document.getElementById('otpInput').focus(),100);
+      startTimers(); showToast('تم إرسال رمز التحقق','success');
+    }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
     finally{ setLoading(false); isProcessing=false; isSending=false; }
   } else {
     try{
       isProcessing=true; setLoading(true);
-      await signInWithEmailAndPassword(auth,email,password);
-      localStorage.setItem('loggedIn','true'); localStorage.setItem('appVersion','10'); localStorage.setItem('userName',email.split('@')[0]); localStorage.setItem('userEmail',email);
-      showToast('✅ تم تسجيل الدخول','success');
+      const cred=await signInWithEmailAndPassword(auth,email,password);
+      localStorage.setItem('loggedIn','true'); localStorage.setItem('appVersion','10');
+      localStorage.setItem('userName', cred.user.displayName || email.split('@')[0]);
+      localStorage.setItem('userEmail', cred.user.email);
+      showToast('تم تسجيل الدخول بنجاح','success');
       setTimeout(()=>window.location.href='index.html',700);
-    }catch(e){
-      let msg='❌ خطأ في تسجيل الدخول';
-      if(e.code==='auth/invalid-credential'||e.code==='auth/wrong-password') msg='❌ كلمة المرور غير صحيحة';
-      else if(e.code==='auth/user-not-found') msg='❌ البريد غير موجود';
-      else if(e.code==='auth/invalid-email') msg='❌ البريد غير صحيح';
-      else if(!navigator.onLine) msg='❌ لا يوجد اتصال';
-      showToast(msg,'error');
-    } finally{ setLoading(false); isProcessing=false; }
+    }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
+    finally{ setLoading(false); isProcessing=false; }
   }
 }
 
-window.verifySignupOtp=async function(){
-  const code=getOtp('signup');
-  if(code.length!==6){ showToast('أدخل رمز 6 أرقام','error'); return; }
-  if(Date.now()>signupExpiry){ showToast('❌ انتهت صلاحية الرمز','error'); return; }
-  if(code!==signupOtp){ showToast('❌ رمز التحقق غير صحيح','error'); return; }
-  try{
-    isProcessing=true; setLoading(true,'signup');
-    const cred=await createUserWithEmailAndPassword(auth,pendingSignup.email,pendingSignup.password);
-    await updateProfile(cred.user,{displayName:pendingSignup.fullName});
-    // حفظ كلمة المرور في RTDB لتسهيل إعادة التعيين لاحقاً (للاستخدام الداخلي فقط)
-    try{ await set(ref(db,'users/'+cred.user.uid),{email:pendingSignup.email,displayName:pendingSignup.fullName,password:pendingSignup.password,createdAt:new Date().toISOString()}); }catch(e){}
-    localStorage.setItem('loggedIn','true'); localStorage.setItem('appVersion','10'); localStorage.setItem('userName',pendingSignup.fullName); localStorage.setItem('userEmail',pendingSignup.email);
-    signupOtp=null; pendingSignup=null; clearSignupTimers();
-    document.getElementById('otpSignupModal').classList.remove('active');
-    showToast('✅ تم إنشاء الحساب بنجاح','success');
-    setTimeout(()=>window.location.href='index.html',800);
-  }catch(e){
-    if(e.code==='auth/email-already-in-use') showToast('❌ هذا البريد مستخدم بالفعل','error');
-    else showToast('❌ فشل إنشاء الحساب','error');
-  } finally{ isProcessing=false; setLoading(false,'signup'); }
+window.verifyOtp=async function(){
+  const input=document.getElementById('otpInput').value.trim();
+  if(input.length!==6 || !/^\d{6}$/.test(input)){ showToast('الرجاء إدخال رمز مكون من 6 أرقام','error'); return; }
+  if(Date.now()>otpExpiry){ showToast('انتهت صلاحية الرمز','error'); return; }
+  if(input!==otpCode){ showToast('رمز غير صحيح','error'); return; }
+
+  if(forgotFlow){
+    // نسيت كلمة المرور - بعد نجاح OTP نستخدم Firebase الرسمي لإرسال رابط إعادة التعيين
+    try{
+      document.getElementById('verifyOtpBtn').disabled=true;
+      document.getElementById('verifyOtpBtn').textContent='جاري الإرسال...';
+      await sendPasswordResetEmail(auth, forgotEmailForReset);
+      clearTimers(); closeOtpModal();
+      showToast('تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك','success');
+      // حذف OTP من الذاكرة
+      otpCode=null; otpExpiry=null; forgotEmailForReset=''; forgotFlow=false;
+    }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
+    finally{ document.getElementById('verifyOtpBtn').disabled=false; document.getElementById('verifyOtpBtn').textContent='تأكيد الرمز'; }
+  } else {
+    // إنشاء حساب - بعد OTP فقط يتم الإنشاء
+    try{
+      isProcessing=true; setLoading(true,'otp');
+      const cred=await createUserWithEmailAndPassword(auth, pendingData.email, pendingData.password);
+      await updateProfile(cred.user,{displayName:pendingData.fullName});
+      // حفظ الاسم والبريد فقط في Realtime Database - لا تحفظ كلمة المرور
+      await set(ref(db,'users/'+cred.user.uid),{displayName:pendingData.fullName,email:pendingData.email,createdAt:new Date().toISOString()});
+      localStorage.setItem('loggedIn','true'); localStorage.setItem('appVersion','10');
+      localStorage.setItem('userName',pendingData.fullName); localStorage.setItem('userEmail',pendingData.email);
+      clearTimers(); closeOtpModal();
+      otpCode=null; pendingData=null;
+      showToast('تم إنشاء الحساب بنجاح','success');
+      setTimeout(()=>window.location.href='index.html',800);
+    }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
+    finally{ isProcessing=false; setLoading(false,'otp'); }
+  }
 }
-window.resendSignupOtp=async function(){
-  if(isSending||!pendingSignup) return;
+
+window.resendOtp=async function(){
+  if(isSending) return;
   try{
     isSending=true;
-    signupOtp=genOtp(); signupExpiry=Date.now()+5*60*1000;
-    await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:pendingSignup.email,to_name:pendingSignup.fullName,otp_code:signupOtp,user_name:pendingSignup.fullName,email:pendingSignup.email,message:`رمزك الجديد: ${signupOtp}`});
-    clearOtp('signup'); startSignupTimers(); showToast('✅ تم إرسال رمز جديد','success');
-  }catch(e){ showToast('❌ فشل الإرسال','error'); } finally{ isSending=false; }
+    otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000;
+    const targetEmail = forgotFlow ? forgotEmailForReset : (pendingData?.email || '');
+    const targetName = forgotFlow ? forgotEmailForReset.split('@')[0] : (pendingData?.fullName || '');
+    await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:targetEmail,to_name:targetName,otp_code:otpCode,user_name:targetName,email:targetEmail,message:`رمزك الجديد: ${otpCode}`});
+    document.getElementById('otpInput').value=''; startTimers(); showToast('تم إرسال رمز جديد','success');
+  }catch(e){ showToast('فشل إرسال الرمز','error'); } finally{ isSending=false; }
 }
-window.closeSignupOtp=function(){ document.getElementById('otpSignupModal').classList.remove('active'); clearSignupTimers(); }
 
-// Forgot Password Stage 1
-window.openForgotStage1=function(){ document.getElementById('forgotStage1').classList.add('active'); document.getElementById('forgotEmailInput').value=document.getElementById('emailInput').value.trim(); setTimeout(()=>document.getElementById('forgotEmailInput').focus(),100); }
-window.closeForgotStage1=function(){ document.getElementById('forgotStage1').classList.remove('active'); }
+window.closeOtpModal=function(){ document.getElementById('otpModal').classList.remove('active'); clearTimers(); document.getElementById('otpInput').value=''; }
 
-window.handleForgotStage1=async function(){
+// Forgot Password Flow - الرسمي
+window.openForgotModal=function(){ document.getElementById('forgotModal').classList.add('active'); document.getElementById('forgotEmailInput').value=document.getElementById('emailInput').value.trim(); setTimeout(()=>document.getElementById('forgotEmailInput').focus(),100); }
+window.closeForgotModal=function(){ document.getElementById('forgotModal').classList.remove('active'); }
+
+window.sendForgotOtp=async function(){
   const email=document.getElementById('forgotEmailInput').value.trim();
-  const btn=document.getElementById('forgotStage1Btn');
-  if(!email){ showToast('أدخل بريدك','error'); return; }
+  const btn=document.getElementById('forgotSendBtn');
+  if(!email){ showToast('الرجاء إدخال البريد','error'); return; }
   if(!isValidEmail(email)){ showToast('البريد غير صحيح','error'); return; }
   if(isSending) return;
   try{
     isSending=true; btn.disabled=true; btn.textContent='جاري التحقق...';
     const methods=await fetchSignInMethodsForEmail(auth,email);
-    if(!methods||methods.length===0){ showToast('❌ هذا البريد الإلكتروني غير مسجل.','error'); btn.disabled=false; btn.textContent='متابعة'; isSending=false; return; }
-    // موجود - محاولة جلب كلمة المرور القديمة من RTDB لتسهيل التحديث لاحقاً
-    try{
-      const snap=await get(child(ref(db),'users'));
-      if(snap.exists()){
-        const users=snap.val();
-        for(const uid in users){ if(users[uid].email===email){ forgotOldPasswordCache=users[uid].password||null; break; } }
-      }
-    }catch(e){}
-
-    forgotEmail=email; forgotOtp=genOtp(); forgotExpiry=Date.now()+5*60*1000;
-    await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:email.split('@')[0],otp_code:forgotOtp,user_name:email.split('@')[0],email:email,message:`رمز إعادة تعيين كلمة المرور هو: ${forgotOtp} - صالح 5 دقائق`});
-    closeForgotStage1();
-    document.getElementById('forgotOtpEmail').textContent=email;
-    document.getElementById('forgotStage2').classList.add('active');
-    clearOtp('forgot'); setTimeout(()=>document.querySelector('.otp-box[data-group="forgot"][data-index="0"]')?.focus(),150);
-    startForgotTimers();
-    showToast('✅ تم إرسال رمز التحقق','success');
-  }catch(e){ console.error(e); showToast('❌ فشل التحقق، تحقق من الاتصال','error'); }
+    if(!methods||methods.length===0){ showToast('البريد غير موجود','error'); btn.disabled=false; btn.textContent='متابعة'; isSending=false; return; }
+    forgotEmailForReset=email; otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000; forgotFlow=true;
+    await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:email.split('@')[0],otp_code:otpCode,user_name:email.split('@')[0],email:email,message:`رمز إعادة التعيين: ${otpCode}`});
+    closeForgotModal();
+    document.getElementById('otpEmailDisplay').textContent=email;
+    document.getElementById('otpTitle').textContent='تأكيد إعادة التعيين';
+    document.getElementById('otpModal').classList.add('active');
+    document.getElementById('otpInput').value=''; setTimeout(()=>document.getElementById('otpInput').focus(),100);
+    startTimers(); showToast('تم إرسال رمز التحقق','success');
+  }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
   finally{ btn.disabled=false; btn.textContent='متابعة'; isSending=false; }
 }
 
-window.closeForgotStage2=function(){ document.getElementById('forgotStage2').classList.remove('active'); clearForgotTimers(); }
-window.verifyForgotOtp=function(){
-  const code=getOtp('forgot');
-  if(code.length!==6){ showToast('أدخل رمز 6 أرقام','error'); return; }
-  if(Date.now()>forgotExpiry){ showToast('❌ انتهت صلاحية الرمز','error'); return; }
-  if(code!==forgotOtp){ showToast('❌ رمز التحقق غير صحيح','error'); return; }
-  // صحيح - انتقال للمرحلة 3
-  clearForgotTimers();
-  document.getElementById('forgotStage2').classList.remove('active');
-  document.getElementById('forgotStage3').classList.add('active');
-  showToast('✅ تم التحقق، أدخل كلمة مرور جديدة','success');
-}
-window.resendForgotOtp=async function(){
-  if(isSending) return;
-  try{
-    isSending=true;
-    forgotOtp=genOtp(); forgotExpiry=Date.now()+5*60*1000;
-    await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:forgotEmail,to_name:forgotEmail.split('@')[0],otp_code:forgotOtp,user_name:forgotEmail.split('@')[0],email:forgotEmail,message:`رمزك الجديد لإعادة التعيين: ${forgotOtp}`});
-    clearOtp('forgot'); startForgotTimers(); showToast('✅ تم إرسال رمز جديد','success');
-  }catch(e){ showToast('❌ فشل الإرسال','error'); } finally{ isSending=false; }
-}
-
-window.closeForgotStage3=function(){ document.getElementById('forgotStage3').classList.remove('active'); }
-window.saveNewPassword=async function(){
-  const newPass=document.getElementById('newPasswordInput').value;
-  const confirmPass=document.getElementById('confirmNewPasswordInput').value;
-  const btn=document.getElementById('saveNewPasswordBtn');
-  if(!newPass||!confirmPass){ showToast('أدخل كلمة المرور وتأكيدها','error'); return; }
-  if(newPass.length<6){ showToast('كلمة المرور يجب أن تكون 6 أحرف على الأقل','error'); return; }
-  if(newPass!==confirmPass){ showToast('كلمة المرور غير متطابقة','error'); return; }
-  if(btn.disabled) return;
-  try{
-    btn.disabled=true; btn.textContent='جاري الحفظ...';
-    // محاولة تسجيل الدخول بكلمة المرور القديمة إذا كانت محفوظة، ثم تحديث
-    let updated=false;
-    if(forgotOldPasswordCache){
-      try{
-        const cred=await signInWithEmailAndPassword(auth,forgotEmail,forgotOldPasswordCache);
-        await updatePassword(cred.user,newPass);
-        // تحديث RTDB
-        try{ const snap=await get(child(ref(db),'users')); if(snap.exists()){ const users=snap.val(); for(const uid in users){ if(users[uid].email===forgotEmail){ await set(ref(db,'users/'+uid+'/password'),newPass); break; } } } }catch(e){}
-        updated=true;
-      }catch(e){ console.log('old pass signin failed',e); }
-    }
-    // إذا لم ينجح بالطريقة الأولى (المستخدم قديم بدون كلمة مرور محفوظة)، نستخدم طريقة بديلة: إرسال رابط إعادة تعيين حقيقي من Firebase كحل أخير بعد التحقق OTP
-    if(!updated){
-      // للتوافق: نستخدم REST API لإعادة التعيين بعد التحقق OTP - سنحاكي نجاح العملية ونخزن كلمة المرور الجديدة في RTDB ليتم استخدامها في تسجيل الدخول القادم عبر Cloud Function وهمي
-      // هنا نطبق حل عملي: نحفظ كلمة المرور الجديدة في RTDB تحت passwordResets ونعتبرها نجاح، مع محاولة تسجيل الدخول لاحقاً
-      try{
-        // محاولة تسجيل الدخول بأي كلمة مرور قديمة مخزنة في localStorage؟ لا
-        // كحل أخير، نقوم بإنشاء سجل في RTDB
-        const resetId=Date.now().toString();
-        await set(ref(db,'passwordResets/'+resetId),{email:forgotEmail,newPassword:newPass,verified:true,createdAt:new Date().toISOString()});
-        // نحاول أيضاً تحديث كلمة المرور عبر إعادة إنشاء الحساب إذا كان ممكناً؟ لا يمكن بدون حذف
-        // سنظهر نجاح وهمي مع تعليمات
-        updated=true;
-        // ملاحظة: في الإنتاج الحقيقي يجب استخدام Cloud Function لتحديث كلمة المرور عبر Admin SDK
-      }catch(e){}
-    }
-
-    if(updated){
-      // حذف الرمز من الذاكرة
-      forgotOtp=null; forgotEmail=''; forgotExpiry=null; forgotOldPasswordCache=null;
-      clearOtp('forgot');
-      document.getElementById('forgotStage3').classList.remove('active');
-      document.getElementById('newPasswordInput').value=''; document.getElementById('confirmNewPasswordInput').value='';
-      showToast('✅ تم تغيير كلمة المرور بنجاح، سجل الدخول الآن','success');
-      // إذا تم التحديث الحقيقي عبر updatePassword، المستخدم لا يزال مسجل دخول - نخرجه
-      try{ await signOut(auth); }catch(e){}
-      setTimeout(()=>{ switchMode('login'); document.getElementById('emailInput').value=forgotEmail||''; },500);
-    } else {
-      showToast('❌ فشل تحديث كلمة المرور، حاول لاحقاً','error');
-    }
-  }catch(e){
-    console.error(e); showToast('❌ فشل تحديث كلمة المرور','error');
-  } finally{ btn.disabled=false; btn.textContent='حفظ كلمة المرور'; }
-}
-
-// إغلاق عند الضغط خارج المودال
-document.querySelectorAll('.modal').forEach(m=>{ m.addEventListener('click',(e)=>{ if(e.target===m){ m.classList.remove('active'); if(m.id==='forgotStage2') clearForgotTimers(); if(m.id==='otpSignupModal') clearSignupTimers(); } }); });
+document.getElementById('otpModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeOtpModal(); });
+document.getElementById('forgotModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeForgotModal(); });
+document.getElementById('otpInput')?.addEventListener('input',(e)=>{ e.target.value=e.target.value.replace(/\D/g,'').slice(0,6); });
 
 function setLoading(isLoading,ctx='main'){
   const btn=document.getElementById('actionBtn');
