@@ -1,6 +1,7 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+// firebase.js - Karni Pro - الإعداد الرسمي الموحد
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCLIzcO9i8QQ-YzYY5fIap6QNDsJDqgf60",
@@ -14,7 +15,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-
-export const db = getDatabase(app);
 export const auth = getAuth(app);
+export const db = getDatabase(app);
 export default app;
