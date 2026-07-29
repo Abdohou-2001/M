@@ -78,7 +78,6 @@ body{font-family:'Cairo',sans-serif;background:radial-gradient(900px 600px at 80
 .modal-header{padding:14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
 .modal-body{padding:8px;display:grid;gap:6px}
 .modal-action{display:flex;align-items:center;gap:10px;padding:10px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;cursor:pointer;font-size:11.5px;font-weight:500}
-/* Dialog احترافي */
 .dialog-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(16px);z-index:400;display:none;align-items:center;justify-content:center;padding:16px}
 .dialog-overlay.active{display:flex;animation:fadeIn 0.2s}
 .dialog-card{width:100%;max-width:340px;background:linear-gradient(180deg,rgba(22,34,51,0.98),rgba(10,20,34,0.99));border:1px solid rgba(255,255,255,0.12);border-radius:18px;backdrop-filter:blur(28px);overflow:hidden;animation:dialogIn 0.35s cubic-bezier(0.16,1,0.3,1)}
@@ -201,6 +200,12 @@ let currentUid = null;
 let customersRef = null;
 let routeRef = null;
 
+// ===== توحيد المعرف في كل المشروع =====
+const getId = (item) => {
+  if(!item) return null;
+  return item.customerId || item.id || null;
+};
+
 const BLOCKED_NAMES = ['Rmdan Ikaml','Ouchen abdellah','Salh biranzaran','Salh tegir','Youssef biranzaran','Ahmed','احمد','Ahb','Agsb','Aissa','Hafidi','Rmdan','Ouchen'];
 
 function isBlocked(name){
@@ -209,26 +214,44 @@ function isBlocked(name){
   return BLOCKED_NAMES.some(b => lower.includes(b.toLowerCase()));
 }
 
+// ===== getRealBalance محسن - يغطي جميع الحالات =====
 function getRealBalance(c){
-  if(typeof c.currentBalance!=='undefined' && c.currentBalance!==null) return parseFloat(c.currentBalance)||0;
-  let p=0,r=0; if(c.operations && Array.isArray(c.operations)){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); }
-  return (parseFloat(c.amount)||0)+p-r;
+  if(!c) return 0;
+  if(typeof c.currentBalance!=='undefined' && c.currentBalance!==null && c.currentBalance!==''){
+    const cb = parseFloat(c.currentBalance);
+    if(!isNaN(cb)) return cb;
+  }
+  let paid=0, received=0;
+  if(c.operations && Array.isArray(c.operations)){
+    c.operations.forEach(op=>{
+      if(!op) return;
+      const amt = Number(op.amount)||0;
+      if(op.type==='paid') paid+=amt;
+      else if(op.type==='received') received+=amt;
+    });
+  }
+  const base = parseFloat(c.amount);
+  const baseVal = isNaN(base)?0:base;
+  return baseVal + paid - received;
 }
 
+// ===== isDueToday محسن - لا يسقط أي زبون =====
 function isDueTodayFromIndex(customer){
   if(!customer) return false;
   if(isBlocked(customer.name)) return false;
   const balance = getRealBalance(customer);
   if(balance <= 0) return false;
   const today = new Date().toISOString().split('T')[0];
-  const date = customer.date;
+  let date = customer.date;
+  if(!date) return true; // بدون تاريخ ومعه رصيد = مستحق
+  date = String(date).trim();
+  if(!date) return true;
   if(date === today) return true;
-  if(date && date < today) return true;
-  if(!date && balance > 0) return true;
+  if(date < today) return true; // متأخر
   return false;
 }
 
-// ===== نظام Dialog و Toast احترافي - بدون alert/confirm =====
+// ===== نظام Dialog و Toast احترافي =====
 let dialogResolve=null;
 function openAppDialog({title='تأكيد', message='', confirmText='تأكيد', cancelText='إلغاء', type='info', danger=false}){
   return new Promise(resolve=>{
@@ -250,7 +273,6 @@ window.closeAppDialog=function(result){
   document.getElementById('appDialog').classList.remove('active');
   if(dialogResolve){ dialogResolve(result); dialogResolve=null; }
 }
-
 function showToast(message, type='success'){
   const container=document.getElementById('toastContainer');
   const toast=document.createElement('div');
@@ -261,9 +283,31 @@ function showToast(message, type='success'){
   setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(-10px)'; setTimeout(()=>toast.remove(),300); },3000);
 }
 
-// ===== منطق المزامنة المصحح 100% =====
+// ===== منطق المزامنة المصحح 100% - حل تعارض onValue =====
 let customersLoaded=false;
 let routeLoaded=false;
+let rawRouteData=null;
+let isMerging=false;
+let isSaving=false;
+
+function tryBuildRoute(){
+  if(!customersLoaded || !routeLoaded) return;
+  if(isMerging) return;
+  isMerging=true;
+  try{
+    // 1. استرجاع routeList من rawRouteData إذا كان أول تحميل
+    if(rawRouteData!==null){
+      if(Array.isArray(rawRouteData)) routeList=rawRouteData;
+      else if(typeof rawRouteData==='object') routeList=Object.values(rawRouteData);
+      else routeList=[];
+      routeList=routeList.filter(i=>i && !isBlocked(i.name));
+      rawRouteData=null;
+    }
+    mergeTodayIntoRoute();
+  } finally {
+    isMerging=false;
+  }
+}
 
 onAuthStateChanged(auth, (user)=>{
   if(!user){
@@ -274,6 +318,7 @@ onAuthStateChanged(auth, (user)=>{
   customersRef = ref(db, `users/${currentUid}/customers`);
   routeRef = ref(db, `users/${currentUid}/routeManual`);
 
+  // مراقبة الزبناء - لا يكتب قبل اكتمال التحميل
   onValue(customersRef, (snapshot)=>{
     let data = snapshot.val() || {};
     if(data._init) delete data._init;
@@ -284,39 +329,22 @@ onAuthStateChanged(auth, (user)=>{
     });
     allCustomers = data;
     customersLoaded=true;
-    if(routeLoaded){
-      mergeTodayIntoRoute();
-    } else {
-      get(routeRef).then(snap=>{
-        if(!snap.exists() || !snap.val() || Object.keys(snap.val()).length===0 || (Array.isArray(snap.val()) && snap.val().length===0)){
-          buildRouteFromToday(true);
-        } else {
-          let val=snap.val();
-          if(Array.isArray(val)) routeList=val;
-          else routeList=Object.values(val);
-          routeList=routeList.filter(i=>i && !isBlocked(i.name));
-          mergeTodayIntoRoute();
-        }
-      });
-    }
+    tryBuildRoute();
   });
 
+  // مراقبة المسار - لا يكتب فوق البيانات
   onValue(routeRef, (snapshot)=>{
+    if(isSaving){
+      // تجاهل التحديث الناتج عن حفظنا نحن
+      return;
+    }
     if(snapshot.exists()){
-      let val=snapshot.val();
-      if(Array.isArray(val)) routeList=val;
-      else if(typeof val==='object') routeList=Object.values(val);
-      else routeList=[];
-      routeList=routeList.filter(i=>i && !isBlocked(i.name));
+      rawRouteData=snapshot.val();
     } else {
-      routeList=[];
+      rawRouteData=[];
     }
     routeLoaded=true;
-    if(customersLoaded){
-      mergeTodayIntoRoute();
-    } else {
-      applyFilter();
-    }
+    tryBuildRoute();
   });
 });
 
@@ -324,7 +352,7 @@ function getTodayCustomers(){
   const todayCustomers = [];
   Object.keys(allCustomers).forEach(key=>{
     const c = allCustomers[key];
-    if(isDueTodayFromIndex(c) && !isBlocked(c.name)){
+    if(isDueTodayFromIndex(c)){
       todayCustomers.push({
         id: key,
         customerId: key,
@@ -342,93 +370,128 @@ function getTodayCustomers(){
   return todayCustomers;
 }
 
+function normalizeCurrent(){
+  // يجب أن يوجد زبون واحد فقط current
+  const currents = routeList.filter(i=>i.status==='current' && !isBlocked(i.name));
+  if(currents.length===0){
+    const firstPending=routeList.find(i=>i.status==='pending');
+    if(firstPending) firstPending.status='current';
+  } else if(currents.length>1){
+    let first=true;
+    routeList.forEach(item=>{
+      if(item.status==='current'){
+        if(first) first=false;
+        else item.status='pending';
+      }
+    });
+  }
+}
+
 function mergeTodayIntoRoute(){
   const todayCustomers = getTodayCustomers();
-  const existingIds = new Set(routeList.map(i=>i.customerId || i.id));
-  const todayIds = new Set(todayCustomers.map(i=>i.customerId));
+  const existingIds = new Set(routeList.map(i=>getId(i)).filter(Boolean));
+  const todayIds = new Set(todayCustomers.map(i=>getId(i)).filter(Boolean));
 
+  // إضافة الزبناء الجدد - مع تحديث Set بعد كل push
   todayCustomers.forEach(c=>{
-    if(!existingIds.has(c.customerId)){
+    const cid = getId(c);
+    if(!existingIds.has(cid)){
       routeList.push(c);
+      existingIds.add(cid); // تحديث فوري لمنع التكرار
     }
   });
 
+  // إزالة الزبناء الذين لم يعودوا مستحقين - بشرط آمن
   routeList = routeList.filter(item=>{
+    if(!item) return false;
     if(isBlocked(item.name)) return false;
-    if(!todayIds.has(item.customerId || item.id) && ['pending','current'].includes(item.status)){
-      const cid=item.customerId || item.id;
-      const cust=allCustomers[cid];
-      if(!cust || !isDueTodayFromIndex(cust)) return false;
+    const id = getId(item);
+    if(!id) return false;
+    // لا تحذف إذا كان لا يزال ضمن زبناء اليوم
+    if(todayIds.has(id)) return true;
+    // إذا كان pending/current وليس من زبناء اليوم، تحقق هل لا يزال مستحقاً
+    if(['pending','current'].includes(item.status)){
+      const cust = allCustomers[id];
+      if(cust && isDueTodayFromIndex(cust)) return true; // لا يزال مستحقاً
+      return false; // لم يعد مستحقاً - احذف
     }
+    // احتفظ بالباقي (visited, postponed...)
     return true;
   });
 
-  let hasCurrent=routeList.some(i=>i.status==='current' && !isBlocked(i.name));
-  if(!hasCurrent){
-    const firstPending=routeList.find(i=>i.status==='pending');
-    if(firstPending) firstPending.status='current';
-  }
-
+  // إزالة التكرار بتوحيد المعرف
   const seen=new Set();
   routeList=routeList.filter(item=>{
-    const id=item.customerId || item.id;
+    const id=getId(item);
+    if(!id) return false;
     if(seen.has(id)) return false;
     seen.add(id);
     return true;
   });
 
+  normalizeCurrent();
   applyFilter();
 }
 
 window.buildRouteFromToday = async function(forceReplace=false){
   if(!currentUid || !customersRef || !routeRef) return;
+  if(!customersLoaded) return; // لا تكتب قبل تحميل customers
   const todayCustomers = getTodayCustomers();
   if(todayCustomers.length>0) todayCustomers[0].status='current';
   if(forceReplace || routeList.length===0){
     routeList = todayCustomers;
   } else {
-    const existingMap=new Map(routeList.map(i=>[i.customerId||i.id, i]));
+    const existingMap=new Map(routeList.map(i=>[getId(i), i]));
     todayCustomers.forEach(c=>{
-      if(!existingMap.has(c.customerId)){
+      const cid=getId(c);
+      if(!existingMap.has(cid)){
         routeList.push(c);
       }
     });
     if(routeList.length===0) routeList=todayCustomers;
   }
+  normalizeCurrent();
+  isSaving=true;
   await set(routeRef, routeList);
+  setTimeout(()=>{ isSaving=false; },500);
   applyFilter();
 }
 
 window.syncFromIndex = async function(){
   if(!currentUid || !customersRef || !routeRef) return;
+  if(!customersLoaded){
+    showToast('جاري تحميل الزبناء...','info');
+    return;
+  }
   const todayCustomers = getTodayCustomers();
-  const existingIds=new Set(routeList.map(i=>i.customerId||i.id));
+  const existingIds=new Set(routeList.map(i=>getId(i)).filter(Boolean));
   let newCount=0;
   todayCustomers.forEach(c=>{
-    if(!existingIds.has(c.customerId)){
+    const cid=getId(c);
+    if(!existingIds.has(cid)){
       routeList.push(c);
+      existingIds.add(cid); // تحديث فوري
       newCount++;
     }
   });
-  if(todayCustomers.length>0 && !routeList.some(i=>i.status==='current')){
-    const first=routeList.find(i=>i.status==='pending');
-    if(first) first.status='current';
-  }
+  normalizeCurrent();
+  isSaving=true;
   await set(routeRef, routeList);
+  setTimeout(()=>{ isSaving=false; },500);
   showToast(`تمت المزامنة: ${todayCustomers.length} زبون، ${newCount} جديد`, 'success');
   applyFilter();
 }
 
 function applyFilter(){
-  filteredList = routeList.filter(item => {
-    if(isBlocked(item.name)) return false;
-    if(!['pending','current'].includes(item.status)) return false;
-    return true;
-  });
+  // عرض pending و current فقط - مع ضمان عدم فقدان أي زبون
   const seen=new Set();
-  filteredList=filteredList.filter(item=>{
-    const id=item.customerId||item.id;
+  filteredList = routeList.filter(item => {
+    if(!item) return false;
+    if(isBlocked(item.name)) return false;
+    const id=getId(item);
+    if(!id) return false;
     if(seen.has(id)) return false;
+    if(!['pending','current'].includes(item.status)) return false;
     seen.add(id);
     return true;
   });
@@ -440,7 +503,9 @@ window.clearRoute = async function(){
   if(!currentUid || !routeRef) return;
   const ok=await openAppDialog({title:'مسح المسار', message:'هل تريد مسح جميع الزبناء من المسار؟', confirmText:'مسح', cancelText:'إلغاء', type:'danger', danger:true});
   if(!ok) return;
+  isSaving=true;
   await set(routeRef, []);
+  setTimeout(()=>{ isSaving=false; },500);
   routeList=[]; filteredList=[];
   applyFilter();
   showToast('تم مسح المسار', 'info');
@@ -451,14 +516,17 @@ window.resetRoute = async function(){
   const ok=await openAppDialog({title:'إعادة تعيين المسار', message:'هل تريد إعادة تعيين المسار؟ سيتم إرجاع أول زبون إلى الحالي والباقي في الانتظار.', confirmText:'تأكيد', cancelText:'إلغاء', type:'warning'});
   if(!ok) return;
   let first=true;
-  routeList = routeList.filter(i=>!isBlocked(i.name)).map(item=>{
+  routeList = routeList.filter(i=>i && !isBlocked(i.name)).map(item=>{
+    if(!item) return null;
     if(['pending','current','postponed','refused','closed','visited'].includes(item.status)){
-      if(isBlocked(item.name)) return null;
       if(first){ item.status='current'; first=false; } else { item.status='pending'; }
     }
     return item;
   }).filter(Boolean);
+  normalizeCurrent();
+  isSaving=true;
   await set(routeRef, routeList);
+  setTimeout(()=>{ isSaving=false; },500);
   applyFilter();
   showToast('تمت إعادة التعيين', 'success');
 }
@@ -478,10 +546,10 @@ function renderMap(){
 
   if(filteredList.length===0){
     [path,shadow,inner].forEach(p=>p.setAttribute('d',''));
-    document.getElementById('totalCount').innerText=0;
+    document.getElementById('totalCount').innerText=routeList.filter(i=>['pending','current'].includes(i.status)).length;
     document.getElementById('pendingCount').innerText=0;
     document.getElementById('currentCount').innerText=0;
-    document.getElementById('visitedCount').innerText=0;
+    document.getElementById('visitedCount').innerText=routeList.filter(i=>i.status==='visited').length;
     mapContent.style.height='420px';
     container.innerHTML=`<div style="position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);text-align:center;padding:14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(18px);width:85%;max-width:260px"><div style="font-size:22px;margin-bottom:6px;opacity:0.6"><i class="fa-solid fa-route"></i></div><div style="font-weight:700;font-size:11px">لا يوجد زبناء اليوم</div><div style="font-size:9px;color:var(--muted);margin-top:4px">أضف زبناء بتاريخ اليوم من الرئيسية</div><button onclick="syncFromIndex()" style="margin-top:8px;padding:7px 12px;border-radius:8px;border:none;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;font-weight:700;font-size:10px;cursor:pointer;width:100%"><i class="fa-solid fa-rotate" style="margin-left:4px"></i>مزامنة زبناء اليوم</button></div>`;
     return;
@@ -506,7 +574,6 @@ function renderMap(){
 
   filteredList.forEach((item,i)=>{
     if(item.status==='pending') pending++; if(item.status==='current') current++; if(item.status==='visited') visited++;
-    if(pending>0 && item.status==='pending' && current===0){ item.status='current'; current=1; pending--; }
     let pt=points[i]; let isLeft=i%2===0;
     let debt=item.debt||item.amount||'';
     container.innerHTML+=`<div class="point" style="top:${pt.y}px;left:${pt.x}px;flex-direction:${isLeft?'row-reverse':'row'}" onclick="openModal(${i})"><div class="point-dot ${item.status}">${i+1}</div><div class="point-card ${item.status==='current'?'current':''}"><div class="point-avatar ${item.status}">${(item.name||'C').charAt(0).toUpperCase()}</div><div style="flex:1;min-width:0"><div class="point-name">${item.name||'بدون'}</div><div class="point-meta">${debt?'<span style="color:#fbbf24">'+debt+'د</span>':''} <span>#${i+1}</span> ${item.city?'<span>'+item.city+'</span>':''}</div><div><span class="point-status ${item.status}">${getArabicStatus(item.status)}</span></div></div></div></div>`;
@@ -520,8 +587,7 @@ function renderMap(){
   document.getElementById('totalCount').innerText=filteredList.length;
   document.getElementById('pendingCount').innerText=pending;
   document.getElementById('currentCount').innerText=current;
-  document.getElementById('visitedCount').innerText=visited;
-  setTimeout(()=>{ const cur=document.querySelector('.point-dot.current'); if(cur) cur.scrollIntoView({behavior:'smooth',block:'center'}); },300);
+  document.getElementById('visitedCount').innerText=routeList.filter(i=>i.status==='visited').length;
 }
 
 function renderSidebar(){
@@ -546,24 +612,28 @@ function renderSidebar(){
 function reorder(from,to){
   if(!routeRef || !currentUid) return;
   const arr=[...filteredList]; const [m]=arr.splice(from,1); arr.splice(to,0,m); filteredList=arr;
-  let newRoute = routeList.filter(item=> !filteredList.some(f=>f.customerId===item.customerId) && !filteredList.some(f=>f.id===item.id));
-  let firstIdx = routeList.findIndex(item=> filteredList.length>0 && (item.customerId===filteredList[0].customerId || item.id===filteredList[0].id));
+  let newRoute = routeList.filter(item=> !filteredList.some(f=>getId(f)===getId(item)));
+  let firstIdx = routeList.findIndex(item=> filteredList.length>0 && getId(item)===getId(filteredList[0]));
   if(firstIdx===-1) firstIdx=0;
   filteredList.forEach((item,idx)=>{ newRoute.splice(firstIdx+idx,0,item); });
   routeList=newRoute;
   renderMap(); renderSidebar();
-  set(routeRef, routeList);
+  isSaving=true;
+  set(routeRef, routeList).then(()=>{ setTimeout(()=>{ isSaving=false; },500); });
 }
 
 window.saveOrder = async function(){
   if(!routeRef || !currentUid) return;
+  if(!customersLoaded) return;
+  isSaving=true;
   await set(routeRef, routeList);
+  setTimeout(()=>{ isSaving=false; },500);
   showToast('تم حفظ الترتيب', 'success');
 }
 
 window.openModal = function(i){
   const item=filteredList[i];
-  window.selectedRealIndex = routeList.findIndex(r=> r.customerId===item.customerId || r.id===item.id);
+  window.selectedRealIndex = routeList.findIndex(r=> getId(r)===getId(item));
   if(window.selectedRealIndex===-1) window.selectedRealIndex = routeList.indexOf(item);
   window.selectedFilteredIndex = i;
   document.getElementById('modalClientName').innerText=item.name||'بدون';
@@ -576,7 +646,10 @@ window.updateStatus = async function(newStatus){
   if(window.selectedRealIndex!==null && window.selectedRealIndex!==-1){
     routeList[window.selectedRealIndex].status=newStatus;
   }
+  normalizeCurrent();
+  isSaving=true;
   await set(routeRef, routeList);
+  setTimeout(()=>{ isSaving=false; },500);
   closeModal();
   showToast(newStatus==='visited'?'تم التسديد':'تم التحديث', 'success');
 }
