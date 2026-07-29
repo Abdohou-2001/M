@@ -384,7 +384,12 @@ window.sendForgotPassword=async function(){
   if(isSending) return;
   try{
     isSending=true; btn.disabled=true; btn.textContent='جاري الإرسال...';
-    await sendPasswordResetEmail(auth, email);
+    const actionCodeSettings = {
+  url: "https://abdohou-2001.github.io/M/login.html",
+  handleCodeInApp: false
+};
+
+await sendPasswordResetEmail(auth, email, actionCodeSettings);
     lastResetEmail=email;
     closeForgotModal();
     document.getElementById('successEmailDisplay').textContent=email;
