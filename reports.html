@@ -35,11 +35,13 @@
 .skeleton{background:linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%);background-size:200% 100%;animation:loading 1.5s infinite}
 @keyframes loading{0%{background-position:200% 0}100%{background-position:-200% 0}}
 #thermalPrintArea{display:none}
+#thermalPrintArea{display:none}
 @media print{
-  body *{visibility:hidden}
-  #thermalPrintArea, #thermalPrintArea *{visibility:visible !important; display:block !important}
-  #thermalPrintArea{position:absolute !important; left:0 !important; top:0 !important; width:80mm !important; margin:0 !important; padding:0 !important; background:white !important; display:block !important}
-  @page{size:80mm auto; margin:0}
+  body *{visibility:hidden !important}
+  #thermalPrintArea{visibility:visible !important; display:block !important; position:absolute !important; left:0 !important; top:0 !important; width:100% !important; max-width:80mm !important; margin:0 !important; padding:0 !important; background:white !important}
+  #thermalPrintArea *{visibility:visible !important}
+  #thermalPrintArea div{box-sizing:border-box !important}
+  @page{size:auto; margin:2mm}
 }
 </style>
 <script>setTimeout(function(){var s=document.createElement('script');s.src='https://cdn.tailwindcss.com';document.head.appendChild(s);var l=document.createElement('link');l.rel='stylesheet';l.href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';document.head.appendChild(l);},80);</script>
@@ -326,11 +328,11 @@ window.closeBon = function(){ document.getElementById('bonModal').classList.remo
 function buildPrintHTML(width){
   var now = new Date();
   var dateStr = now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-  var timeStr = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  var timeStr = String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
   var invNum = '000000';
   try{
     var hash = 0;
-    var str = currentViewingClient + dateStr;
+    var str = currentViewingClient + dateStr + now.getTime();
     for(var i=0;i<str.length;i++){ hash = ((hash<<5)-hash)+str.charCodeAt(i); hash|=0; }
     invNum = String(Math.abs(hash)%1000000).padStart(6,'0');
   }catch(e){}
@@ -338,36 +340,77 @@ function buildPrintHTML(width){
   var total=0; var totalQty=0;
   currentBonItems.forEach(function(i){ total+=(parseFloat(i.price)||0)*(parseInt(i.qty)||0); totalQty+=parseInt(i.qty)||0; });
 
+  // بناء صفوف المنتجات بـ div flex فقط - بدون table/grid/float/transform/absolute
   var rows='';
   currentBonItems.forEach(function(i){
     var lineTotal=(parseFloat(i.price)||0)*parseInt(i.qty||0);
-    rows+='<tr><td style="padding:6px 4px;text-align:right;direction:ltr;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:36mm">'+i.name+'</td><td style="padding:6px 4px;text-align:center">'+i.qty+'</td><td style="padding:6px 4px;text-align:center">'+parseFloat(i.price||0).toFixed(2)+'</td><td style="padding:6px 4px;text-align:center">'+lineTotal.toFixed(2)+'</td></tr>';
-    rows+='<tr><td colspan="4" style="border-bottom:1px dashed #999;padding:0"></td></tr>';
+    // سطر واحد فقط لكل منتج - ثابت العرض 45%/15%/20%/20%
+    rows+='<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;padding:5px 0;width:100%;box-sizing:border-box;">';
+    rows+='<div style="width:45%;text-align:right;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;direction:rtl;padding-left:2px;box-sizing:border-box;">'+escapeHtml(i.name)+'</div>';
+    rows+='<div style="width:15%;text-align:center;box-sizing:border-box;">'+i.qty+'</div>';
+    rows+='<div style="width:20%;text-align:center;box-sizing:border-box;">'+parseFloat(i.price||0).toFixed(2)+'</div>';
+    rows+='<div style="width:20%;text-align:center;box-sizing:border-box;">'+lineTotal.toFixed(2)+'</div>';
+    rows+='</div>';
+    rows+='<div style="border-top:1px dashed #000;width:100%;margin:0;padding:0;"></div>';
   });
 
   var html='';
-  html='<div style="font-family:Arial,sans-serif;direction:rtl;text-align:right;padding:4mm 3mm;color:#000;background:#fff">';
-  html+='<div style="text-align:center;font-weight:900;font-size:22px;letter-spacing:0.5px;margin-bottom:6px">KARNI PRO</div>';
-  html+='<div style="border-top:2px dashed #000;margin:8px 0"></div>';
-  html+='<table style="width:100%;font-size:11px;line-height:1.8;border-collapse:collapse;margin-bottom:6px">';
-  html+='<tr><td style="text-align:right">التاريخ:</td><td style="text-align:left;direction:ltr">'+dateStr+'</td><td style="text-align:right">العميل:</td><td style="text-align:left;font-weight:bold">'+currentViewingClient+'</td></tr>';
-  html+='<tr><td style="text-align:right">الوقت:</td><td style="text-align:left;direction:ltr">'+timeStr+'</td><td style="text-align:right"></td><td></td></tr>';
-  html+='<tr><td style="text-align:right">رقم الفاتورة:</td><td style="text-align:left;direction:ltr">'+invNum+'</td><td></td><td></td></tr>';
-  html+='</table>';
-  html+='<div style="border-top:2px solid #000;margin:8px 0"></div>';
-  html+='<table style="width:100%;border-collapse:collapse;font-size:11px;text-align:center">';
-  html+='<thead><tr style="border-bottom:2px solid #000"><th style="padding:6px 3px;text-align:right">المنتج</th><th style="padding:6px 3px;text-align:center;width:12%">الكمية</th><th style="padding:6px 3px;text-align:center;width:18%">الثمن</th><th style="padding:6px 3px;text-align:center;width:20%">المجموع</th></tr></thead>';
-  html+='<tbody style="border-top:2px solid #000">';
+  // حاوية رئيسية - عرض ثابت حسب الطابعة - اتجاه ثابت LTR لتجنب اختلاط العربية/الإنجليزية في Chrome Android
+  html+='<div style="width:100%;max-width:'+width+'mm;margin:0 auto;background:#fff;color:#000;font-family:monospace, Courier New, sans-serif;font-size:11px;line-height:1.5;padding:3mm 2mm;box-sizing:border-box;direction:ltr;">';
+
+  // رأس
+  html+='<div style="text-align:center;font-weight:900;font-size:18px;letter-spacing:1px;">KARNI PRO</div>';
+  html+='<div style="border-top:1px dashed #000;margin:6px 0;width:100%;"></div>';
+
+  // معلومات الفاتورة - كل سطر flex - النص العربي يمين
+  html+='<div style="display:flex;flex-direction:column;gap:2px;width:100%;direction:rtl;">';
+  html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>التاريخ : '+dateStr+'</span><span></span></div>';
+  html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>الوقت   : '+timeStr+'</span><span></span></div>';
+  html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>العميل  : '+escapeHtml(currentViewingClient)+'</span><span></span></div>';
+  html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>رقم الفاتورة : '+invNum+'</span><span></span></div>';
+  html+='</div>';
+
+  html+='<div style="border-top:1px solid #000;margin:8px 0;width:100%;"></div>';
+
+  // رأس المنتجات
+  html+='<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;font-weight:800;border-bottom:1px solid #000;padding:4px 0;width:100%;box-sizing:border-box;direction:rtl;">';
+  html+='<div style="width:45%;text-align:right;">المنتج</div>';
+  html+='<div style="width:15%;text-align:center;">الكمية</div>';
+  html+='<div style="width:20%;text-align:center;">الثمن</div>';
+  html+='<div style="width:20%;text-align:center;">المجموع</div>';
+  html+='</div>';
+
+  html+='<div style="border-top:1px solid #000;width:100%;"></div>';
+
+  // المنتجات
   html+=rows;
-  html+='</tbody></table>';
-  html+='<div style="border-top:2px solid #000;margin-top:4px;padding-top:8px;display:flex;justify-content:space-between;font-weight:900;font-size:13px"><span>المجموع العام:</span><span>'+total.toFixed(2)+'</span></div>';
-  html+='<div style="border-top:2px dashed #000;margin:8px 0"></div>';
-  html+='<div style="display:flex;justify-content:space-between;font-size:11px;padding:4px 0"><span>عدد المنتجات: '+currentBonItems.length+'</span><span>عدد القطع: '+totalQty+'</span></div>';
-  html+='<div style="border-top:2px solid #000;margin:8px 0"></div>';
-  html+='<div style="text-align:center;font-size:11px;font-weight:bold;padding:4px 0">شكرا لتعاونكم معنا</div>';
+
+  html+='<div style="border-top:1px solid #000;margin:0;width:100%;"></div>';
+
+  // المجموع العام
+  html+='<div style="display:flex;flex-direction:row;justify-content:space-between;font-weight:900;font-size:13px;padding:8px 0;width:100%;direction:rtl;box-sizing:border-box;">';
+  html+='<span>المجموع العام : '+total.toFixed(2)+' درهم</span>';
+  html+='</div>';
+
+  html+='<div style="border-top:1px dashed #000;margin:4px 0;width:100%;"></div>';
+
+  html+='<div style="display:flex;flex-direction:column;gap:2px;padding:4px 0;width:100%;direction:rtl;font-size:11px;">';
+  html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>عدد المنتجات : '+currentBonItems.length+'</span><span>عدد القطع : '+totalQty+'</span></div>';
+  html+='</div>';
+
+  html+='<div style="border-top:1px solid #000;margin:8px 0;width:100%;"></div>';
+
+  html+='<div style="text-align:center;font-size:11px;font-weight:700;padding:4px 0;width:100%;direction:rtl;">شكراً لتعاونكم معنا</div>';
+
   html+='</div>';
   return html;
 }
+
+function escapeHtml(str){
+  if(!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 
 window.doPrint = function(width){
   if(!currentViewingClient || currentBonItems.length===0) return;
