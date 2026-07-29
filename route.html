@@ -22,81 +22,109 @@
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Route - Karni Pro - مرتبط بـ Index</title>
+<title>Route - Karni Pro</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Geist:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{--primary:#0f766e;--accent:#14b8a6;--success:#22c55e;--danger:#ef4444;--bg:#060d14;--glass:rgba(255,255,255,0.07);--border:rgba(255,255,255,0.10);--text:#e6eef8;--muted:#8aa0b8}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{font-family:'Cairo',sans-serif;background:radial-gradient(900px 600px at 80% -10%, rgba(20,184,166,0.18), transparent 60%),linear-gradient(180deg,#060d14 0%,#0a1628 100%);color:var(--text);height:100dvh;display:flex;flex-direction:column;overflow:hidden}
-.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:11px 12px;background:rgba(8,18,31,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100}
-.logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center}
-.icon-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--border);background:var(--glass);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.header{flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:rgba(8,18,31,0.92);backdrop-filter:blur(24px);border-bottom:1px solid var(--border);z-index:100}
+.logo{width:30px;height:30px;border-radius:8px;background:linear-gradient(135deg,var(--primary),var(--accent));display:flex;align-items:center;justify-content:center}
+.icon-btn{width:34px;height:34px;border-radius:9px;border:1px solid var(--border);background:var(--glass);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
 .icon-btn.primary{background:linear-gradient(135deg,var(--primary),var(--accent));border:none}
-.filter-bar{flex-shrink:0;display:flex;gap:7px;padding:9px 10px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
+.filter-bar{flex-shrink:0;display:flex;gap:6px;padding:8px 10px;background:rgba(255,255,255,0.03);border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none}
 .filter-bar::-webkit-scrollbar{display:none}
-.filter-chip{display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:18px;background:rgba(255,255,255,0.06);border:1px solid var(--border);font-size:11px;font-weight:700;white-space:nowrap;cursor:pointer}
+.filter-chip{display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:16px;background:rgba(255,255,255,0.06);border:1px solid var(--border);font-size:10px;font-weight:700;white-space:nowrap;cursor:pointer}
 .filter-chip.active{background:linear-gradient(135deg,var(--primary),var(--accent));border-color:transparent;color:white}
-.stats{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:8px 10px}
-.stat-card{background:linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04));border:1px solid var(--border);border-radius:12px;padding:8px 6px;text-align:center}
-.stat-number{font-family:'Geist';font-size:18px;font-weight:700}
-.stat-label{font-size:9px;color:var(--muted)}
+.stats{flex-shrink:0;display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px 8px}
+.stat-card{background:linear-gradient(180deg,rgba(255,255,255,0.08),rgba(255,255,255,0.04));border:1px solid var(--border);border-radius:10px;padding:6px 4px;text-align:center}
+.stat-number{font-family:'Geist';font-size:15px;font-weight:700}
+.stat-label{font-size:8px;color:var(--muted)}
 .map-container{flex:1;position:relative;overflow:auto;-webkit-overflow-scrolling:touch}
-.map-content{position:relative;min-height:100%;padding-top:16px;padding-bottom:240px}
+.map-content{position:relative;min-height:100%;padding-top:12px;padding-bottom:180px}
 .route-path{position:absolute;top:0;left:0;width:100%;z-index:1;pointer-events:none}
 #routeSvg{width:100%;display:block;overflow:visible}
 .point{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;z-index:10;cursor:pointer;max-width:94vw}
-.point-card{width:200px;max-width:58vw;padding:8px 9px;background:linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.11);border-radius:12px;backdrop-filter:blur(18px);display:flex;align-items:center;gap:8px;box-shadow:0 4px 18px rgba(0,0,0,0.26)}
-.point-card.current{border-color:rgba(34,197,94,0.45);box-shadow:0 0 20px rgba(34,197,94,0.22)}
-.point-avatar{width:30px;height:30px;border-radius:8px;flex-shrink:0;background:linear-gradient(135deg,#1e293b,#0f172a);display:flex;align-items:center;justify-content:center;font-family:'Geist';font-weight:700;font-size:12px}
+.point-card{width:140px;max-width:48vw;padding:5px 6px;background:linear-gradient(180deg,rgba(255,255,255,0.09),rgba(255,255,255,0.04));border:1px solid rgba(255,255,255,0.11);border-radius:10px;backdrop-filter:blur(18px);display:flex;align-items:center;gap:6px;box-shadow:0 3px 12px rgba(0,0,0,0.22)}
+.point-card.current{border-color:rgba(34,197,94,0.45);box-shadow:0 0 14px rgba(34,197,94,0.20)}
+.point-avatar{width:22px;height:22px;border-radius:6px;flex-shrink:0;background:linear-gradient(135deg,#1e293b,#0f172a);display:flex;align-items:center;justify-content:center;font-family:'Geist';font-weight:700;font-size:10px}
 .point-avatar.current{background:linear-gradient(135deg,#22c55e,#0f766e)}
-.point-name{font-weight:600;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.point-meta{font-size:9px;color:var(--muted);margin-top:2px}
-.point-status{font-size:9px;font-weight:700;padding:2px 6px;border-radius:10px;border:1px solid;margin-top:3px;display:inline-block}
+.point-name{font-weight:600;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.point-meta{font-size:8px;color:var(--muted);margin-top:1px}
+.point-status{font-size:8px;font-weight:700;padding:1px 4px;border-radius:8px;border:1px solid;margin-top:2px;display:inline-block}
 .point-status.current{background:rgba(59,130,246,0.15);color:#60a5fa;border-color:rgba(59,130,246,0.25)}
 .point-status.pending{background:rgba(100,116,139,0.15);color:#94a3b8;border-color:rgba(100,116,139,0.2)}
-.point-dot{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:'Geist';font-weight:700;font-size:10px;flex-shrink:0;margin:0 6px}
+.point-dot{width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Geist';font-weight:700;font-size:9px;flex-shrink:0;margin:0 4px}
 .point-dot.current{background:linear-gradient(135deg,#3b82f6,#2563eb);color:white}
 .point-dot.pending{background:rgba(51,65,85,0.9);color:#94a3b8}
 .premium-terminal{position:absolute;transform:translate(-50%,-50%);z-index:20;display:flex;flex-direction:column;align-items:center}
-.terminal-card{display:flex;align-items:center;gap:8px;padding:9px 12px;background:linear-gradient(180deg,rgba(255,255,255,0.11),rgba(255,255,255,0.05));border:1px solid rgba(255,255,255,0.13);border-radius:12px;backdrop-filter:blur(20px)}
-.terminal-icon{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px}
+.terminal-card{display:flex;align-items:center;gap:6px;padding:7px 10px;background:linear-gradient(180deg,rgba(255,255,255,0.11),rgba(255,255,255,0.05));border:1px solid rgba(255,255,255,0.13);border-radius:10px;backdrop-filter:blur(20px)}
+.terminal-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px}
 .start .terminal-icon{background:linear-gradient(135deg,var(--primary),var(--accent));color:white}
 .finish .terminal-icon{background:linear-gradient(135deg,#dc2626,#991b1b);color:white}
-.terminal-text{font-weight:700;font-size:12px}
-.terminal-sub{font-size:9px;color:var(--muted)}
-.terminal-line{width:2px;height:40px;background:linear-gradient(to bottom,rgba(255,255,255,0.18),transparent);margin-top:5px}
+.terminal-text{font-weight:700;font-size:11px}
+.terminal-sub{font-size:8px;color:var(--muted)}
+.terminal-line{width:2px;height:32px;background:linear-gradient(to bottom,rgba(255,255,255,0.18),transparent);margin-top:4px}
 .sidebar{position:fixed;top:0;right:0;height:100dvh;width:340px;max-width:86vw;background:rgba(8,18,31,0.94);backdrop-filter:blur(28px);border-left:1px solid var(--border);z-index:200;transform:translateX(100%);transition:transform .4s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column}
 .sidebar.open{transform:translateX(0)}
 .sidebar-handle{position:absolute;left:-40px;top:50%;transform:translateY(-50%);width:38px;height:70px;background:rgba(8,18,31,0.9);border:1px solid var(--border);border-right:none;border-radius:11px 0 0 11px;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.sidebar-content{flex:1;overflow-y:auto;padding:8px}
-.sidebar-item{display:flex;align-items:center;gap:8px;padding:8px 10px;margin-bottom:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;cursor:grab;user-select:none;touch-action:none}
+.sidebar-content{flex:1;overflow-y:auto;padding:6px}
+.sidebar-item{display:flex;align-items:center;gap:6px;padding:6px 8px;margin-bottom:4px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:8px;cursor:grab;user-select:none;touch-action:none;font-size:10.5px}
 .sidebar-item.dragging{opacity:0.6;background:rgba(20,184,166,0.12)}
 .client-modal{position:fixed;inset:0;z-index:300;background:rgba(0,0,0,0.6);backdrop-filter:blur(14px);display:none;align-items:center;justify-content:center;padding:14px}
 .client-modal.active{display:flex}
-.modal-card{width:100%;max-width:380px;background:linear-gradient(180deg,rgba(22,34,51,0.97),rgba(10,20,34,0.99));border:1px solid rgba(255,255,255,0.11);border-radius:18px;backdrop-filter:blur(28px);overflow:hidden}
-.modal-header{padding:16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
-.modal-body{padding:10px;display:grid;gap:7px}
-.modal-action{display:flex;align-items:center;gap:10px;padding:11px 12px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:11px;cursor:pointer;font-size:12.5px;font-weight:500}
+.modal-card{width:100%;max-width:360px;background:linear-gradient(180deg,rgba(22,34,51,0.97),rgba(10,20,34,0.99));border:1px solid rgba(255,255,255,0.11);border-radius:16px;backdrop-filter:blur(28px);overflow:hidden}
+.modal-header{padding:14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.modal-body{padding:8px;display:grid;gap:6px}
+.modal-action{display:flex;align-items:center;gap:10px;padding:10px 11px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);border-radius:10px;cursor:pointer;font-size:11.5px;font-weight:500}
+/* Dialog احترافي */
+.dialog-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);backdrop-filter:blur(16px);z-index:400;display:none;align-items:center;justify-content:center;padding:16px}
+.dialog-overlay.active{display:flex;animation:fadeIn 0.2s}
+.dialog-card{width:100%;max-width:340px;background:linear-gradient(180deg,rgba(22,34,51,0.98),rgba(10,20,34,0.99));border:1px solid rgba(255,255,255,0.12);border-radius:18px;backdrop-filter:blur(28px);overflow:hidden;animation:dialogIn 0.35s cubic-bezier(0.16,1,0.3,1)}
+@keyframes dialogIn{from{opacity:0;transform:translateY(16px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+.dialog-header{padding:18px 16px 12px;text-align:center}
+.dialog-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;font-size:18px}
+.dialog-icon.danger{background:rgba(239,68,68,0.12);color:#f87171}
+.dialog-icon.warning{background:rgba(245,158,11,0.12);color:#fbbf24}
+.dialog-icon.success{background:rgba(34,197,94,0.12);color:#4ade80}
+.dialog-icon.info{background:rgba(59,130,246,0.12);color:#60a5fa}
+.dialog-title{font-weight:800;font-size:13px}
+.dialog-message{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6;white-space:pre-line}
+.dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px 14px;border-top:1px solid var(--border)}
+.dialog-btn{padding:10px;border-radius:10px;border:none;font-weight:700;font-size:11.5px;cursor:pointer;font-family:'Cairo';transition:all 0.2s}
+.dialog-btn.cancel{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid var(--border)}
+.dialog-btn.confirm{background:linear-gradient(135deg,var(--primary),var(--accent));color:white}
+.dialog-btn.confirm.danger{background:linear-gradient(135deg,#ef4444,#dc2626)}
+.dialog-btn:active{transform:scale(0.96)}
+.toast-container{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:500;display:flex;flex-direction:column;gap:8px;pointer-events:none;width:90%;max-width:340px}
+.toast{pointer-events:auto;background:rgba(22,34,51,0.97);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:8px;box-shadow:0 12px 32px rgba(0,0,0,0.3);animation:toastIn 0.35s cubic-bezier(0.16,1,0.3,1);font-size:11px;font-weight:600}
+.toast.success{border-color:rgba(34,197,94,0.2)} .toast.error{border-color:rgba(239,68,68,0.2)} .toast.info{border-color:rgba(59,130,246,0.2)}
+.toast-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px}
+.toast.success .toast-icon{background:rgba(34,197,94,0.15);color:#4ade80}
+.toast.error .toast-icon{background:rgba(239,68,68,0.15);color:#f87171}
+.toast.info .toast-icon{background:rgba(59,130,246,0.15);color:#60a5fa}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 <body>
 
 <div class="header">
-  <div style="display:flex;gap:7px">
-    <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered" style="font-size:13px"></i></button>
-    <button class="icon-btn" onclick="resetRoute()" title="إعادة التعيين"><i class="fa-solid fa-rotate" style="font-size:13px"></i></button>
+  <div style="display:flex;gap:6px">
+    <button class="icon-btn" onclick="toggleSidebar()"><i class="fa-solid fa-bars-staggered" style="font-size:12px"></i></button>
+    <button class="icon-btn" onclick="resetRoute()" title="إعادة التعيين"><i class="fa-solid fa-rotate" style="font-size:12px"></i></button>
   </div>
-  <div style="display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px">
-    <div class="logo"><i class="fa-solid fa-route" style="font-size:12px"></i></div>
-    <span>Route</span><span style="font-weight:400;opacity:0.5;font-size:10px">• مرتبط بـ Index</span>
+  <div style="display:flex;align-items:center;gap:7px;font-weight:700;font-size:13px">
+    <div class="logo"><i class="fa-solid fa-route" style="font-size:11px"></i></div>
+    <span>Route</span>
   </div>
-  <button class="icon-btn primary" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left" style="font-size:13px"></i></button>
+  <button class="icon-btn primary" onclick="window.location.href='index.html'"><i class="fa-solid fa-arrow-left" style="font-size:12px"></i></button>
 </div>
 
 <div class="filter-bar">
-  <div class="filter-chip active"><i class="fa-solid fa-coins"></i> دين اليوم فقط • من Index</div>
-  <div class="filter-chip" onclick="syncFromIndex()" style="background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.2);color:#4ade80"><i class="fa-solid fa-rotate"></i> مزامنة من Index</div>
+  <div class="filter-chip active"><i class="fa-solid fa-users"></i> زبناء اليوم</div>
+  <div class="filter-chip" onclick="syncFromIndex()" style="background:rgba(34,197,94,0.12);border-color:rgba(34,197,94,0.2);color:#4ade80"><i class="fa-solid fa-rotate"></i> مزامنة</div>
   <div class="filter-chip" onclick="resetRoute()" style="background:rgba(245,158,11,0.12);border-color:rgba(245,158,11,0.2);color:#fbbf24"><i class="fa-solid fa-rotate-left"></i> إعادة التعيين</div>
   <div class="filter-chip" onclick="clearRoute()" style="background:rgba(239,68,68,0.10);color:#f87171"><i class="fa-solid fa-trash-can"></i> مسح المسار</div>
 </div>
@@ -111,7 +139,7 @@ body{font-family:'Cairo',sans-serif;background:radial-gradient(900px 600px at 80
 <div class="map-container" id="mapContainer">
   <div class="map-content" id="mapContent">
     <div class="route-path" id="routePathDiv">
-      <svg id="routeSvg"><path id="roadShadow" fill="none" stroke="rgba(0,0,0,0.45)" stroke-width="40" stroke-linecap="round" style="filter:blur(8px)"/><path id="routePath" fill="none" stroke="#1e293b" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/><path id="roadInner" fill="none" stroke="#2a3a52" stroke-width="26" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <svg id="routeSvg"><path id="roadShadow" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="28" stroke-linecap="round" style="filter:blur(6px)"/><path id="routePath" fill="none" stroke="#1e293b" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/><path id="roadInner" fill="none" stroke="#2a3a52" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/></svg>
     </div>
     <div id="pointsContainer"></div>
     <div id="startContainer"></div>
@@ -121,27 +149,43 @@ body{font-family:'Cairo',sans-serif;background:radial-gradient(900px 600px at 80
 
 <div class="sidebar" id="sidebar">
   <div class="sidebar-handle" onclick="toggleSidebar()"><i class="fa-solid fa-chevron-left" id="sidebarChevron" style="font-size:12px"></i></div>
-  <div style="padding:14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;font-size:13px"><i class="fa-solid fa-arrows-up-down" style="margin-left:7px;color:var(--accent)"></i>ترتيب زبناء اليوم</div><button class="icon-btn" style="width:30px;height:30px" onclick="toggleSidebar()"><i class="fa-solid fa-xmark" style="font-size:12px"></i></button></div>
-  <div style="padding:8px 10px;border-bottom:1px solid var(--border);font-size:10px;color:var(--muted)">مرتبط بـ Index • اسحب لإعادة الترتيب</div>
+  <div style="padding:12px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center"><div style="font-weight:700;font-size:12px"><i class="fa-solid fa-arrows-up-down" style="margin-left:6px;color:var(--accent)"></i>ترتيب زبناء اليوم</div><button class="icon-btn" style="width:28px;height:28px" onclick="toggleSidebar()"><i class="fa-solid fa-xmark" style="font-size:11px"></i></button></div>
+  <div style="padding:6px 10px;border-bottom:1px solid var(--border);font-size:9px;color:var(--muted)">اسحب لإعادة الترتيب</div>
   <div class="sidebar-content" id="sidebarContent"></div>
-  <div style="padding:10px;border-top:1px solid var(--border)"><button onclick="saveOrder()" style="width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-weight:700;font-size:12px;cursor:pointer">حفظ الترتيب في Firebase</button></div>
+  <div style="padding:8px;border-top:1px solid var(--border)"><button onclick="saveOrder()" style="width:100%;padding:10px;border-radius:9px;border:none;background:linear-gradient(135deg,var(--primary),var(--accent));color:white;font-weight:700;font-size:11px;cursor:pointer">حفظ الترتيب في Firebase</button></div>
 </div>
 
 <div class="client-modal" id="clientModal" onclick="if(event.target===this) closeModal()">
   <div class="modal-card">
-    <div class="modal-header"><div><div style="font-weight:700;font-size:14px" id="modalClientName">اسم</div><div style="font-size:10px;color:var(--muted)" id="modalClientMeta">رقم</div></div><button class="icon-btn" style="width:32px;height:32px" onclick="closeModal()"><i class="fa-solid fa-xmark" style="font-size:12px"></i></button></div>
+    <div class="modal-header"><div><div style="font-weight:700;font-size:13px" id="modalClientName">اسم</div><div style="font-size:9px;color:var(--muted)" id="modalClientMeta">رقم</div></div><button class="icon-btn" style="width:30px;height:30px" onclick="closeModal()"><i class="fa-solid fa-xmark" style="font-size:11px"></i></button></div>
     <div class="modal-body">
-      <div class="modal-action" style="background:rgba(34,197,94,0.10)" onclick="updateStatus('visited')"><i style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,0.15);color:#4ade80"><i class="fa-solid fa-check" style="font-size:12px"></i></i><span>تم التسديد</span></div>
-      <div class="modal-action" onclick="updateStatus('postponed')"><i style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,0.12);color:#fbbf24"><i class="fa-regular fa-clock" style="font-size:12px"></i></i><span>مؤجل</span></div>
-      <div class="modal-action" onclick="updateStatus('closed')"><i style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06)"><i class="fa-solid fa-door-closed" style="font-size:12px"></i></i><span>مغلق</span></div>
-      <div class="modal-action" style="background:rgba(239,68,68,0.08)" onclick="updateStatus('refused')"><i style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(239,68,68,0.12);color:#f87171"><i class="fa-solid fa-ban" style="font-size:12px"></i></i><span>امتنع عن التسديد</span></div>
-      <div style="height:1px;background:var(--border);margin:4px 0"></div>
-      <div class="modal-action" onclick="openDetails()"><i style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,0.12);color:#60a5fa"><i class="fa-solid fa-eye" style="font-size:12px"></i></i><span>عرض التفاصيل</span></div>
-      <div class="modal-action" onclick="callClient()"><i style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(20,184,166,0.12);color:#2dd4bf"><i class="fa-solid fa-phone" style="font-size:12px"></i></i><span>اتصال</span></div>
-      <div class="modal-action" onclick="whatsappClient()"><i style="width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,0.12);color:#4ade80"><i class="fa-brands fa-whatsapp" style="font-size:12px"></i></i><span>واتساب</span></div>
+      <div class="modal-action" style="background:rgba(34,197,94,0.10)" onclick="updateStatus('visited')"><i style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,0.15);color:#4ade80"><i class="fa-solid fa-check" style="font-size:11px"></i></i><span>تم التسديد</span></div>
+      <div class="modal-action" onclick="updateStatus('postponed')"><i style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(245,158,11,0.12);color:#fbbf24"><i class="fa-regular fa-clock" style="font-size:11px"></i></i><span>مؤجل</span></div>
+      <div class="modal-action" onclick="updateStatus('closed')"><i style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06)"><i class="fa-solid fa-door-closed" style="font-size:11px"></i></i><span>مغلق</span></div>
+      <div class="modal-action" style="background:rgba(239,68,68,0.08)" onclick="updateStatus('refused')"><i style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(239,68,68,0.12);color:#f87171"><i class="fa-solid fa-ban" style="font-size:11px"></i></i><span>امتنع عن التسديد</span></div>
+      <div style="height:1px;background:var(--border);margin:3px 0"></div>
+      <div class="modal-action" onclick="openDetails()"><i style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(59,130,246,0.12);color:#60a5fa"><i class="fa-solid fa-eye" style="font-size:11px"></i></i><span>عرض التفاصيل</span></div>
+      <div class="modal-action" onclick="callClient()"><i style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(20,184,166,0.12);color:#2dd4bf"><i class="fa-solid fa-phone" style="font-size:11px"></i></i><span>اتصال</span></div>
+      <div class="modal-action" onclick="whatsappClient()"><i style="width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;background:rgba(34,197,94,0.12);color:#4ade80"><i class="fa-brands fa-whatsapp" style="font-size:11px"></i></i><span>واتساب</span></div>
     </div>
   </div>
 </div>
+
+<div class="dialog-overlay" id="appDialog" onclick="if(event.target===this) closeAppDialog(false)">
+  <div class="dialog-card">
+    <div class="dialog-header">
+      <div class="dialog-icon" id="dialogIcon"><i class="fa-solid fa-circle-question"></i></div>
+      <div class="dialog-title" id="dialogTitle">تأكيد</div>
+      <div class="dialog-message" id="dialogMessage">هل أنت متأكد؟</div>
+    </div>
+    <div class="dialog-actions">
+      <button class="dialog-btn cancel" id="dialogCancelBtn" onclick="closeAppDialog(false)">إلغاء</button>
+      <button class="dialog-btn confirm" id="dialogConfirmBtn" onclick="closeAppDialog(true)">تأكيد</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
 
 <script type="module">
 import { auth, db } from "./firebase.js";
@@ -184,6 +228,43 @@ function isDueTodayFromIndex(customer){
   return false;
 }
 
+// ===== نظام Dialog و Toast احترافي - بدون alert/confirm =====
+let dialogResolve=null;
+function openAppDialog({title='تأكيد', message='', confirmText='تأكيد', cancelText='إلغاء', type='info', danger=false}){
+  return new Promise(resolve=>{
+    dialogResolve=resolve;
+    document.getElementById('dialogTitle').textContent=title;
+    document.getElementById('dialogMessage').textContent=message;
+    document.getElementById('dialogCancelBtn').textContent=cancelText;
+    const confirmBtn=document.getElementById('dialogConfirmBtn');
+    confirmBtn.textContent=confirmText;
+    confirmBtn.className='dialog-btn confirm' + (danger?' danger':'');
+    const iconEl=document.getElementById('dialogIcon');
+    iconEl.className='dialog-icon ' + type;
+    const icons={danger:'fa-trash-can', warning:'fa-triangle-exclamation', success:'fa-check', info:'fa-circle-question'};
+    iconEl.innerHTML=`<i class="fa-solid ${icons[type]||'fa-circle-question'}"></i>`;
+    document.getElementById('appDialog').classList.add('active');
+  });
+}
+window.closeAppDialog=function(result){
+  document.getElementById('appDialog').classList.remove('active');
+  if(dialogResolve){ dialogResolve(result); dialogResolve=null; }
+}
+
+function showToast(message, type='success'){
+  const container=document.getElementById('toastContainer');
+  const toast=document.createElement('div');
+  toast.className=`toast ${type}`;
+  const icons={success:'fa-check', error:'fa-xmark', info:'fa-info'};
+  toast.innerHTML=`<div class="toast-icon"><i class="fa-solid ${icons[type]||'fa-check'}"></i></div><div style="flex:1">${message}</div>`;
+  container.appendChild(toast);
+  setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(-10px)'; setTimeout(()=>toast.remove(),300); },3000);
+}
+
+// ===== منطق المزامنة المصحح 100% =====
+let customersLoaded=false;
+let routeLoaded=false;
+
 onAuthStateChanged(auth, (user)=>{
   if(!user){
     window.location.href='login.html';
@@ -202,31 +283,44 @@ onAuthStateChanged(auth, (user)=>{
       }
     });
     allCustomers = data;
-    get(routeRef).then(snap=>{
-      if(!snap.exists() || !snap.val() || snap.val().length===0){
-        buildRouteFromToday();
-      } else {
-        routeList = snap.val();
-        if(!Array.isArray(routeList)) routeList = Object.values(routeList);
-        applyFilter();
-      }
-    });
+    customersLoaded=true;
+    if(routeLoaded){
+      mergeTodayIntoRoute();
+    } else {
+      get(routeRef).then(snap=>{
+        if(!snap.exists() || !snap.val() || Object.keys(snap.val()).length===0 || (Array.isArray(snap.val()) && snap.val().length===0)){
+          buildRouteFromToday(true);
+        } else {
+          let val=snap.val();
+          if(Array.isArray(val)) routeList=val;
+          else routeList=Object.values(val);
+          routeList=routeList.filter(i=>i && !isBlocked(i.name));
+          mergeTodayIntoRoute();
+        }
+      });
+    }
   });
 
   onValue(routeRef, (snapshot)=>{
     if(snapshot.exists()){
-      routeList = snapshot.val();
-      if(!Array.isArray(routeList)) routeList = Object.values(routeList);
+      let val=snapshot.val();
+      if(Array.isArray(val)) routeList=val;
+      else if(typeof val==='object') routeList=Object.values(val);
+      else routeList=[];
+      routeList=routeList.filter(i=>i && !isBlocked(i.name));
+    } else {
+      routeList=[];
+    }
+    routeLoaded=true;
+    if(customersLoaded){
+      mergeTodayIntoRoute();
+    } else {
       applyFilter();
     }
   });
 });
 
-window.buildRouteFromToday = window.syncFromIndex = async function(){
-  if(!currentUid || !customersRef || !routeRef){
-    window.location.href='login.html';
-    return;
-  }
+function getTodayCustomers(){
   const todayCustomers = [];
   Object.keys(allCustomers).forEach(key=>{
     const c = allCustomers[key];
@@ -240,16 +334,88 @@ window.buildRouteFromToday = window.syncFromIndex = async function(){
         debt: getRealBalance(c),
         amount: getRealBalance(c),
         date: c.date,
-        status: 'pending',
-        originalCustomer: c
+        status: 'pending'
       });
     }
   });
   todayCustomers.sort((a,b)=> (a.city||'').localeCompare(b.city||'') || a.name.localeCompare(b.name));
+  return todayCustomers;
+}
+
+function mergeTodayIntoRoute(){
+  const todayCustomers = getTodayCustomers();
+  const existingIds = new Set(routeList.map(i=>i.customerId || i.id));
+  const todayIds = new Set(todayCustomers.map(i=>i.customerId));
+
+  todayCustomers.forEach(c=>{
+    if(!existingIds.has(c.customerId)){
+      routeList.push(c);
+    }
+  });
+
+  routeList = routeList.filter(item=>{
+    if(isBlocked(item.name)) return false;
+    if(!todayIds.has(item.customerId || item.id) && ['pending','current'].includes(item.status)){
+      const cid=item.customerId || item.id;
+      const cust=allCustomers[cid];
+      if(!cust || !isDueTodayFromIndex(cust)) return false;
+    }
+    return true;
+  });
+
+  let hasCurrent=routeList.some(i=>i.status==='current' && !isBlocked(i.name));
+  if(!hasCurrent){
+    const firstPending=routeList.find(i=>i.status==='pending');
+    if(firstPending) firstPending.status='current';
+  }
+
+  const seen=new Set();
+  routeList=routeList.filter(item=>{
+    const id=item.customerId || item.id;
+    if(seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+
+  applyFilter();
+}
+
+window.buildRouteFromToday = async function(forceReplace=false){
+  if(!currentUid || !customersRef || !routeRef) return;
+  const todayCustomers = getTodayCustomers();
   if(todayCustomers.length>0) todayCustomers[0].status='current';
-  routeList = todayCustomers;
+  if(forceReplace || routeList.length===0){
+    routeList = todayCustomers;
+  } else {
+    const existingMap=new Map(routeList.map(i=>[i.customerId||i.id, i]));
+    todayCustomers.forEach(c=>{
+      if(!existingMap.has(c.customerId)){
+        routeList.push(c);
+      }
+    });
+    if(routeList.length===0) routeList=todayCustomers;
+  }
   await set(routeRef, routeList);
-  alert(`تمت المزامنة من Index: ${todayCustomers.length} زبون دين اليوم`);
+  applyFilter();
+}
+
+window.syncFromIndex = async function(){
+  if(!currentUid || !customersRef || !routeRef) return;
+  const todayCustomers = getTodayCustomers();
+  const existingIds=new Set(routeList.map(i=>i.customerId||i.id));
+  let newCount=0;
+  todayCustomers.forEach(c=>{
+    if(!existingIds.has(c.customerId)){
+      routeList.push(c);
+      newCount++;
+    }
+  });
+  if(todayCustomers.length>0 && !routeList.some(i=>i.status==='current')){
+    const first=routeList.find(i=>i.status==='pending');
+    if(first) first.status='current';
+  }
+  await set(routeRef, routeList);
+  showToast(`تمت المزامنة: ${todayCustomers.length} زبون، ${newCount} جديد`, 'success');
   applyFilter();
 }
 
@@ -259,21 +425,31 @@ function applyFilter(){
     if(!['pending','current'].includes(item.status)) return false;
     return true;
   });
+  const seen=new Set();
+  filteredList=filteredList.filter(item=>{
+    const id=item.customerId||item.id;
+    if(seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
   renderMap();
   renderSidebar();
 }
 
 window.clearRoute = async function(){
   if(!currentUid || !routeRef) return;
-  if(!confirm('مسح جميع الزبناء من المسار؟')) return;
+  const ok=await openAppDialog({title:'مسح المسار', message:'هل تريد مسح جميع الزبناء من المسار؟', confirmText:'مسح', cancelText:'إلغاء', type:'danger', danger:true});
+  if(!ok) return;
   await set(routeRef, []);
   routeList=[]; filteredList=[];
   applyFilter();
+  showToast('تم مسح المسار', 'info');
 }
 
 window.resetRoute = async function(){
   if(!currentUid || !routeRef) return;
-  if(!confirm('إعادة التعيين - البدء من جديد؟ سيتم إرجاع أول زبون إلى الحالي والباقي في الانتظار')) return;
+  const ok=await openAppDialog({title:'إعادة تعيين المسار', message:'هل تريد إعادة تعيين المسار؟ سيتم إرجاع أول زبون إلى الحالي والباقي في الانتظار.', confirmText:'تأكيد', cancelText:'إلغاء', type:'warning'});
+  if(!ok) return;
   let first=true;
   routeList = routeList.filter(i=>!isBlocked(i.name)).map(item=>{
     if(['pending','current','postponed','refused','closed','visited'].includes(item.status)){
@@ -284,6 +460,7 @@ window.resetRoute = async function(){
   }).filter(Boolean);
   await set(routeRef, routeList);
   applyFilter();
+  showToast('تمت إعادة التعيين', 'success');
 }
 
 function getArabicStatus(s){ const m={'current':'الزبون الحالي','visited':'تم التسديد','pending':'في الانتظار','closed':'مغلق','postponed':'مؤجل','refused':'امتنع عن التسديد'}; return m[s]||s; }
@@ -305,26 +482,26 @@ function renderMap(){
     document.getElementById('pendingCount').innerText=0;
     document.getElementById('currentCount').innerText=0;
     document.getElementById('visitedCount').innerText=0;
-    mapContent.style.height='520px';
-    container.innerHTML=`<div style="position:absolute;top:40%;left:50%;transform:translate(-50%,-50%);text-align:center;padding:20px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(18px);width:85%;max-width:300px"><div style="font-size:30px;margin-bottom:10px;opacity:0.6"><i class="fa-solid fa-route"></i></div><div style="font-weight:700;font-size:13px">لا يوجد زبناء دين اليوم</div><div style="font-size:11px;color:var(--muted);margin-top:6px">تم حذف الزبناء الغير موجودين<br/>اضغط مزامنة من Index لجلب زبناء اليوم</div><button onclick="syncFromIndex()" style="margin-top:12px;padding:9px 18px;border-radius:10px;border:none;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;font-weight:700;font-size:12px;cursor:pointer;width:100%"><i class="fa-solid fa-rotate" style="margin-left:6px"></i>مزامنة من Index</button></div>`;
+    mapContent.style.height='420px';
+    container.innerHTML=`<div style="position:absolute;top:38%;left:50%;transform:translate(-50%,-50%);text-align:center;padding:14px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:12px;backdrop-filter:blur(18px);width:85%;max-width:260px"><div style="font-size:22px;margin-bottom:6px;opacity:0.6"><i class="fa-solid fa-route"></i></div><div style="font-weight:700;font-size:11px">لا يوجد زبناء اليوم</div><div style="font-size:9px;color:var(--muted);margin-top:4px">أضف زبناء بتاريخ اليوم من الرئيسية</div><button onclick="syncFromIndex()" style="margin-top:8px;padding:7px 12px;border-radius:8px;border:none;background:linear-gradient(135deg,#0f766e,#14b8a6);color:white;font-weight:700;font-size:10px;cursor:pointer;width:100%"><i class="fa-solid fa-rotate" style="margin-left:4px"></i>مزامنة زبناء اليوم</button></div>`;
     return;
   }
 
-  let points=[]; let h=window.innerWidth<768?112:128;
-  let totalH=(filteredList.length*h)+320;
+  let points=[]; let h=window.innerWidth<768?78:88;
+  let totalH=(filteredList.length*h)+220;
   mapContent.style.height=totalH+'px';
   document.getElementById('routePathDiv').style.height=totalH+'px';
   document.getElementById('routeSvg').setAttribute('height',totalH);
   document.getElementById('routeSvg').setAttribute('viewBox',`0 0 ${window.innerWidth} ${totalH}`);
   let width=document.getElementById('mapContainer').offsetWidth||window.innerWidth;
-  filteredList.forEach((_,i)=>{ let y=80+i*h; let x=width/2+Math.sin(i*0.85)*(width*0.26); points.push({x,y}); });
+  filteredList.forEach((_,i)=>{ let y=70+i*h; let x=width/2+Math.sin(i*0.85)*(width*0.22); points.push({x,y}); });
 
   if(points.length>0){
     let d=`M ${points[0].x} ${points[0].y}`;
-    for(let i=1;i<points.length;i++){ let p=points[i-1],c=points[i]; d+=` C ${p.x+(c.x-p.x)*0.35} ${p.y+45}, ${p.x+(c.x-p.x)*0.65} ${c.y-15}, ${c.x} ${c.y}`; }
-    d+=` L ${points[points.length-1].x} ${points[points.length-1].y+120}`;
+    for(let i=1;i<points.length;i++){ let p=points[i-1],c=points[i]; d+=` C ${p.x+(c.x-p.x)*0.3} ${p.y+32}, ${p.x+(c.x-p.x)*0.6} ${c.y-10}, ${c.x} ${c.y}`; }
+    d+=` L ${points[points.length-1].x} ${points[points.length-1].y+90}`;
     [path,shadow,inner].forEach(p=>p.setAttribute('d',d));
-    startC.innerHTML=`<div class="premium-terminal start" style="top:${points[0].y-55}px;left:${points[0].x}px"><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-house"></i></div><div><div class="terminal-text">الانطلاق</div><div class="terminal-sub">${filteredList.length} زبون • دين اليوم</div></div></div><div class="terminal-line"></div></div>`;
+    startC.innerHTML=`<div class="premium-terminal start" style="top:${points[0].y-48}px;left:${points[0].x}px"><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-house"></i></div><div><div class="terminal-text">الانطلاق</div><div class="terminal-sub">${filteredList.length} زبون</div></div></div><div class="terminal-line"></div></div>`;
   }
 
   filteredList.forEach((item,i)=>{
@@ -332,26 +509,26 @@ function renderMap(){
     if(pending>0 && item.status==='pending' && current===0){ item.status='current'; current=1; pending--; }
     let pt=points[i]; let isLeft=i%2===0;
     let debt=item.debt||item.amount||'';
-    container.innerHTML+=`<div class="point" style="top:${pt.y}px;left:${pt.x}px;flex-direction:${isLeft?'row-reverse':'row'}" onclick="openModal(${i})"><div class="point-dot ${item.status}">${i+1}</div><div class="point-card ${item.status==='current'?'current':''}"><div class="point-avatar ${item.status}">${(item.name||'C').charAt(0).toUpperCase()}</div><div style="flex:1;min-width:0"><div class="point-name">${item.name||'بدون'}</div><div class="point-meta">${debt?'<span style="color:#fbbf24">'+debt+' درهم</span>':''} <span>#${i+1}</span> ${item.city?'<span>'+item.city+'</span>':''}</div><div><span class="point-status ${item.status}">${getArabicStatus(item.status)}</span></div></div></div></div>`;
+    container.innerHTML+=`<div class="point" style="top:${pt.y}px;left:${pt.x}px;flex-direction:${isLeft?'row-reverse':'row'}" onclick="openModal(${i})"><div class="point-dot ${item.status}">${i+1}</div><div class="point-card ${item.status==='current'?'current':''}"><div class="point-avatar ${item.status}">${(item.name||'C').charAt(0).toUpperCase()}</div><div style="flex:1;min-width:0"><div class="point-name">${item.name||'بدون'}</div><div class="point-meta">${debt?'<span style="color:#fbbf24">'+debt+'د</span>':''} <span>#${i+1}</span> ${item.city?'<span>'+item.city+'</span>':''}</div><div><span class="point-status ${item.status}">${getArabicStatus(item.status)}</span></div></div></div></div>`;
   });
 
   if(points.length>0){
     let last=points[points.length-1];
-    finishC.innerHTML=`<div class="premium-terminal finish" style="top:${last.y+140}px;left:${last.x}px"><div class="terminal-line" style="transform:rotate(180deg);margin-top:0;margin-bottom:6px"></div><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-flag-checkered"></i></div><div><div class="terminal-text">النهاية</div><div class="terminal-sub">${filteredList.length} زبون</div></div></div></div>`;
+    finishC.innerHTML=`<div class="premium-terminal finish" style="top:${last.y+110}px;left:${last.x}px"><div class="terminal-line" style="transform:rotate(180deg);margin-top:0;margin-bottom:5px"></div><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-flag-checkered"></i></div><div><div class="terminal-text">النهاية</div><div class="terminal-sub">${filteredList.length} زبون</div></div></div></div>`;
   }
 
   document.getElementById('totalCount').innerText=filteredList.length;
   document.getElementById('pendingCount').innerText=pending;
   document.getElementById('currentCount').innerText=current;
   document.getElementById('visitedCount').innerText=visited;
-  setTimeout(()=>{ const cur=document.querySelector('.point-dot.current'); if(cur) cur.scrollIntoView({behavior:'smooth',block:'center'}); },350);
+  setTimeout(()=>{ const cur=document.querySelector('.point-dot.current'); if(cur) cur.scrollIntoView({behavior:'smooth',block:'center'}); },300);
 }
 
 function renderSidebar(){
   const c=document.getElementById('sidebarContent'); c.innerHTML='';
   filteredList.forEach((item,i)=>{
     const div=document.createElement('div'); div.className=`sidebar-item ${item.status==='current'?'current':''}`; div.dataset.index=i;
-    div.innerHTML=`<div style="width:22px;height:22px;border-radius:6px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700">${i+1}</div><div style="flex:1;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name} ${item.debt?'• '+item.debt+'د':''}</div><div style="opacity:0.4"><i class="fa-solid fa-grip-lines" style="font-size:10px"></i></div>`;
+    div.innerHTML=`<div style="width:18px;height:18px;border-radius:5px;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700">${i+1}</div><div style="flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name} ${item.debt?'• '+item.debt+'د':''}</div><div style="opacity:0.4"><i class="fa-solid fa-grip-lines" style="font-size:9px"></i></div>`;
     div.addEventListener('click',()=>{ if(!div.classList.contains('dragging')) openModal(i); });
     div.draggable=true;
     div.addEventListener('dragstart',function(){ this.classList.add('dragging'); window.dragged=i; });
@@ -381,7 +558,7 @@ function reorder(from,to){
 window.saveOrder = async function(){
   if(!routeRef || !currentUid) return;
   await set(routeRef, routeList);
-  alert('تم حفظ الترتيب');
+  showToast('تم حفظ الترتيب', 'success');
 }
 
 window.openModal = function(i){
@@ -401,20 +578,21 @@ window.updateStatus = async function(newStatus){
   }
   await set(routeRef, routeList);
   closeModal();
+  showToast(newStatus==='visited'?'تم التسديد':'تم التحديث', 'success');
 }
-window.openDetails = function(){
+window.openDetails = async function(){
   const item=filteredList[window.selectedFilteredIndex];
-  alert(`الاسم: ${item.name}\nالمدينة: ${item.city}\nالدين: ${item.debt}\nالهاتف: ${item.phone||'لا يوجد'}\nالتاريخ: ${item.date}`);
+  await openAppDialog({title:item.name||'التفاصيل', message:`المدينة: ${item.city||'غير محدد'}\nالدين: ${item.debt||0} درهم\nالهاتف: ${item.phone||'لا يوجد'}\nالتاريخ: ${item.date||'غير محدد'}`, confirmText:'حسناً', cancelText:'إغلاق', type:'info'});
 }
 window.callClient = function(){
   const item=filteredList[window.selectedFilteredIndex];
   if(item.phone) window.location.href='tel:'+item.phone;
-  else alert('لا يوجد هاتف');
+  else showToast('لا يوجد هاتف', 'error');
 }
 window.whatsappClient = function(){
   const item=filteredList[window.selectedFilteredIndex];
   if(item.phone) window.open('https://wa.me/'+item.phone.replace(/[^0-9]/g,''),'_blank');
-  else alert('لا يوجد واتساب');
+  else showToast('لا يوجد واتساب', 'error');
 }
 window.toggleSidebar = function(){
   const s=document.getElementById('sidebar');
