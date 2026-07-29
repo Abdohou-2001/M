@@ -337,15 +337,14 @@ function buildPrintHTML(width){
     invNum = String(Math.abs(hash)%1000000).padStart(6,'0');
   }catch(e){}
 
-  var total=0; var totalQty=0;
-  currentBonItems.forEach(function(i){ total+=(parseFloat(i.price)||0)*(parseInt(i.qty)||0); totalQty+=parseInt(i.qty)||0; });
+  var total=0;
+  currentBonItems.forEach(function(i){ total+=(parseFloat(i.price)||0)*(parseInt(i.qty)||0); });
 
-  // بناء صفوف المنتجات بـ div flex فقط - بدون table/grid/float/transform/absolute
+  // بناء صفوف المنتجات - المنتج في أقصى اليمين، المجموع في أقصى اليسار
   var rows='';
   currentBonItems.forEach(function(i){
     var lineTotal=(parseFloat(i.price)||0)*parseInt(i.qty||0);
-    // سطر واحد فقط لكل منتج - ثابت العرض 45%/15%/20%/20%
-    rows+='<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;padding:5px 0;width:100%;box-sizing:border-box;">';
+    rows+='<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;padding:5px 0;width:100%;box-sizing:border-box;direction:rtl;">';
     rows+='<div style="width:45%;text-align:right;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;direction:rtl;padding-left:2px;box-sizing:border-box;">'+escapeHtml(i.name)+'</div>';
     rows+='<div style="width:15%;text-align:center;box-sizing:border-box;">'+i.qty+'</div>';
     rows+='<div style="width:20%;text-align:center;box-sizing:border-box;">'+parseFloat(i.price||0).toFixed(2)+'</div>';
@@ -355,53 +354,31 @@ function buildPrintHTML(width){
   });
 
   var html='';
-  // حاوية رئيسية - عرض ثابت حسب الطابعة - اتجاه ثابت LTR لتجنب اختلاط العربية/الإنجليزية في Chrome Android
   html+='<div style="width:100%;max-width:'+width+'mm;margin:0 auto;background:#fff;color:#000;font-family:monospace, Courier New, sans-serif;font-size:11px;line-height:1.5;padding:3mm 2mm;box-sizing:border-box;direction:ltr;">';
-
-  // رأس
   html+='<div style="text-align:center;font-weight:900;font-size:18px;letter-spacing:1px;">KARNI PRO</div>';
   html+='<div style="border-top:1px dashed #000;margin:6px 0;width:100%;"></div>';
-
-  // معلومات الفاتورة - كل سطر flex - النص العربي يمين
   html+='<div style="display:flex;flex-direction:column;gap:2px;width:100%;direction:rtl;">';
   html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>التاريخ : '+dateStr+'</span><span></span></div>';
   html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>الوقت   : '+timeStr+'</span><span></span></div>';
   html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>العميل  : '+escapeHtml(currentViewingClient)+'</span><span></span></div>';
   html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>رقم الفاتورة : '+invNum+'</span><span></span></div>';
   html+='</div>';
-
   html+='<div style="border-top:1px solid #000;margin:8px 0;width:100%;"></div>';
-
-  // رأس المنتجات
+  // رأس المنتجات - المنتج يمين، المجموع يسار
   html+='<div style="display:flex;flex-direction:row;justify-content:flex-start;align-items:center;font-weight:800;border-bottom:1px solid #000;padding:4px 0;width:100%;box-sizing:border-box;direction:rtl;">';
   html+='<div style="width:45%;text-align:right;">المنتج</div>';
   html+='<div style="width:15%;text-align:center;">الكمية</div>';
   html+='<div style="width:20%;text-align:center;">الثمن</div>';
   html+='<div style="width:20%;text-align:center;">المجموع</div>';
   html+='</div>';
-
   html+='<div style="border-top:1px solid #000;width:100%;"></div>';
-
-  // المنتجات
   html+=rows;
-
   html+='<div style="border-top:1px solid #000;margin:0;width:100%;"></div>';
-
-  // المجموع العام
   html+='<div style="display:flex;flex-direction:row;justify-content:space-between;font-weight:900;font-size:13px;padding:8px 0;width:100%;direction:rtl;box-sizing:border-box;">';
   html+='<span>المجموع العام : '+total.toFixed(2)+' درهم</span>';
   html+='</div>';
-
-  html+='<div style="border-top:1px dashed #000;margin:4px 0;width:100%;"></div>';
-
-  html+='<div style="display:flex;flex-direction:column;gap:2px;padding:4px 0;width:100%;direction:rtl;font-size:11px;">';
-  html+='<div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;"><span>عدد المنتجات : '+currentBonItems.length+'</span><span>عدد القطع : '+totalQty+'</span></div>';
-  html+='</div>';
-
   html+='<div style="border-top:1px solid #000;margin:8px 0;width:100%;"></div>';
-
   html+='<div style="text-align:center;font-size:11px;font-weight:700;padding:4px 0;width:100%;direction:rtl;">شكراً لتعاونكم معنا</div>';
-
   html+='</div>';
   return html;
 }
