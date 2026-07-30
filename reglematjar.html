@@ -19,11 +19,10 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
-</script>
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <script>(function(){if(window.__playableTouchPatchInstalled)return;window.__playableTouchPatchInstalled=true;var o=EventTarget.prototype.addEventListener;var b={touchstart:1,touchmove:1,wheel:1};EventTarget.prototype.addEventListener=function(t,l,op){if(b[t]){if(op===undefined||op===null){op={passive:true};}else if(typeof op==='boolean'){op={capture:op,passive:true};}else{op=Object.assign({},op,{passive:true});}}return o.call(this,t,l,op);};})();</script>
-<script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title data-i18n="pageTitle">المنتجات - إدارة المخزون</title>
 <script src="lang.js"></script>
 <style>
@@ -68,9 +67,6 @@ setTimeout(()=>{
   .slider-modal.active{display:flex}
   .dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);transition:.2s}
   .dot.active{background:#fff;width:24px}
-  .lang-switcher{display:flex;gap:4px;background:#f1f5f9;padding:3px;border-radius:10px}
-  .lang-btn{padding:5px 10px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:transparent;color:#64748b;transition:.2s}
-  .lang-btn.active{background:#10b981;color:white}
 </style>
 </head>
 <body class="pb-10">
@@ -80,13 +76,6 @@ setTimeout(()=>{
 <div class="flex items-center gap-2">
 <button onclick="window.history.back()" class="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-arrow-right"></i></button>
 <h1 class="font-bold text-gray-900 text-[15px]" data-i18n="storeSettings">إعدادات المتجر</h1>
-</div>
-<div class="flex items-center gap-2">
-<div class="lang-switcher">
-<button class="lang-btn active" data-lang="ar" onclick="setLanguage('ar')">العربية</button>
-<button class="lang-btn" data-lang="fr" onclick="setLanguage('fr')">Français</button>
-<button class="lang-btn" data-lang="en" onclick="setLanguage('en')">English</button>
-</div>
 </div>
 </div>
 </header>
@@ -159,294 +148,6 @@ setTimeout(()=>{
 
 <div id="toast" class="hidden fixed top-20 left-1/2 -translate-x-1/2 z-50"><div class="bg-gray-900 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-3"><i id="toastIcon" class="fa-solid fa-check-circle text-emerald-400"></i><span id="toastMessage" class="text-sm"></span></div></div>
 
-
-<script>
-// ==================== TRANSLATION SYSTEM - ADDED WITHOUT REMOVING ANY LINE ====================
-const regleTranslations = {
-  ar: {
-    pageTitle: "المنتجات - إدارة المخزون",
-    storeSettings: "إعدادات المتجر",
-    stockValue: "قيمة المخزون",
-    totalStock: "إجمالي المخزون",
-    lowStockProducts: "منتجات منخفضة",
-    totalProducts: "إجمالي المنتجات",
-    dirham: "درهم",
-    unit: "وحدة",
-    product: "منتج",
-    filter: "تصفية",
-    searchProduct: "البحث عن منتج...",
-    noProducts: "لا توجد منتجات",
-    addProduct: "إضافة منتج",
-    addNewProduct: "إضافة منتج جديد",
-    editProduct: "تعديل المنتج",
-    addProductImages: "إضافة صور المنتج",
-    images: "صور",
-    addImages: "إضافة صور",
-    upTo10MB: "حتى 10MB",
-    uploadingImages: "جاري رفع الصور...",
-    mainImageHint: "الصورة الأولى هي الرئيسية. استخدم الأسهم لإعادة الترتيب.",
-    productName: "اسم المنتج",
-    price: "السعر",
-    quantity: "الكمية",
-    alertThreshold: "حد التنبيه",
-    saveProduct: "حفظ المنتج",
-    cancel: "إلغاء",
-    deleteProduct: "حذف المنتج",
-    deleteProductConfirm: "هل أنت متأكد من حذف هذا المنتج؟",
-    yesDelete: "نعم، احذف",
-    filterProducts: "تصفية المنتجات",
-    all: "الكل",
-    available: "متوفر",
-    low: "منخفض",
-    apply: "تطبيق",
-    reset: "إعادة تعيين",
-    pricePlaceholder: "0.00",
-    main: "رئيسية",
-    noName: "بدون اسم",
-    stock: "المخزون",
-    hide: "إخفاء",
-    show: "إظهار",
-    unsupportedType: "نوع غير مدعوم",
-    largeSize: "حجم كبير",
-    allImagesUploaded: "✅ تم رفع جميع الصور بنجاح",
-    uploadFailed: "فشل رفع صورة",
-    productNameRequired: "اسم المنتج مطلوب",
-    productUpdated: "تم تحديث المنتج بنجاح",
-    productAdded: "تم إضافة المنتج بنجاح",
-    saveError: "خطأ في الحفظ",
-    productHidden: "تم إخفاء المنتج",
-    productShown: "تم إظهار المنتج",
-    productDeleted: "تم حذف المنتج",
-    deleteError: "خطأ في الحذف",
-    filterApplied: "تم تطبيق التصفية",
-    resetDone: "تم إعادة التعيين",
-    yes: "نعم"
-  },
-  fr: {
-    pageTitle: "Produits - Gestion du stock",
-    storeSettings: "Paramètres du magasin",
-    stockValue: "Valeur du stock",
-    totalStock: "Stock total",
-    lowStockProducts: "Stock faible",
-    totalProducts: "Total produits",
-    dirham: "MAD",
-    unit: "unité",
-    product: "produit",
-    filter: "Filtrer",
-    searchProduct: "Rechercher un produit...",
-    noProducts: "Aucun produit",
-    addProduct: "Ajouter un produit",
-    addNewProduct: "Ajouter un nouveau produit",
-    editProduct: "Modifier le produit",
-    addProductImages: "Ajouter des images",
-    images: "images",
-    addImages: "Ajouter des images",
-    upTo10MB: "jusqu'à 10MB",
-    uploadingImages: "Téléchargement...",
-    mainImageHint: "La première image est principale. Utilisez les flèches pour réorganiser.",
-    productName: "Nom du produit",
-    price: "Prix",
-    quantity: "Quantité",
-    alertThreshold: "Seuil d'alerte",
-    saveProduct: "Enregistrer",
-    cancel: "Annuler",
-    deleteProduct: "Supprimer le produit",
-    deleteProductConfirm: "Êtes-vous sûr de vouloir supprimer ce produit?",
-    yesDelete: "Oui, supprimer",
-    filterProducts: "Filtrer les produits",
-    all: "Tous",
-    available: "Disponible",
-    low: "Faible",
-    apply: "Appliquer",
-    reset: "Réinitialiser",
-    pricePlaceholder: "0.00",
-    main: "Principale",
-    noName: "Sans nom",
-    stock: "Stock",
-    hide: "Masquer",
-    show: "Afficher",
-    unsupportedType: "Type non supporté",
-    largeSize: "Fichier trop volumineux",
-    allImagesUploaded: "✅ Toutes les images téléchargées",
-    uploadFailed: "Échec du téléchargement",
-    productNameRequired: "Nom du produit requis",
-    productUpdated: "Produit mis à jour",
-    productAdded: "Produit ajouté avec succès",
-    saveError: "Erreur d'enregistrement",
-    productHidden: "Produit masqué",
-    productShown: "Produit affiché",
-    productDeleted: "Produit supprimé",
-    deleteError: "Erreur de suppression",
-    filterApplied: "Filtre appliqué",
-    resetDone: "Réinitialisé",
-    yes: "Oui"
-  },
-  en: {
-    pageTitle: "Products - Inventory Management",
-    storeSettings: "Store Settings",
-    stockValue: "Stock Value",
-    totalStock: "Total Stock",
-    lowStockProducts: "Low Stock",
-    totalProducts: "Total Products",
-    dirham: "MAD",
-    unit: "unit",
-    product: "product",
-    filter: "Filter",
-    searchProduct: "Search product...",
-    noProducts: "No products",
-    addProduct: "Add Product",
-    addNewProduct: "Add New Product",
-    editProduct: "Edit Product",
-    addProductImages: "Add Product Images",
-    images: "images",
-    addImages: "Add Images",
-    upTo10MB: "up to 10MB",
-    uploadingImages: "Uploading images...",
-    mainImageHint: "First image is main. Use arrows to reorder.",
-    productName: "Product Name",
-    price: "Price",
-    quantity: "Quantity",
-    alertThreshold: "Alert Threshold",
-    saveProduct: "Save Product",
-    cancel: "Cancel",
-    deleteProduct: "Delete Product",
-    deleteProductConfirm: "Are you sure you want to delete this product?",
-    yesDelete: "Yes, Delete",
-    filterProducts: "Filter Products",
-    all: "All",
-    available: "Available",
-    low: "Low",
-    apply: "Apply",
-    reset: "Reset",
-    pricePlaceholder: "0.00",
-    main: "Main",
-    noName: "No name",
-    stock: "Stock",
-    hide: "Hide",
-    show: "Show",
-    unsupportedType: "Unsupported type",
-    largeSize: "File too large",
-    allImagesUploaded: "✅ All images uploaded",
-    uploadFailed: "Upload failed",
-    productNameRequired: "Product name required",
-    productUpdated: "Product updated successfully",
-    productAdded: "Product added successfully",
-    saveError: "Save error",
-    productHidden: "Product hidden",
-    productShown: "Product shown",
-    productDeleted: "Product deleted",
-    deleteError: "Delete error",
-    filterApplied: "Filter applied",
-    resetDone: "Reset done",
-    yes: "Yes"
-  }
-};
-
-let currentRegleLang = localStorage.getItem('karni_language') || localStorage.getItem('regle_language') || 'ar';
-
-function tRegle(key){
-  const lang = regleTranslations[currentRegleLang] ? currentRegleLang : 'ar';
-  return regleTranslations[lang][key] || regleTranslations['ar'][key] || regleTranslations['en'][key] || key;
-}
-
-function setLanguage(lang){
-  if(!['ar','fr','en'].includes(lang)) return;
-  currentRegleLang = lang;
-  localStorage.setItem('karni_language', lang);
-  localStorage.setItem('regle_language', lang);
-  if(window.KarniLang && window.KarniLang.setLanguage){
-    try{ KarniLang.setLanguage(lang); }catch(e){}
-  }
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
-  translatePage();
-  // Also apply to existing products
-  if(typeof renderProducts === 'function' && typeof products !== 'undefined' && products.length>0){
-    renderProducts(true);
-  }
-  updateLangButtons();
-  console.log("Language changed to:", lang, "dir:", document.documentElement.dir, "t(available):", tRegle('available'));
-}
-
-function translatePage(){
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const key = el.getAttribute('data-i18n');
-    if(!key) return;
-    // Preserve icons - only replace text nodes if needed, but for simplicity use textContent if no child with icon
-    if(el.children.length===0){
-      el.textContent = tRegle(key);
-    } else {
-      // If has icon, preserve icon and replace only text span if exists, else replace last text
-      const lastText = Array.from(el.childNodes).find(n=>n.nodeType===3 && n.textContent.trim());
-      if(lastText){
-        // Find text node to replace? Simpler: if inner contains only one span data-i18n, we already handle
-        // For elements with icon + text, we update the text node
-        const textSpan = el.querySelector('[data-i18n]') ? null : null;
-      }
-      // For elements that contain icon + text in same element, we update only if data-i18n is on the text wrapper
-      // To keep icons, we check if element has <i> inside
-      if(el.querySelector('i')){
-        // Keep icon, replace text after icon
-        const icon = el.querySelector('i');
-        const text = tRegle(key);
-        // If element has only icon and text
-        el.innerHTML = icon.outerHTML + ' ' + text;
-        // But if it's more complex, fallback to textContent
-        if(el.querySelectorAll('i').length===0){
-          el.textContent = text;
-        }
-      } else {
-        el.textContent = tRegle(key);
-      }
-    }
-  });
-  // Handle nested data-i18n inside spans
-  document.querySelectorAll('span[data-i18n], p[data-i18n], h2[data-i18n], h3[data-i18n], label span[data-i18n], button span[data-i18n]').forEach(el=>{
-    const key = el.getAttribute('data-i18n');
-    if(key) el.textContent = tRegle(key);
-  });
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
-    const key = el.getAttribute('data-i18n-placeholder');
-    if(key) el.placeholder = tRegle(key);
-  });
-  document.querySelectorAll('[data-i18n-title]').forEach(el=>{
-    const key = el.getAttribute('data-i18n-title');
-    if(key) el.title = tRegle(key);
-  });
-  const titleEl = document.querySelector('title[data-i18n]');
-  if(titleEl){
-    document.title = tRegle(titleEl.getAttribute('data-i18n'));
-  }
-  // Update images count text which is dynamic
-  const countEl = document.getElementById('imagesCount');
-  if(countEl){
-    const num = countEl.getAttribute('data-count') || galleryImages?.length || 0;
-    countEl.innerHTML = `${num} <span data-i18n="images">${tRegle('images')}</span>`;
-  }
-}
-
-function updateLangButtons(){
-  document.querySelectorAll('.lang-btn').forEach(btn=>{
-    btn.classList.toggle('active', btn.getAttribute('data-lang')===currentRegleLang);
-  });
-}
-
-// Initialize on load
-document.addEventListener('DOMContentLoaded', ()=>{
-  const saved = localStorage.getItem('karni_language') || localStorage.getItem('regle_language') || 'ar';
-  currentRegleLang = saved;
-  document.documentElement.lang = saved;
-  document.documentElement.dir = saved === 'ar' ? 'rtl' : 'ltr';
-  translatePage();
-  updateLangButtons();
-  console.log("Initial language:", currentRegleLang, "dir:", document.documentElement.dir, "t(available):", tRegle('available'));
-});
-
-window.setLanguage = setLanguage;
-window.translatePage = translatePage;
-window.tRegle = tRegle;
-</script>
-
 <script type="module">
 import { auth, db } from "./firebase.js";
 import { ref, get, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
@@ -472,19 +173,17 @@ const PAGE_SIZE = 30;
 
 let currentUid = null;
 let productsRef = null;
+let profileRef = null;
 
 const CACHE_VERSION = 'v3';
 const CACHE_EXPIRY = 24*60*60*1000;
 
 function getCacheKey(){ return `products_${currentUid}`; }
-function getCacheTimeKey(){ return `products_time_${currentUid}`; }
-
 function saveToPhoneStorage(data){
   try{
     if(!currentUid) return;
     const payload = { v: CACHE_VERSION, t: Date.now(), d: data };
     localStorage.setItem(getCacheKey(), JSON.stringify(payload));
-    localStorage.setItem(getCacheTimeKey(), Date.now().toString());
     if('indexedDB' in window){
       const req = indexedDB.open('KarniDB',1);
       req.onupgradeneeded = e=>{ try{e.target.result.createObjectStore('products',{keyPath:'id'});}catch(err){} };
@@ -498,9 +197,8 @@ function saveToPhoneStorage(data){
         }catch(err){}
       };
     }
-  } catch(e){ console.warn('Cache save fail', e); }
+  } catch(e){}
 }
-
 function loadFromPhoneStorage(){
   try{
     if(!currentUid) return null;
@@ -513,7 +211,6 @@ function loadFromPhoneStorage(){
     return payload.d;
   } catch(e){ return null; }
 }
-
 function renderInstantFromStorage(){
   const cached = loadFromPhoneStorage();
   if(cached && cached.length>0){
@@ -526,19 +223,46 @@ function renderInstantFromStorage(){
   return false;
 }
 
+function t(key, params={}){ return window.KarniLang ? window.KarniLang.t(key, params) : key; }
+
 document.addEventListener('DOMContentLoaded', ()=>{
+  if(window.KarniLang){
+    KarniLang.applyTranslations(document);
+  }
   onAuthStateChanged(auth, async (user)=>{
-    if(!user){
-      location.href="login.html";
-      return;
-    }
+    if(!user){ location.href="login.html"; return; }
     currentUid = user.uid;
     productsRef = ref(db, `users/${currentUid}/products`);
+    profileRef = ref(db, `users/${currentUid}/profile`);
+    
+    // Load language like index.html
+    try{
+      const snap = await get(profileRef);
+      let profile = snap.exists() ? snap.val() : {};
+      console.log("Firebase profile:", profile);
+      console.log("Firebase language:", profile.language);
+      console.log("Current language:", window.KarniLang ? KarniLang.getLanguage() : 'no KarniLang');
+      console.log("LocalStorage:", localStorage.getItem("karni_language"));
+      if(profile.language && window.KarniLang){
+        await KarniLang.setLanguage(profile.language);
+        KarniLang.applyDirection(profile.language);
+        KarniLang.applyTranslations(document);
+        localStorage.setItem("karni_language", profile.language);
+        console.log("Translation:", KarniLang.t("available"));
+        console.log("Document lang:", document.documentElement.lang);
+      } else {
+        if(window.KarniLang){
+          const ls = localStorage.getItem("karni_language") || "ar";
+          await KarniLang.setLanguage(ls);
+          KarniLang.applyDirection(ls);
+          KarniLang.applyTranslations(document);
+        }
+      }
+    }catch(e){ console.warn(e); }
 
     const hasInstantCache = renderInstantFromStorage();
     setupEventListeners();
     setupSliderTouch();
-
     if(hasInstantCache){
       setTimeout(()=> loadProducts(true), 500);
     } else {
@@ -565,7 +289,6 @@ async function loadProducts(isBackground=false){
       const cachedRaw = localStorage.getItem(getCacheKey());
       const cachedData = cachedRaw ? JSON.parse(cachedRaw).d : null;
       const isSame = cachedData && cachedData.length===fresh.length && JSON.stringify(cachedData.map(p=>p.id).sort())===JSON.stringify(fresh.map(p=>p.id).sort());
-      
       if(!isBackground || !isSame){
         products = fresh;
         saveToPhoneStorage(products);
@@ -587,15 +310,13 @@ async function loadProducts(isBackground=false){
     }
   }
 }
-
 async function saveProducts(){
-  if(!productsRef || !currentUid) throw new Error(tRegle('noProducts'));
+  if(!productsRef || !currentUid) throw new Error(t('noProducts'));
   const data={};
   products.forEach(p=>{ data[p.id]=p; });
   await set(productsRef, data);
   saveToPhoneStorage(products);
 }
-
 function setupEventListeners(){
   document.getElementById('fabBtn').addEventListener('click', openAddModal);
   document.getElementById('filterBtn').addEventListener('click', openFilterModal);
@@ -615,21 +336,19 @@ function setupEventListeners(){
   }, {rootMargin:'300px'});
   observer.observe(document.getElementById('loadMoreTrigger'));
 }
-
 function handleFilesSelect(e){
   const files = Array.from(e.target.files||[]);
   if(files.length===0) return;
   const allowedTypes=['image/jpeg','image/jpg','image/png','image/webp'];
   const validFiles=[];
   for(const f of files){
-    if(!allowedTypes.includes(f.type)){ showToast(`${tRegle('unsupportedType')}: ${f.name}`,'error'); continue; }
-    if(f.size>10*1024*1024){ showToast(`${tRegle('largeSize')}: ${f.name}`,'error'); continue; }
+    if(!allowedTypes.includes(f.type)){ showToast(`${t('unsupportedType')}: ${f.name}`,'error'); continue; }
+    if(f.size>10*1024*1024){ showToast(`${t('largeSize')}: ${f.name}`,'error'); continue; }
     validFiles.push(f);
   }
   addFilesToGallery(validFiles);
   e.target.value='';
 }
-
 function addFilesToGallery(files){
   files.forEach(file=>{
     const id=Date.now()+Math.random();
@@ -638,17 +357,16 @@ function addFilesToGallery(files){
   });
   renderGallery();
 }
-
 function renderGallery(){
   const container=document.getElementById('galleryContainer');
   const countEl=document.getElementById('imagesCount');
-  countEl.setAttribute('data-count', galleryImages.length);
-  countEl.innerHTML=`${galleryImages.length} <span data-i18n="images">${tRegle('images')}</span>`;
+  countEl.innerHTML=`${galleryImages.length} <span data-i18n="images">${t('images')}</span>`;
+  if(window.KarniLang) KarniLang.applyTranslations(countEl);
   if(galleryImages.length===0){ container.innerHTML=''; return; }
   container.innerHTML=galleryImages.map((img,idx)=>`
     <div class="gallery-card ${idx===0?'main':''}">
       <img src="${img.cloudinaryUrl||img.previewUrl}" class="w-full h-24 object-cover cursor-pointer" onclick="openSliderFromGallery(${idx})" loading="lazy" decoding="async">
-      ${idx===0?`<span class="absolute top-1 right-1 bg-emerald-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">${tRegle('main')}</span>`:''}
+      ${idx===0?`<span class="absolute top-1 right-1 bg-emerald-600 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">${t('main')}</span>`:''}
       <button type="button" onclick="removeGalleryImage('${img.id}')" class="absolute top-1 left-1 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center text-[10px]"><i class="fa-solid fa-xmark"></i></button>
       <div class="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur flex items-center justify-between px-1 py-1">
         <button type="button" onclick="moveImage(${idx},-1)" ${idx===0?'disabled':''} class="w-6 h-6 bg-gray-100 hover:bg-gray-200 rounded flex items-center justify-center disabled:opacity-30"><i class="fa-solid fa-chevron-right text-[10px]"></i></button>
@@ -659,7 +377,6 @@ function renderGallery(){
     </div>
   `).join('');
 }
-
 window.removeGalleryImage=function(id){
   const idx=galleryImages.findIndex(g=>g.id==id);
   if(idx>-1){
@@ -674,7 +391,6 @@ window.moveImage=function(idx,dir){
   [galleryImages[idx], galleryImages[newIdx]]=[galleryImages[newIdx], galleryImages[idx]];
   renderGallery();
 }
-
 async function compressImage(file, maxWidth=1920, quality=0.85){
   const MAX_SIZE = 2 * 1024 * 1024;
   if(file.size <= MAX_SIZE) return file;
@@ -701,7 +417,6 @@ async function compressImage(file, maxWidth=1920, quality=0.85){
     resolve(new File([blob], file.name.replace(/\.\w+$/,'.jpg'), {type:'image/jpeg'}));
   });
 }
-
 function uploadToCloudinary(file, onProgress){
   return new Promise(async (resolve,reject)=>{
     const compressed=await compressImage(file);
@@ -714,16 +429,15 @@ function uploadToCloudinary(file, onProgress){
     xhr.upload.onprogress=e=>{ if(e.lengthComputable) onProgress(Math.round(e.loaded/e.total*100)); };
     xhr.onload=()=>{
       if(xhr.status>=200&&xhr.status<300){
-        try{ resolve(JSON.parse(xhr.responseText).secure_url); }catch{ reject(new Error(tRegle('uploadFailed'))); }
+        try{ resolve(JSON.parse(xhr.responseText).secure_url); }catch{ reject(new Error(t('uploadFailed'))); }
       } else {
-        try{ reject(new Error(JSON.parse(xhr.responseText).error?.message||tRegle('uploadFailed'))); }catch{ reject(new Error(tRegle('uploadFailed'))); }
+        try{ reject(new Error(JSON.parse(xhr.responseText).error?.message||t('uploadFailed'))); }catch{ reject(new Error(t('uploadFailed'))); }
       }
     };
     xhr.onerror=()=>reject(new Error('Network error'));
     xhr.send(fd);
   });
 }
-
 async function uploadAllGalleryImages(){
   const toUpload=galleryImages.filter(g=>g.file && !g.isExisting);
   if(toUpload.length===0) return true;
@@ -740,10 +454,9 @@ async function uploadAllGalleryImages(){
       img.cloudinaryUrl=url; img.status='done'; img.progress=100; completed++; bar.style.width=Math.round((completed/total)*100)+'%'; text.textContent=Math.round((completed/total)*100)+'%'; renderGallery(); return url;
     } catch(err){ img.status='error'; renderGallery(); throw err; }
   });
-  try{ await Promise.all(promises); overall.classList.add('hidden'); showToast(tRegle('allImagesUploaded'),'success'); return true; }
-  catch(err){ overall.classList.add('hidden'); showToast(tRegle('uploadFailed')+': '+err.message,'error'); return false; }
+  try{ await Promise.all(promises); overall.classList.add('hidden'); showToast(t('allImagesUploaded'),'success'); return true; }
+  catch(err){ overall.classList.add('hidden'); showToast(t('uploadFailed')+': '+err.message,'error'); return false; }
 }
-
 function renderProducts(reset=true){
   const container=document.getElementById('productsContainer');
   const empty=document.getElementById('emptyState');
@@ -754,11 +467,11 @@ function renderProducts(reset=true){
       const isLow=(p.stock||0)<=(p.lowStockThreshold||10);
       const matchesStatus=statusFilter==='all'||(statusFilter==='low'&&isLow)||(statusFilter==='available'&&!isLow);
       return matchesSearch&&matchesStatus;
-    }).sort((a,b)=>(a.name||"").localeCompare(b.name||"", currentRegleLang==='ar'?'ar':currentRegleLang,{sensitivity:'base'}));
+    }).sort((a,b)=>(a.name||"").localeCompare(b.name||"", KarniLang ? KarniLang.getLanguage() : 'ar',{sensitivity:'base'}));
     renderedCount=0;
     container.innerHTML='';
   }
-  if(filteredCache.length===0){ container.innerHTML=''; empty.classList.remove('hidden'); return; }
+  if(filteredCache.length===0){ container.innerHTML=''; empty.classList.remove('hidden'); if(window.KarniLang) KarniLang.applyTranslations(empty); return; }
   empty.classList.add('hidden');
   const nextSlice = filteredCache.slice(renderedCount, renderedCount+PAGE_SIZE);
   if(nextSlice.length===0) return;
@@ -768,43 +481,39 @@ function renderProducts(reset=true){
   while(temp.firstChild) container.appendChild(temp.firstChild);
   renderedCount+=nextSlice.length;
 }
-
 function createProductCard(product){
   const isLow=(product.stock||0)<=(product.lowStockThreshold||10);
   const statusClass=isLow?'bg-amber-100 text-amber-700':'bg-emerald-100 text-emerald-700';
-  const statusText=isLow?tRegle('low'):tRegle('available');
+  const statusText=isLow?t('low'):t('available');
   const defaultImage='https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=400&fit=crop';
   const hideClass=product.hidden?'bg-green-100 text-green-700':'bg-yellow-100 text-yellow-700';
   const hideIcon=product.hidden?'fa-eye':'fa-eye-slash';
-  const hideText=product.hidden?tRegle('show'):tRegle('hide');
+  const hideText=product.hidden?t('show'):t('hide');
   const mainImg=product.mainImage||product.image||(product.images&&product.images[0])||defaultImage;
   const count=product.images?product.images.length:(product.mainImage?1:0);
-  return `<div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${product.hidden?'opacity-60':''}"><div class="p-4"><div class="flex gap-4"><div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative cursor-pointer" onclick="openSlider(${product.id})"><img src="${mainImg}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='${defaultImage}'" loading="lazy" decoding="async"><span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-full" style="display:${count>1?'block':'none'}"><i class="fa-solid fa-images ml-1"></i>${count}</span></div><div class="flex-1 min-w-0"><div class="flex justify-between gap-2 mb-2"><h3 class="font-semibold text-sm md:text-base line-clamp-2">${product.name||tRegle('noName')}</h3><span class="px-2.5 py-1 rounded-full text-xs font-medium ${statusClass} whitespace-nowrap">${statusText}</span></div><p class="text-lg font-bold text-emerald-600">${parseFloat(product.price||0).toFixed(2)} <span class="text-xs font-normal text-gray-500">${tRegle('dirham')}</span></p><p class="text-xs text-gray-500">${tRegle('stock')}: ${parseInt(product.stock||0)} ${tRegle('unit')}</p></div></div><div class="flex gap-2 mt-4 pt-4 border-t border-gray-100"><button onclick="toggleHideProduct(${product.id})" class="flex-1 px-3 py-2 ${hideClass} rounded-lg text-sm font-medium flex items-center justify-center gap-1.5"><i class="fa-solid ${hideIcon} text-xs"></i><span>${hideText}</span></button><button onclick="editProduct(${product.id})" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteProduct(${product.id})" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg"><i class="fa-solid fa-trash"></i></button></div></div></div>`;
+  return `<div class="product-card bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden ${product.hidden?'opacity-60':''}"><div class="p-4"><div class="flex gap-4"><div class="w-20 h-20 md:w-24 md:h-24 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 relative cursor-pointer" onclick="openSlider(${product.id})"><img src="${mainImg}" alt="${product.name}" class="w-full h-full object-cover" onerror="this.src='${defaultImage}'" loading="lazy" decoding="async"><span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] px-1.5 py-0.5 rounded-full" style="display:${count>1?'block':'none'}"><i class="fa-solid fa-images ml-1"></i>${count}</span></div><div class="flex-1 min-w-0"><div class="flex justify-between gap-2 mb-2"><h3 class="font-semibold text-sm md:text-base line-clamp-2">${product.name||t('noName')}</h3><span class="px-2.5 py-1 rounded-full text-xs font-medium ${statusClass} whitespace-nowrap">${statusText}</span></div><p class="text-lg font-bold text-emerald-600">${parseFloat(product.price||0).toFixed(2)} <span class="text-xs font-normal text-gray-500">${t('dirham')}</span></p><p class="text-xs text-gray-500">${t('stock')}: ${parseInt(product.stock||0)} ${t('unit')}</p></div></div><div class="flex gap-2 mt-4 pt-4 border-t border-gray-100"><button onclick="toggleHideProduct(${product.id})" class="flex-1 px-3 py-2 ${hideClass} rounded-lg text-sm font-medium flex items-center justify-center gap-1.5"><i class="fa-solid ${hideIcon} text-xs"></i><span>${hideText}</span></button><button onclick="editProduct(${product.id})" class="px-3 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg"><i class="fa-solid fa-pen-to-square"></i></button><button onclick="deleteProduct(${product.id})" class="px-3 py-2 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg"><i class="fa-solid fa-trash"></i></button></div></div></div>`;
 }
-
 function updateStats(){
   requestAnimationFrame(()=>{
     const totalStock=products.reduce((s,p)=>s+(parseInt(p.stock)||0),0);
     const totalValue=products.reduce((s,p)=>s+((parseFloat(p.price)||0)*(parseInt(p.stock)||0)),0);
     const low=products.filter(p=>(parseInt(p.stock)||0)<=(parseInt(p.lowStockThreshold)||10)).length;
-    document.getElementById('totalStock').textContent=totalStock.toLocaleString(currentRegleLang==='ar'?'ar-MA':currentRegleLang);
-    document.getElementById('totalValue').textContent=totalValue.toLocaleString(currentRegleLang==='ar'?'ar-MA':currentRegleLang,{minimumFractionDigits:0,maximumFractionDigits:0});
+    document.getElementById('totalStock').textContent=totalStock.toLocaleString(KarniLang && KarniLang.getLanguage()==='ar' ? 'ar-MA' : (KarniLang ? KarniLang.getLanguage() : 'en'));
+    document.getElementById('totalValue').textContent=totalValue.toLocaleString(KarniLang && KarniLang.getLanguage()==='ar' ? 'ar-MA' : (KarniLang ? KarniLang.getLanguage() : 'en'),{minimumFractionDigits:0,maximumFractionDigits:0});
     document.getElementById('lowStockCount').textContent=low;
     document.getElementById('totalProducts').textContent=products.length;
   });
 }
-
 function openAddModal(){
   editingProductId=null;
   galleryImages=[];
-  document.getElementById('modalTitle').textContent=tRegle('addNewProduct');
+  document.getElementById('modalTitle').textContent=t('addNewProduct');
   document.getElementById('productForm').reset();
   document.getElementById('productId').value='';
   renderGallery();
   document.getElementById('productModal').classList.remove('hidden');
   if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('productModal'));
 }
-
 window.editProduct=function(id){
   const p=products.find(x=>x.id==id);
   if(!p) return;
@@ -814,7 +523,7 @@ window.editProduct=function(id){
   imgs.forEach(url=>{
     galleryImages.push({id:Date.now()+Math.random(), file:null, previewUrl:url, cloudinaryUrl:url, isExisting:true, progress:100, status:'done'});
   });
-  document.getElementById('modalTitle').textContent=tRegle('editProduct');
+  document.getElementById('modalTitle').textContent=t('editProduct');
   document.getElementById('productId').value=p.id;
   document.getElementById('productName').value=p.name||'';
   document.getElementById('productPrice').value=p.price||0;
@@ -824,7 +533,6 @@ window.editProduct=function(id){
   document.getElementById('productModal').classList.remove('hidden');
   if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('productModal'));
 }
-
 function closeProductModal(){
   document.getElementById('productModal').classList.add('hidden');
   document.getElementById('productForm').reset();
@@ -832,17 +540,16 @@ function closeProductModal(){
   galleryImages=[];
   editingProductId=null;
 }
-
 async function handleFormSubmit(e){
   e.preventDefault();
   if(!currentUid || !productsRef){ location.href="login.html"; return; }
   const saveBtn=document.getElementById('saveBtn');
   const name=document.getElementById('productName').value.trim();
-  if(!name){ showToast(tRegle('productNameRequired'),'error'); return; }
+  if(!name){ showToast(t('productNameRequired'),'error'); return; }
   saveBtn.disabled=true;
-  saveBtn.innerHTML=`<i class="fa-solid fa-spinner fa-spin ml-2"></i> ${tRegle('uploadingImages')}`;
+  saveBtn.innerHTML=`<i class="fa-solid fa-spinner fa-spin ml-2"></i> ${t('uploadingImages')}`;
   const ok=await uploadAllGalleryImages();
-  if(!ok){ saveBtn.disabled=false; saveBtn.innerHTML=`<i class="fa-solid fa-check ml-2"></i> ${tRegle('saveProduct')}`; return; }
+  if(!ok){ saveBtn.disabled=false; saveBtn.innerHTML=`<i class="fa-solid fa-check ml-2"></i> ${t('saveProduct')}`; return; }
   const finalImages=galleryImages.map(g=>g.cloudinaryUrl||g.previewUrl).filter(Boolean);
   const productData={
     name: name,
@@ -858,10 +565,10 @@ async function handleFormSubmit(e){
     if(editingProductId){
       const idx=products.findIndex(p=>p.id==editingProductId);
       if(idx!==-1){ products[idx]={...products[idx], ...productData}; }
-      showToast(tRegle('productUpdated'),'success');
+      showToast(t('productUpdated'),'success');
     } else {
       products.push({id:Date.now(), createdAt: new Date().toISOString(), ...productData});
-      showToast(tRegle('productAdded'),'success');
+      showToast(t('productAdded'),'success');
     }
     await saveProducts();
     renderProducts(true);
@@ -869,34 +576,32 @@ async function handleFormSubmit(e){
     closeProductModal();
   } catch(err){
     console.error(err);
-    showToast(tRegle('saveError')+': '+err.message,'error');
+    showToast(t('saveError')+': '+err.message,'error');
   } finally {
     saveBtn.disabled=false;
-    saveBtn.innerHTML=`<i class="fa-solid fa-check ml-2"></i> ${tRegle('saveProduct')}`;
+    saveBtn.innerHTML=`<i class="fa-solid fa-check ml-2"></i> ${t('saveProduct')}`;
   }
 }
-
 window.toggleHideProduct=async function(id){
   if(!currentUid || !productsRef){ location.href="login.html"; return; }
   const p=products.find(x=>x.id==id);
   if(!p) return;
   p.hidden=!p.hidden;
   p.updatedAt=new Date().toISOString();
-  try{ await saveProducts(); renderProducts(true); showToast(p.hidden?tRegle('productHidden'):tRegle('productShown'),'success'); } catch(e){ showToast(tRegle('saveError')+': '+e.message,'error'); }
+  try{ await saveProducts(); renderProducts(true); showToast(p.hidden?t('productHidden'):t('productShown'),'success'); } catch(e){ showToast(t('saveError')+': '+e.message,'error'); }
 }
 window.deleteProduct=function(id){ deletingProductId=id; document.getElementById('deleteModal').classList.remove('hidden'); if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('deleteModal')); }
 function closeDeleteModal(){ document.getElementById('deleteModal').classList.add('hidden'); deletingProductId=null; }
 async function confirmDelete(){
   if(!deletingProductId) return;
   if(!currentUid || !productsRef){ location.href="login.html"; return; }
-  try{ products=products.filter(p=>p.id!=deletingProductId); await saveProducts(); renderProducts(true); updateStats(); showToast(tRegle('productDeleted'),'success'); } catch(e){ showToast(tRegle('deleteError'),'error'); }
+  try{ products=products.filter(p=>p.id!=deletingProductId); await saveProducts(); renderProducts(true); updateStats(); showToast(t('productDeleted'),'success'); } catch(e){ showToast(t('deleteError'),'error'); }
   closeDeleteModal();
 }
 function openFilterModal(){ document.getElementById('filterModal').classList.remove('hidden'); if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('filterModal')); }
 function closeFilterModal(){ document.getElementById('filterModal').classList.add('hidden'); }
-function applyFilters(){ const s=document.querySelector('input[name="statusFilter"]:checked'); if(s) statusFilter=s.value; renderProducts(true); closeFilterModal(); showToast(tRegle('filterApplied'),'success'); }
-function resetFilters(){ statusFilter='all'; document.querySelector('input[name="statusFilter"][value="all"]').checked=true; renderProducts(true); closeFilterModal(); showToast(tRegle('resetDone'),'info'); }
-
+function applyFilters(){ const s=document.querySelector('input[name="statusFilter"]:checked'); if(s) statusFilter=s.value; renderProducts(true); closeFilterModal(); showToast(t('filterApplied'),'success'); }
+function resetFilters(){ statusFilter='all'; document.querySelector('input[name="statusFilter"][value="all"]').checked=true; renderProducts(true); closeFilterModal(); showToast(t('resetDone'),'info'); }
 window.openSlider=function(productId){
   const p=products.find(x=>x.id==productId);
   if(!p) return;
@@ -948,6 +653,14 @@ window.openFilterModal=openFilterModal;
 window.closeFilterModal=closeFilterModal;
 window.applyFilters=applyFilters;
 window.resetFilters=resetFilters;
+
+window.addEventListener('karniLanguageChanged', ()=>{
+  if(window.KarniLang){
+    KarniLang.applyTranslations(document);
+    renderProducts(true);
+    updateStats();
+  }
+});
 </script>
 </body>
 </html>
