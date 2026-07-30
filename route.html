@@ -268,17 +268,16 @@ function mergeTodayIntoRoute(){
     const cid=getId(c);
     if(!existingIds.has(cid)){ routeList.push(c); existingIds.add(cid); }
   });
+  // لا تحذف إلا إذا لم يعد الزبون موجوداً في قاعدة البيانات - لا تعتمد فقط على isDueToday
   routeList = routeList.filter(item=>{
     if(!item) return false;
     if(isBlocked(item.name)) return false;
     const id=getId(item);
     if(!id) return false;
+    // إذا لم يعد موجوداً في allCustomers -> احذف
+    if(!allCustomers[id]) return false;
     if(todayIds.has(id)) return true;
-    if(['pending','current'].includes(item.status)){
-      const cust=allCustomers[id];
-      if(cust && isDueTodayFromIndex(cust)) return true;
-      return false;
-    }
+    // احتفظ بجميع الحالات الموجودة - لا تحذف pending/current بسبب التاريخ
     return true;
   });
   const seen=new Set();
@@ -310,13 +309,33 @@ window.syncFromIndex = async function(){
   if(!currentUid || !customersRef || !routeRef) return;
   if(!customersLoaded){ showToast('جاري تحميل الزبناء...','info'); return; }
   const todayCustomers = getTodayCustomers();
-  const existingIds=new Set(routeList.map(i=>getId(i)).filter(Boolean));
+  const existingMap = new Map(routeList.map(i=>[getId(i), i]));
   let newCount=0;
-  todayCustomers.forEach(c=>{ const cid=getId(c); if(!existingIds.has(cid)){ routeList.push(c); existingIds.add(cid); newCount++; } });
+  let updatedCount=0;
+  todayCustomers.forEach(c=>{
+    const cid=getId(c);
+    const existing = existingMap.get(cid);
+    if(!existing){
+      routeList.push(c);
+      newCount++;
+    } else {
+      // تحديث بيانات الزبون الموجود من allCustomers
+      existing.name = c.name;
+      existing.phone = c.phone;
+      existing.city = c.city;
+      existing.debt = c.debt;
+      existing.amount = c.amount;
+      existing.date = c.date;
+      if(existing.status!=='current' && existing.status!=='refused') {
+        // لا نغير الحالة إذا كان current/refused
+      }
+      updatedCount++;
+    }
+  });
   normalizeCurrent();
-  isSaving=true; await set(routeRef, routeList); setTimeout(()=>{ isSaving=false; },500);
-  showToast(`تمت المزامنة: ${todayCustomers.length} زبون، ${newCount} جديد`, 'success');
+  isSaving=true; await set(routeRef, routeList); isSaving=false;
   applyFilter();
+  showToast(`تمت المزامنة: ${todayCustomers.length} زبون، ${newCount} جديد، ${updatedCount} محدث`, 'success');
 }
 function applyFilter(){
   const finalList=[];
@@ -395,13 +414,15 @@ window.handlePaid = async function(){
     }catch(e){}
     allCustomers[customerId].operations = operations;
     allCustomers[customerId].currentBalance = newTotal;
-    routeItem.status='visited';
+    // ترتيب تنفيذ صحيح: تغيير الحالة -> تحديد الحالي الجديد -> normalize -> حفظ -> ثم applyFilter
+    routeItem.status="visited";
     const nextPending = routeList.find(i=>i.status==='pending');
-    if(nextPending) nextPending.status='current';
-    else normalizeCurrent();
+    if(nextPending) nextPending.status="current";
+    normalizeCurrent();
     isSaving=true;
     await set(routeRef, routeList);
-    setTimeout(()=>{ isSaving=false; },500);
+    isSaving=false;
+    applyFilter();
     closeModal();
     showToast(`تم تسجيل ${amount} درهم`, 'success');
     const wantWhatsapp = await openAppDialog({
@@ -416,12 +437,9 @@ window.handlePaid = async function(){
       const msg = window.KarniShared.buildWhatsAppConfirmMessage(routeItem.name, amount, remaining+' درهم');
       window.KarniShared.sendWhatsApp(routeItem.phone||customerData.phone, msg);
     }
-    setTimeout(()=>{
-      applyFilter();
-      const nextIdx = filteredList.findIndex(i=>i.status==='current');
-      if(nextIdx!==-1){ openModal(nextIdx); }
-    },600);
-  }catch(e){ showToast('خطأ: '+e.message,'error'); }
+    const nextIdx = filteredList.findIndex(i=>i.status==='current');
+    if(nextIdx!==-1){ setTimeout(()=>openModal(nextIdx),300); }
+  }catch(e){ isSaving=false; showToast('خطأ: '+e.message,'error'); }
 }
 window.handlePostponed = async function(){
   if(selectedRealIndex===null) return;
@@ -444,13 +462,14 @@ window.handlePostponed = async function(){
     routeItem.status='postponed';
     routeItem.date=newDate;
     if(allCustomers[customerId]) allCustomers[customerId].date=newDate;
+    normalizeCurrent();
     isSaving=true;
     await set(routeRef, routeList);
-    setTimeout(()=>{ isSaving=false; },500);
+    isSaving=false;
+    applyFilter();
     closeModal();
     showToast(`تم التأجيل إلى ${newDate}`,'success');
-    applyFilter();
-  }catch(e){ showToast('خطأ: '+e.message,'error'); }
+  }catch(e){ isSaving=false; showToast('خطأ: '+e.message,'error'); }
 }
 window.handleClosed = async function(){
   if(selectedRealIndex===null) return;
@@ -473,13 +492,14 @@ window.handleClosed = async function(){
     routeItem.status='closed';
     routeItem.date=newDate;
     if(allCustomers[customerId]) allCustomers[customerId].date=newDate;
+    normalizeCurrent();
     isSaving=true;
     await set(routeRef, routeList);
-    setTimeout(()=>{ isSaving=false; },500);
+    isSaving=false;
+    applyFilter();
     closeModal();
     showToast(`مغلق حتى ${newDate}`,'info');
-    applyFilter();
-  }catch(e){ showToast('خطأ: '+e.message,'error'); }
+  }catch(e){ isSaving=false; showToast('خطأ: '+e.message,'error'); }
 }
 window.handleRefused = async function(){
   if(selectedRealIndex===null) return;
@@ -495,13 +515,14 @@ window.handleRefused = async function(){
   if(!ok) return;
   try{
     routeItem.status='refused';
+    normalizeCurrent();
     isSaving=true;
     await set(routeRef, routeList);
-    setTimeout(()=>{ isSaving=false; },500);
+    isSaving=false;
+    applyFilter();
     closeModal();
     showToast('تم تسجيل الامتناع','error');
-    applyFilter();
-  }catch(e){ showToast('خطأ: '+e.message,'error'); }
+  }catch(e){ isSaving=false; showToast('خطأ: '+e.message,'error'); }
 }
 window.updateStatus = function(s){
   if(s==='visited') handlePaid();
@@ -555,10 +576,15 @@ function renderMap(){
     let last=points[points.length-1];
     finishC.innerHTML=`<div class="premium-terminal finish" style="top:${last.y+110}px;left:${last.x}px"><div class="terminal-line" style="transform:rotate(180deg);margin-top:0;margin-bottom:5px"></div><div class="terminal-card"><div class="terminal-icon"><i class="fa-solid fa-flag-checkered"></i></div><div><div class="terminal-text">النهاية</div><div class="terminal-sub">${filteredList.length} زبون</div></div></div></div>`;
   }
-  document.getElementById('totalCount').innerText=filteredList.length;
-  document.getElementById('pendingCount').innerText=pending;
-  document.getElementById('currentCount').innerText=current;
-  document.getElementById('visitedCount').innerText=routeList.filter(i=>i.status==='visited').length;
+    // جميع العدادات من نفس المصدر routeList
+  const allPending = routeList.filter(i=>i.status==='pending' && !isBlocked(i.name)).length;
+  const allCurrent = routeList.filter(i=>i.status==='current' && !isBlocked(i.name)).length;
+  const allVisited = routeList.filter(i=>i.status==='visited').length;
+  const allRefused = routeList.filter(i=>i.status==='refused').length;
+  document.getElementById('totalCount').innerText=routeList.filter(i=>['pending','current','refused'].includes(i.status) && !isBlocked(i.name)).length;
+  document.getElementById('pendingCount').innerText=allPending;
+  document.getElementById('currentCount').innerText=allCurrent;
+  document.getElementById('visitedCount').innerText=allVisited;
 }
 function renderSidebar(){
   const c=document.getElementById('sidebarContent'); c.innerHTML='';
@@ -578,13 +604,28 @@ function renderSidebar(){
 function reorder(from,to){
   if(!routeRef || !currentUid) return;
   const arr=[...filteredList]; const [m]=arr.splice(from,1); arr.splice(to,0,m); filteredList=arr;
-  let newRoute = routeList.filter(item=> !filteredList.some(f=>getId(f)===getId(item)));
-  let firstIdx = routeList.findIndex(item=> filteredList.length>0 && getId(item)===getId(filteredList[0]));
-  if(firstIdx===-1) firstIdx=0;
-  filteredList.forEach((item,idx)=>{ newRoute.splice(firstIdx+idx,0,item); });
+  // إعادة ترتيب تؤثر فقط على الزبناء الظاهرين وتحافظ على بقية العناصر
+  const visibleIds = new Set(filteredList.map(i=>getId(i)));
+  const reorderedMap = new Map(filteredList.map((item, idx)=>[getId(item), item]));
+  let visiblePointer=0;
+  const newRoute = routeList.map(item=>{
+    const id=getId(item);
+    if(visibleIds.has(id)){
+      const newItem = filteredList[visiblePointer];
+      visiblePointer++;
+      return newItem;
+    }
+    return item;
+  });
+  // إذا كان هناك عناصر ظاهرة جديدة لم تكن في routeList (نادر)
+  filteredList.forEach(item=>{
+    if(!newRoute.some(r=>getId(r)===getId(item))){
+      newRoute.push(item);
+    }
+  });
   routeList=newRoute;
   renderMap(); renderSidebar();
-  isSaving=true; set(routeRef, routeList).then(()=>{ setTimeout(()=>{ isSaving=false; },500); });
+  isSaving=true; set(routeRef, routeList).then(()=>{ isSaving=false; });
 }
 window.saveOrder = async function(){
   if(!routeRef || !currentUid) return;
@@ -594,25 +635,25 @@ window.saveOrder = async function(){
 }
 window.openModal = function(i){
   const item=filteredList[i];
-  window.selectedRealIndex = routeList.findIndex(r=> getId(r)===getId(item));
-  if(window.selectedRealIndex===-1) window.selectedRealIndex = routeList.indexOf(item);
-  window.selectedFilteredIndex = i;
+  selectedRealIndex = routeList.findIndex(r=> getId(r)===getId(item));
+  if(selectedRealIndex===-1) selectedRealIndex = routeList.indexOf(item);
+  selectedFilteredIndex = i;
   document.getElementById('modalClientName').innerText=item.name||'بدون';
   document.getElementById('modalClientMeta').innerText=`#${i+1} • ${getArabicStatus(item.status)} ${item.debt?'• '+item.debt+' درهم':''} ${item.city?'• '+item.city:''}`;
   document.getElementById('clientModal').classList.add('active');
 }
 window.closeModal = function(){ document.getElementById('clientModal').classList.remove('active'); }
 window.openDetails = async function(){
-  const item=filteredList[window.selectedFilteredIndex];
+  const item=filteredList[selectedFilteredIndex];
   await openAppDialog({title:item.name||'التفاصيل', message:`المدينة: ${item.city||'غير محدد'}\nالدين: ${item.debt||0} درهم\nالهاتف: ${item.phone||'لا يوجد'}\nالتاريخ: ${item.date||'غير محدد'}`, confirmText:'حسناً', cancelText:'إغلاق', type:'info'});
 }
 window.callClient = function(){
-  const item=filteredList[window.selectedFilteredIndex];
+  const item=filteredList[selectedFilteredIndex];
   if(item.phone) window.location.href='tel:'+item.phone;
   else showToast('لا يوجد هاتف', 'error');
 }
 window.whatsappClient = function(){
-  const item=filteredList[window.selectedFilteredIndex];
+  const item=filteredList[selectedFilteredIndex];
   if(item.phone) window.open('https://wa.me/'+item.phone.replace(/[^0-9]/g,''),'_blank');
   else showToast('لا يوجد واتساب', 'error');
 }
