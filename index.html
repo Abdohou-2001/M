@@ -409,10 +409,20 @@
 
         window.backupSimple = ()=>{
             if(!currentUid){ showToastPro('يجب تسجيل الدخول','error'); return; }
-            function getRealBalance(c){ if(typeof c.currentBalance!=='undefined'&&c.currentBalance!==null) return parseFloat(c.currentBalance)||0; let p=0,r=0; if(c.operations){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); } return (parseFloat(c.amount)||0)+p-r; }
+    
+        function formatAmount(value){
+            const num = Number(value) || 0;
+            if(Number.isInteger(num)){
+                return num.toString();
+            }
+            return num.toString();
+        }
+
+        function getRealBalance(c){
+ if(typeof c.currentBalance!=='undefined'&&c.currentBalance!==null) return parseFloat(c.currentBalance)||0; let p=0,r=0; if(c.operations){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); } return (parseFloat(c.amount)||0)+p-r; }
             let txt=''; Object.values(allCustomers).forEach(c=>{ 
                 if(!c.name) return;
-                txt+=`${(c.name||'بدون اسم').trim()}\n${Math.round(getRealBalance(c))}\n\n`; 
+                txt+=`${(c.name||'بدون اسم').trim()}\n${formatAmount(getRealBalance(c))}\n\n`; 
             });
             if(!txt.trim()){ showToastPro('لا توجد بيانات','error'); return; }
             const blob=new Blob([txt.trim()],{type:'text/plain;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`karni-backup-${new Date().toISOString().split('T')[0]}.txt`; a.click(); URL.revokeObjectURL(url); showToastPro(`تم النسخ - ${Object.keys(allCustomers).length} زبون`);
@@ -426,7 +436,13 @@
         window.clearCityFilter = ()=>{ currentCityFilter=null; document.getElementById('cityFilterBtn').classList.remove('active'); document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.querySelector('[data-filter="all"]').classList.add('active'); applyFilter('all'); closeCityFilter(); showToastPro('تم عرض جميع المدن'); }
         window.filterByCity = (city, silent=false)=>{ currentCityFilter=city; document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.getElementById('cityFilterBtn').classList.add('active'); const filtered={}; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(c.city===city||c.ville===city) filtered[k]=c; }); renderCustomers(filtered); closeCityFilter(); if(!silent) showToastPro(`مدينة: ${city}`); }
 
-        window.onSearchFocus = ()=>{ document.getElementById('searchWrapper').classList.add('sticky'); }
+        window.onSearchFocus = ()=>{
+            document.getElementById('searchWrapper').classList.add('sticky');
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
         function showAutocomplete(){
             const q=document.getElementById('searchInput').value.toLowerCase().trim(); const list=document.getElementById('autocompleteList'); const clearBtn=document.getElementById('clearSearchBtn');
             if(!q){ list.classList.remove('active'); clearBtn.style.display='none'; return; } clearBtn.style.display='flex';
@@ -459,7 +475,17 @@
             showToastPro('تم الحذف');
         }
 
+
+        function formatAmount(value){
+            const num = Number(value) || 0;
+            if(Number.isInteger(num)){
+                return num.toString();
+            }
+            return num.toString();
+        }
+
         function getRealBalance(c){
+
             if(typeof c.currentBalance!=='undefined' && c.currentBalance!==null) return parseFloat(c.currentBalance)||0;
             let p=0,r=0; if(c.operations && Array.isArray(c.operations)){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); }
             return (parseFloat(c.amount)||0)+p-r;
@@ -494,7 +520,7 @@
                                 <button class="edit-name-btn" onclick="event.stopPropagation(); renameCustomer('${key}')" title="تعديل الاسم"><i class="fas fa-pen" style="font-size:11px"></i></button>
                             </div>
                             <div class="customer-details">
-                                <div class="detail-line amount"><i class="fas fa-wallet"></i> ${Math.round(realBalance)} درهم</div>
+                                <div class="detail-line amount"><i class="fas fa-wallet"></i> ${formatAmount(realBalance)} درهم</div>
                                 <div class="detail-line"><i class="fas fa-phone"></i> ${customer.phone||'لا يوجد هاتف'}</div>
                                 <div class="detail-line"><i class="fas fa-calendar"></i> ${customer.date||'-'}</div>
                                 ${customer.city?`<div class="detail-line"><i class="fas fa-city"></i> ${customer.city}</div>`:''}
@@ -515,7 +541,7 @@
         }
 
         function updateStats(s){
-            document.getElementById('totalAmount').textContent=Math.round(s.totalAmount||0);
+            document.getElementById('totalAmount').textContent=formatAmount(s.totalAmount||0);
             document.getElementById('totalCustomers').textContent=s.customersCount||0;
             document.getElementById('todayCount').textContent=s.todayCount||0;
             document.getElementById('overdueCount').textContent=s.overdueCount||0;
