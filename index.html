@@ -113,7 +113,7 @@
         .drawer-header::before{content:'';position:absolute;top:-20%;right:-10%;width:80%;height:140%;background:radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);pointer-events:none}
         .drawer-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;position:relative;z-index:1}
         .drawer-close{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.22);color:white;cursor:pointer;display:flex;align-items:center;justify-content:center}
-        .drawer-user{display:flex;gap:14px;align-items:center;position:relative;z-index:1;cursor:pointer;transition:all 0.3s;border-radius:14px;padding:6px;margin:-6px}
+        .drawer-user{display:flex;gap:14px;align-items:center;position:relative;z-index:1;cursor:pointer;border-radius:14px;padding:6px;margin:-6px;transition:all 0.3s}
         .drawer-user:hover{background:rgba(255,255,255,0.12)}
         .drawer-user:active{transform:scale(0.97)}
         .drawer-avatar{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,0.22);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;border:2px solid rgba(255,255,255,0.28);box-shadow:0 6px 20px rgba(0,0,0,0.15)}
@@ -334,6 +334,29 @@
         }
 
         window.toggleDrawer = ()=>{ document.getElementById('drawer').classList.toggle('active'); document.getElementById('drawerOverlay').classList.toggle('active'); }
+        window.openAccountSettings = ()=>{
+            const drawer=document.getElementById('drawer');
+            const overlay=document.getElementById('drawerOverlay');
+            if(drawer && drawer.classList.contains('active')){
+                drawer.classList.remove('active');
+                overlay.classList.remove('active');
+            }
+            setTimeout(()=>{ window.location.href='account-settings.html'; }, 250);
+        }
+        // === إصلاح عرض الأرقام العشرية نهائياً ===
+        function formatAmount(value){
+            const num = Number(value);
+            if(!isFinite(num) || isNaN(num)) return '0';
+            // إصلاح Floating Point: تقريب إلى 10 أرقام عشرية ثم إزالة الأصفار الزائدة
+            const fixed = Number(num.toFixed(10));
+            if(Number.isInteger(fixed)) return fixed.toString();
+            // إزالة الأصفار الزائدة في النهاية
+            return fixed.toString().replace(/\.?0+$/, '') || fixed.toString();
+        }
+        // نسخة محسنة تزيل 246.10000000000002 -> 246.1
+        function formatAmountStrict(value){
+            return formatAmount(value);
+        }
 
         function initUserProfile(){
             onAuthStateChanged(auth, async (user)=>{
@@ -411,17 +434,7 @@
 
         window.backupSimple = ()=>{
             if(!currentUid){ showToastPro('يجب تسجيل الدخول','error'); return; }
-    
-        function formatAmount(value){
-            const num = Number(value) || 0;
-            if(Number.isInteger(num)){
-                return num.toString();
-            }
-            return num.toString();
-        }
-
-        function getRealBalance(c){
- if(typeof c.currentBalance!=='undefined'&&c.currentBalance!==null) return parseFloat(c.currentBalance)||0; let p=0,r=0; if(c.operations){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); } return (parseFloat(c.amount)||0)+p-r; }
+            function getRealBalance(c){ if(typeof c.currentBalance!=='undefined'&&c.currentBalance!==null) return parseFloat(c.currentBalance)||0; let p=0,r=0; if(c.operations){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); } return (parseFloat(c.amount)||0)+p-r; }
             let txt=''; Object.values(allCustomers).forEach(c=>{ 
                 if(!c.name) return;
                 txt+=`${(c.name||'بدون اسم').trim()}\n${formatAmount(getRealBalance(c))}\n\n`; 
@@ -440,17 +453,14 @@
 
         window.onSearchFocus = ()=>{
             document.getElementById('searchWrapper').classList.add('sticky');
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth"
-            });
+            window.scrollTo({ top: 0, behavior: "smooth" });
         }
         function showAutocomplete(){
             const q=document.getElementById('searchInput').value.toLowerCase().trim(); const list=document.getElementById('autocompleteList'); const clearBtn=document.getElementById('clearSearchBtn');
             if(!q){ list.classList.remove('active'); clearBtn.style.display='none'; return; } clearBtn.style.display='flex';
             const matches=[]; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(c.name?.toLowerCase().includes(q)) matches.push({id:k,...c}); });
             if(matches.length===0){ list.innerHTML='<div style="text-align:center;padding:16px;color:var(--text-muted)">لا توجد نتائج</div>'; list.classList.add('active'); return; }
-            list.innerHTML=matches.slice(0,8).map(m=>`<div class="autocomplete-item" onclick="selectAutocomplete('${m.id}')"><div style="width:36px;height:36px;border-radius:10px;background:#e0f2f1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary)">${(m.name||'').charAt(0)}</div><div><div style="font-weight:700;font-size:13px">${m.name}</div><div style="font-size:11px;color:var(--text-muted)">${m.amount||0} درهم</div></div></div>`).join('');
+            list.innerHTML=matches.slice(0,8).map(m=>`<div class="autocomplete-item" onclick="selectAutocomplete('${m.id}')"><div style="width:36px;height:36px;border-radius:10px;background:#e0f2f1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary)">${(m.name||'').charAt(0)}</div><div><div style="font-weight:700;font-size:13px">${m.name}</div><div style="font-size:11px;color:var(--text-muted)">${formatAmount(m.amount||0)} درهم</div></div></div>`).join('');
             list.classList.add('active');
         }
         window.selectAutocomplete = (id)=>{ document.getElementById('autocompleteList').classList.remove('active'); const f={}; f[id]=allCustomers[id]; renderCustomers(f); document.getElementById('searchWrapper').classList.remove('sticky'); }
@@ -477,17 +487,7 @@
             showToastPro('تم الحذف');
         }
 
-
-        function formatAmount(value){
-            const num = Number(value) || 0;
-            if(Number.isInteger(num)){
-                return num.toString();
-            }
-            return num.toString();
-        }
-
         function getRealBalance(c){
-
             if(typeof c.currentBalance!=='undefined' && c.currentBalance!==null) return parseFloat(c.currentBalance)||0;
             let p=0,r=0; if(c.operations && Array.isArray(c.operations)){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); }
             return (parseFloat(c.amount)||0)+p-r;
