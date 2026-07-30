@@ -180,7 +180,38 @@ const translations = {
     createdAt: "تاريخ إنشاء الحساب",
     lastLogin: "آخر تسجيل دخول",
     logoutConfirm: "هل تريد تسجيل الخروج من حسابك؟",
-    disablePinConfirm: "هل تريد تعطيل رمز PIN وحذفه؟"
+    disablePinConfirm: "هل تريد تعطيل رمز PIN وحذفه؟",
+// Person page
+    customerDetails: "تفاصيل الزبون",
+    totalBoxLabel: "المبلغ الإجمالي",
+    cityLabel: "المدينة",
+    paymentDateLabel: "تاريخ الأداء",
+    receivedLabel: "استلام",
+    paidLabel: "دفع",
+    saveChanges: "حفظ التغييرات",
+    historyTitle: "سجل العمليات",
+    selectCity: "اختر المدينة",
+    paymentDateHistory: "تاريخ الدفع: --",
+    receivedDateHistory: "تاريخ الاستلام: --",
+    customerNotFound: "الزبون غير موجود",
+    loadingCustomer: "جاري تحميل الزبون...",
+    checkLogin: "جاري التحقق من تسجيل الدخول...",
+    noOperations: "لا توجد عمليات بعد",
+    paidOperation: "دفع",
+    receivedOperation: "استلام",
+    deleteOperationTitle: "حذف العملية",
+    deleteOperationMsg: "هل أنت متأكد من حذف هذه العملية؟",
+    editOperationTitle: "تعديل العملية",
+    editOperationMsg: "تعديل {type} - {amount}",
+    changesSaved: "تم حفظ التغييرات بنجاح",
+    saved: "تم الحفظ",
+    saving: "جاري الحفظ...",
+    operationDeleted: "تم حذف العملية",
+    operationUpdated: "تم تعديل العملية",
+    invalidAmount: "المبلغ غير صحيح",
+    reminderTitle: "تنبيه",
+    addPhoneFirst: "أضف رقم هاتف {name} أولاً",
+    noPhoneShort: "لا يوجد هاتف",
   },
 
   fr: {
@@ -506,7 +537,38 @@ const translations = {
     createdAt: "Account created",
     lastLogin: "Last login",
     logoutConfirm: "Do you want to logout?",
-    disablePinConfirm: "Disable and delete PIN?"
+    disablePinConfirm: "Disable and delete PIN?",
+// Person page
+    customerDetails: "Customer Details",
+    totalBoxLabel: "Total Amount",
+    cityLabel: "City",
+    paymentDateLabel: "Payment Date",
+    receivedLabel: "Received",
+    paidLabel: "Paid",
+    saveChanges: "Save Changes",
+    historyTitle: "Operations History",
+    selectCity: "Select City",
+    paymentDateHistory: "Payment date: --",
+    receivedDateHistory: "Received date: --",
+    customerNotFound: "Customer not found",
+    loadingCustomer: "Loading customer...",
+    checkLogin: "Checking login...",
+    noOperations: "No operations yet",
+    paidOperation: "Paid",
+    receivedOperation: "Received",
+    deleteOperationTitle: "Delete Operation",
+    deleteOperationMsg: "Are you sure you want to delete this operation?",
+    editOperationTitle: "Edit Operation",
+    editOperationMsg: "Edit {type} - {amount}",
+    changesSaved: "Changes saved successfully",
+    saved: "Saved",
+    saving: "Saving...",
+    operationDeleted: "Operation deleted",
+    operationUpdated: "Operation updated",
+    invalidAmount: "Invalid amount",
+    reminderTitle: "Reminder",
+    addPhoneFirst: "Add phone for {name} first",
+    noPhoneShort: "No phone",
   }
 };
 
@@ -669,5 +731,5 @@ if (typeof window !== "undefined") {
 }
 
 // دعم ES Module
-// exports removed for global usage
+// export removed - global only
 // export default removed - global only
