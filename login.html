@@ -372,7 +372,7 @@ window.closeOtpModal=function(){
   if(input) input.value='';
 }
 
-// ===== نسيت كلمة المرور - النظام الرسمي فقط بدون OTP =====
+// ===== نسيت كلمة المرور - النظام الرسمي فقط - تم إصلاح actionCodeSettings =====
 window.openForgotModal=function(){ document.getElementById('forgotModal').classList.add('active'); document.getElementById('forgotEmailInput').value=document.getElementById('emailInput').value.trim(); setTimeout(()=>document.getElementById('forgotEmailInput').focus(),100); }
 window.closeForgotModal=function(){ document.getElementById('forgotModal').classList.remove('active'); }
 
@@ -384,18 +384,30 @@ window.sendForgotPassword=async function(){
   if(isSending) return;
   try{
     isSending=true; btn.disabled=true; btn.textContent='جاري الإرسال...';
-    const actionCodeSettings = {
-  url: "https://abdohou-2001.github.io/M/login.html",
-  handleCodeInApp: false
-};
-
-await sendPasswordResetEmail(auth, email, actionCodeSettings);
+    console.log('[ForgotPassword] Attempting password reset for:', email);
+    console.log('[ForgotPassword] Auth instance:', auth);
+    console.log('[ForgotPassword] Current user:', auth.currentUser);
+    console.log('[ForgotPassword] Removing actionCodeSettings - testing simple call as requested');
+    
+    // تم إزالة actionCodeSettings مؤقتا - المشكلة كانت غالبا في url غير مسموح به في Authorized domains أو handleCodeInApp
+    // الآن نستخدم الاستدعاء البسيط: sendPasswordResetEmail(auth, email)
+    const result = await sendPasswordResetEmail(auth, email);
+    
+    console.log('[ForgotPassword] sendPasswordResetEmail result:', result);
+    console.log('[ForgotPassword] Success - If user exists in Firebase Auth, email should arrive. Check Gmail spam/junk too.');
+    console.log('[ForgotPassword] If still not arriving, check: 1) Firebase Console > Authentication > Templates > Password reset enabled, 2) Authorized domains includes your domain, 3) Email provider not blocking noreply@...');
+    
     lastResetEmail=email;
     closeForgotModal();
     document.getElementById('successEmailDisplay').textContent=email;
     document.getElementById('successInstructionsModal').classList.add('active');
     showToast('✅ تم إرسال رابط إعادة تعيين كلمة المرور بنجاح','success');
   }catch(error){
+    console.error('[ForgotPassword] Full error object:', error);
+    console.error('[ForgotPassword] Error code:', error.code);
+    console.error('[ForgotPassword] Error message:', error.message);
+    console.error('[ForgotPassword] Error stack:', error.stack);
+    console.log('[ForgotPassword] Troubleshooting: If code is auth/user-not-found -> email not in Firebase Auth. If invalid-email -> bad format. If too-many-requests -> wait.');
     showToast(getFirebaseErrorMessage(error),"error");
   }
   finally{ btn.disabled=false; btn.textContent='إرسال الرابط'; isSending=false; }
