@@ -27,6 +27,7 @@
     <title>Karni Pro - الصفحة الرئيسية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="lang.js"></script>
     <style>
         :root {
             --primary: #0f766e; --primary-dark: #0d5c56; --primary-light: #14b8a6;
@@ -38,7 +39,34 @@
             --shadow-xs: 0 1px 4px rgba(15,118,110,0.05); --shadow-sm: 0 4px 12px rgba(15,118,110,0.07); --shadow-md: 0 8px 24px rgba(15,118,110,0.11); --shadow-lg: 0 16px 40px rgba(15,118,110,0.16);
             --radius: 22px; --radius-sm: 14px; --radius-lg: 28px; --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
         }
-        [data-theme="dark"] { --bg: #0b1215; --card: #162024; --card-glass: rgba(22,32,36,0.9); --text: #e8f5f3; --text-muted: #8aa39e; --border: #1e3330; }
+        [data-theme="dark"] { 
+            --bg: #0e1518; 
+            --card: #1b2a2e; 
+            --card-glass: rgba(27,42,46,0.92); 
+            --text: #e6f2f0; 
+            --text-muted: #8fb0a8; 
+            --border: #233a36;
+            --shadow-xs: 0 1px 4px rgba(0,0,0,0.25);
+            --shadow-sm: 0 4px 12px rgba(0,0,0,0.30);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.35);
+            --shadow-lg: 0 16px 40px rgba(0,0,0,0.40);
+        }
+        [data-theme="dark"] .drawer{background:#101a1d}
+        [data-theme="dark"] .drawer-card{background:#1e3236;border-color:#2a4540}
+        [data-theme="dark"] .search-box{background:#1e3236;border-color:#2a4540}
+        [data-theme="dark"] .stat-card{background:rgba(27,42,46,0.92)}
+        [data-theme="dark"] .customer-card{background:rgba(27,42,46,0.94);border-color:#2a4540}
+        [data-theme="dark"] .customer-card::before{background:linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)}
+        [data-theme="dark"] .dialog-box{background:#1b2a2e;border-color:#2a4540}
+        [data-theme="dark"] .dialog-input{background:#122023;border-color:#2a4540;color:var(--text)}
+        [data-theme="dark"] .filter-tab{background:#1e3236;border-color:#2a4540;color:var(--text-muted)}
+        [data-theme="dark"] .filter-tab.active{background:var(--primary);color:white}
+        [data-theme="dark"] .action-btn{background:#1e3236;border-color:#2a4540;color:var(--text)}
+        [data-theme="dark"] .btn-view{background:#1e2d4a;color:#8da2ff;border-color:#2a3d6a}
+        [data-theme="dark"] .btn-date{background:#12332f;color:#5eead4;border-color:#1e4d47}
+        [data-theme="dark"] .btn-del{background:#3a1e1e;color:#fca5a5;border-color:#5a2a2a}
+        [data-theme="dark"] .city-modal-content{background:#1b2a2e;border-color:#2a4540}
+        [data-theme="dark"] .city-item{background:#122023;border-color:#2a4540;color:var(--text)}
         *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
         body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding-bottom:100px;overflow-x:hidden;transition:var(--transition)}
         .header{background:var(--gradient);color:white;padding:20px 16px 24px;text-align:center;border-radius:0 0 34px 34px;box-shadow:var(--shadow-lg);position:sticky;top:0;z-index:100;overflow:hidden}
@@ -160,7 +188,7 @@
     <div class="drawer-overlay" id="drawerOverlay" onclick="toggleDrawer()"></div>
     <div class="drawer" id="drawer">
         <div class="drawer-header">
-            <div class="drawer-top"><span style="font-weight:800;font-size:13px;letter-spacing:0.3px">القائمة الرئيسية</span><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div>
+            <div class="drawer-top"><span style="font-weight:800;font-size:13px;letter-spacing:0.3px" data-i18n="mainMenu">القائمة الرئيسية</span><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div>
             <div class="drawer-user" onclick="openAccountSettings()" title="إعدادات الحساب">
                 <div class="drawer-avatar" id="drawerUserAvatar">•</div>
                 <div class="drawer-user-info">
@@ -170,18 +198,18 @@
                 </div>
             </div>
             <div class="drawer-protection">
-                <div class="drawer-protection-title"><i class="fas fa-shield-halved"></i> التطبيق محمي بالكامل</div>
-                <div class="drawer-protection-sub">جميع بياناتك محفوظة بأمان ومشفرة.</div>
+                <div class="drawer-protection-title"><i class="fas fa-shield-halved"></i> <span data-i18n="appProtected">التطبيق محمي بالكامل</span></div>
+                <div class="drawer-protection-sub" data-i18n="appProtectedSub">جميع بياناتك محفوظة بأمان ومشفرة.</div>
             </div>
         </div>
         <div class="drawer-menu">
-            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-user"></i> الحساب</div><div class="drawer-item" onclick="openAccountSettings()"><i class="fas fa-user-gear"></i> إعدادات الحساب</div><div class="drawer-item" onclick="changePassword()"><i class="fas fa-key"></i> تغيير كلمة المرور</div><div class="drawer-item" onclick="toggleTheme(); toggleDrawer();"><i class="fas fa-moon" id="drawerThemeIcon"></i> الوضع الليلي</div></div>
-            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-store"></i> المتجر</div><div class="drawer-item" onclick="openStore()"><i class="fas fa-store"></i> متجري</div><div class="drawer-item" onclick="openStoreSettings()"><i class="fas fa-gears"></i> إعدادات المتجر</div><div class="drawer-item" onclick="openReportsWithAuth()"><i class="fas fa-chart-column"></i> التقارير</div></div>
-            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-database"></i> البيانات</div><div class="drawer-item" onclick="backupSimple()"><i class="fas fa-cloud-arrow-up"></i> النسخ الاحتياطي</div></div>
-            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-headset"></i> الدعم</div><div class="drawer-item" onclick="openDialog({title:'Karni Pro v10', message:'نظام إدارة الكرني الذكي', icon:'circle-info', hideCancel:true})"><i class="fas fa-circle-info"></i> حول التطبيق</div><div class="drawer-item" onclick="openDialog({title:'سياسة الخصوصية', message:'بياناتك محمية ومشفرة', icon:'shield-halved', hideCancel:true})"><i class="fas fa-shield-halved"></i> سياسة الخصوصية</div><div class="drawer-item" onclick="contactUs()"><i class="fas fa-headset"></i> تواصل معنا</div></div>
-            <div class="drawer-card"><div class="drawer-item danger" onclick="logoutKarni()"><i class="fas fa-right-from-bracket"></i> تسجيل الخروج</div></div>
+            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-user"></i> <span data-i18n="account">الحساب</span></div><div class="drawer-item" onclick="openAccountSettings()"><i class="fas fa-user-gear"></i> <span data-i18n="accountSettings">إعدادات الحساب</span></div><div class="drawer-item" onclick="changePassword()"><i class="fas fa-key"></i> <span data-i18n="changePassword">تغيير كلمة المرور</span></div><div class="drawer-item" onclick="toggleTheme(); toggleDrawer();"><i class="fas fa-moon" id="drawerThemeIcon"></i> الوضع الليلي</div></div>
+            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-store"></i> <span data-i18n="store">المتجر</span></div><div class="drawer-item" onclick="openStore()"><i class="fas fa-store"></i> <span data-i18n="myStore">متجري</span></div><div class="drawer-item" onclick="openStoreSettings()"><i class="fas fa-gears"></i> <span data-i18n="storeSettings">إعدادات المتجر</span></div><div class="drawer-item" onclick="openReportsWithAuth()"><i class="fas fa-chart-column"></i> <span data-i18n="reports">التقارير</span></div></div>
+            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-database"></i> <span data-i18n="data">البيانات</span></div><div class="drawer-item" onclick="backupSimple()"><i class="fas fa-cloud-arrow-up"></i> <span data-i18n="backup">النسخ الاحتياطي</span></div></div>
+            <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-headset"></i> <span data-i18n="support">الدعم</span></div><div class="drawer-item" onclick="openDialog({title:'Karni Pro v10', message:'نظام إدارة الكرني الذكي', icon:'circle-info', hideCancel:true})"><i class="fas fa-circle-info"></i> حول التطبيق</div><div class="drawer-item" onclick="openDialog({title:'سياسة الخصوصية', message:'بياناتك محمية ومشفرة', icon:'shield-halved', hideCancel:true})"><i class="fas fa-shield-halved"></i> سياسة الخصوصية</div><div class="drawer-item" onclick="contactUs()"><i class="fas fa-headset"></i> <span data-i18n="contactUs">تواصل معنا</span></div></div>
+            <div class="drawer-card"><div class="drawer-item danger" onclick="logoutKarni()"><i class="fas fa-right-from-bracket"></i> <span data-i18n="logout">تسجيل الخروج</span></div></div>
         </div>
-        <div class="drawer-footer">Karni Pro © 2025 • صنع بحب في المغرب</div>
+        <div class="drawer-footer">Karni Pro © 2026</div>
     </div>
 
     <header class="header">
@@ -190,24 +218,24 @@
     </header>
 
     <div class="stats-grid">
-        <div class="stat-card total-card"><div class="stat-left"><div style="display:flex;align-items:center;gap:10px"><div class="stat-icon icon-total"><i class="fas fa-wallet"></i></div><div><div class="stat-number"><span id="totalAmount">0</span> درهم <button class="eye-btn" id="eyeBtn" onclick="toggleAmountVisibility()"><i class="fas fa-eye" id="eyeIcon"></i></button></div><div class="stat-label">المبلغ الإجمالي</div></div></div></div><div style="opacity:0.15"><i class="fas fa-coins" style="font-size:28px"></i></div></div>
-        <div class="stat-card"><div class="stat-icon icon-customers"><i class="fas fa-users"></i></div><div class="stat-number" id="totalCustomers">0</div><div class="stat-label">الزبناء</div></div>
-        <div class="stat-card"><div class="stat-icon icon-today"><i class="fas fa-calendar-day"></i></div><div class="stat-number" id="todayCount">0</div><div class="stat-label">اليوم</div></div>
-        <div class="stat-card"><div class="stat-icon icon-overdue"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-number" id="overdueCount">0</div><div class="stat-label">متأخر</div></div>
-        <div class="stat-card"><div class="stat-icon icon-upcoming"><i class="fas fa-clock"></i></div><div class="stat-number" id="upcomingCount">0</div><div class="stat-label">قادم</div></div>
+        <div class="stat-card total-card"><div class="stat-left"><div style="display:flex;align-items:center;gap:10px"><div class="stat-icon icon-total"><i class="fas fa-wallet"></i></div><div><div class="stat-number"><span id="totalAmount">0</span> درهم <button class="eye-btn" id="eyeBtn" onclick="toggleAmountVisibility()"><i class="fas fa-eye" id="eyeIcon"></i></button></div><div class="stat-label" data-i18n="totalAmount">المبلغ الإجمالي</div></div></div></div><div style="opacity:0.15"><i class="fas fa-coins" style="font-size:28px"></i></div></div>
+        <div class="stat-card"><div class="stat-icon icon-customers"><i class="fas fa-users"></i></div><div class="stat-number" id="totalCustomers">0</div><div class="stat-label" data-i18n="customers">الزبناء</div></div>
+        <div class="stat-card"><div class="stat-icon icon-today"><i class="fas fa-calendar-day"></i></div><div class="stat-number" id="todayCount">0</div><div class="stat-label" data-i18n="today">اليوم</div></div>
+        <div class="stat-card"><div class="stat-icon icon-overdue"><i class="fas fa-triangle-exclamation"></i></div><div class="stat-number" id="overdueCount">0</div><div class="stat-label" data-i18n="overdue">متأخر</div></div>
+        <div class="stat-card"><div class="stat-icon icon-upcoming"><i class="fas fa-clock"></i></div><div class="stat-number" id="upcomingCount">0</div><div class="stat-label" data-i18n="upcoming">قادم</div></div>
     </div>
 
-    <div class="actions-row"><button class="action-btn primary" onclick="openReports()"><i class="fas fa-chart-simple"></i> التقارير</button><button class="action-btn" onclick="openRoute()"><i class="fas fa-route"></i> المسار</button></div>
+    <div class="actions-row"><button class="action-btn primary" onclick="openReports()"><i class="fas fa-chart-simple"></i> <span data-i18n="reports">التقارير</span></button><button class="action-btn" onclick="openRoute()"><i class="fas fa-route"></i> <span data-i18n="route">المسار</span></button></div>
 
-    <div class="search-wrapper" id="searchWrapper"><div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="ابحث عن زبون..." id="searchInput" autocomplete="off"><i class="fas fa-xmark" id="clearSearchBtn" onclick="clearSearch()" style="display:none;cursor:pointer;width:22px;height:22px;background:var(--bg);border-radius:50%;align-items:center;justify-content:center;font-size:11px"></i></div><div class="autocomplete-list" id="autocompleteList"></div></div>
+    <div class="search-wrapper" id="searchWrapper"><div class="search-box"><i class="fas fa-search"></i><input type="text" data-i18n-placeholder="searchPlaceholder" placeholder="ابحث عن زبون..." id="searchInput" autocomplete="off"><i class="fas fa-xmark" id="clearSearchBtn" onclick="clearSearch()" style="display:none;cursor:pointer;width:22px;height:22px;background:var(--bg);border-radius:50%;align-items:center;justify-content:center;font-size:11px"></i></div><div class="autocomplete-list" id="autocompleteList"></div></div>
 
-    <div class="filter-tabs"><button class="filter-tab active" data-filter="all" onclick="filterBy('all')"><i class="fas fa-layer-group"></i> الكل</button><button class="filter-tab" data-filter="today" onclick="filterBy('today')"><i class="fas fa-sun"></i> اليوم</button><button class="filter-tab" data-filter="overdue" onclick="filterBy('overdue')"><i class="fas fa-circle-exclamation"></i> متأخر</button><button class="filter-tab" data-filter="upcoming" onclick="filterBy('upcoming')"><i class="fas fa-clock"></i> قادم</button><button class="filter-tab" id="cityFilterBtn" onclick="openCityFilter()"><i class="fas fa-city"></i> المدينة</button></div>
+    <div class="filter-tabs"><button class="filter-tab active" data-filter="all" onclick="filterBy('all')"><i class="fas fa-layer-group"></i> <span data-i18n="all">الكل</span></button><button class="filter-tab" data-filter="today" onclick="filterBy('today')"><i class="fas fa-sun"></i> <span data-i18n="today">اليوم</span></button><button class="filter-tab" data-filter="overdue" onclick="filterBy('overdue')"><i class="fas fa-circle-exclamation"></i> <span data-i18n="overdue">متأخر</span></button><button class="filter-tab" data-filter="upcoming" onclick="filterBy('upcoming')"><i class="fas fa-clock"></i> <span data-i18n="upcoming">قادم</span></button><button class="filter-tab" id="cityFilterBtn" onclick="openCityFilter()"><i class="fas fa-city"></i> المدينة</button></div>
 
     <div class="customers-list" id="customersList"><div style="text-align:center;padding:48px;color:var(--text-muted)">جاري التحميل...</div></div>
 
     <button class="fab" onclick="showAddModal()"><i class="fas fa-plus"></i></button>
 
-    <div class="dialog-overlay" id="customerModal"><div class="dialog-box" style="max-width:420px"><div class="dialog-icon edit"><i class="fas fa-user-plus"></i></div><div class="dialog-title">إضافة زبون جديد</div><form id="customerForm" onsubmit="saveCustomer(event)"><input type="hidden" id="customerId"><input type="text" class="dialog-input" id="customerName" placeholder="اسم الزبون *" required><input type="tel" class="dialog-input" id="customerPhone" placeholder="رقم الهاتف"><input type="text" class="dialog-input" id="customerCity" placeholder="المدينة"><input type="date" class="dialog-input" id="customerDate" required><div class="dialog-actions"><button type="button" class="dialog-btn dialog-btn-cancel" onclick="closeModal()"><i class="fas fa-xmark"></i> إلغاء</button><button type="submit" class="dialog-btn dialog-btn-confirm"><i class="fas fa-check"></i> حفظ</button></div></form></div></div>
+    <div class="dialog-overlay" id="customerModal"><div class="dialog-box" style="max-width:420px"><div class="dialog-icon edit"><i class="fas fa-user-plus"></i></div><div class="dialog-title" data-i18n="addCustomer">إضافة زبون جديد</div><form id="customerForm" onsubmit="saveCustomer(event)"><input type="hidden" id="customerId"><input type="text" class="dialog-input" id="customerName" data-i18n-placeholder="customerNamePlaceholder" placeholder="اسم الزبون *" required><input type="tel" class="dialog-input" id="customerPhone" data-i18n-placeholder="phonePlaceholder" placeholder="رقم الهاتف"><input type="text" class="dialog-input" id="customerCity" data-i18n-placeholder="cityPlaceholder" placeholder="المدينة"><input type="date" class="dialog-input" id="customerDate" required><div class="dialog-actions"><button type="button" class="dialog-btn dialog-btn-cancel" onclick="closeModal()"><i class="fas fa-xmark"></i> إلغاء</button><button type="submit" class="dialog-btn dialog-btn-confirm"><i class="fas fa-check"></i> حفظ</button></div></form></div></div>
 
     <div class="city-modal" id="cityModal" onclick="if(event.target===this) closeCityFilter()"><div class="city-modal-content"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><b><i class="fas fa-city"></i> المدينة</b><button class="icon-btn" style="width:32px;height:32px;background:var(--bg);color:var(--text)" onclick="closeCityFilter()"><i class="fas fa-times" style="font-size:12px"></i></button></div><div id="cityList"></div><button class="dialog-btn dialog-btn-confirm" style="width:100%;margin-top:12px" onclick="clearCityFilter()"><i class="fas fa-rotate"></i> عرض الكل</button></div></div>
 
@@ -268,6 +296,7 @@
         window.showToast = showToastPro;
 
         document.addEventListener('DOMContentLoaded', ()=>{
+            if(window.KarniLang){ KarniLang.loadLanguage(); KarniLang.applyTranslations(); }
             loadTheme(); setTodayDate(); initConnectionListener(); initEyeState();
             document.getElementById('searchInput').addEventListener('input', ()=>{ showAutocomplete(); searchCustomer(); });
             document.getElementById('searchInput').addEventListener('focus', onSearchFocus);
@@ -358,57 +387,85 @@
             return formatAmount(value);
         }
 
+        // === إصلاح بيانات المستخدم + مزامنة اللغة والثيم ===
+        let profileListenerUnsub = null;
+        function updateDrawerProfileUI(displayName, email){
+            const avatarEl=document.getElementById('drawerUserAvatar');
+            const nameEl=document.getElementById('drawerUserName');
+            const emailEl=document.getElementById('drawerUserEmail');
+            const roleEl=document.getElementById('drawerUserRole');
+            if(!avatarEl || !nameEl || !emailEl) return;
+            let finalName = (displayName||'').trim();
+            if(!finalName && email && email.includes('@')){
+                finalName = email.split('@')[0];
+                finalName = finalName.charAt(0).toUpperCase() + finalName.slice(1);
+            }
+            if(!finalName) finalName = window.KarniLang ? KarniLang.t('noCustomers') : 'مستخدم';
+            const firstLetter = finalName.charAt(0).toUpperCase();
+            avatarEl.textContent = firstLetter;
+            nameEl.textContent = finalName;
+            emailEl.textContent = email || '...';
+            if(roleEl){
+                const role = email && email.includes('admin') ? 'Administrator' : 'User';
+                roleEl.textContent = role;
+            }
+        }
+
         function initUserProfile(){
             onAuthStateChanged(auth, async (user)=>{
                 if(!user){
-                    // لا يوجد مستخدم - تحويل مباشر إلى login.html
                     window.location.href='login.html';
                     return;
                 }
-                // يوجد مستخدم - إنشاء المسارات الخاصة به
                 currentUid = user.uid;
                 customersRef = ref(db, `users/${currentUid}/customers`);
 
-                // المصدر الحقيقي هو auth.currentUser و users/{uid}/profile وليس localStorage
-                let displayName = user.displayName || '';
-                let email = user.email || '';
-                
+                // تحميل البروفايل مرة واحدة ثم الاستماع للتغييرات المباشرة
                 try{
-                    const profileSnap = await get(ref(db, `users/${currentUid}/profile`));
-                    if(profileSnap.exists()){
-                        const p = profileSnap.val();
-                        if(p.displayName) displayName = p.displayName;
-                        if(p.email) email = p.email;
-                    }
-                }catch(e){}
+                    const profileRef = ref(db, `users/${currentUid}/profile`);
+                    const snap = await get(profileRef);
+                    let p = snap.exists() ? snap.val() : {};
+                    let displayName = p.displayName || user.displayName || '';
+                    let email = p.email || user.email || '';
+                    updateDrawerProfileUI(displayName, email);
 
-                // تحديث الواجهة من المصدر الحقيقي
-                const avatarEl=document.getElementById('drawerUserAvatar');
-                const nameEl=document.getElementById('drawerUserName');
-                const emailEl=document.getElementById('drawerUserEmail');
-                const roleEl=document.getElementById('drawerUserRole');
-                
-                if(avatarEl && nameEl && emailEl){
-                    let finalName = (displayName||'').trim();
-                    if(!finalName && email.includes('@')){
-                        finalName = email.split('@')[0];
-                        finalName = finalName.charAt(0).toUpperCase() + finalName.slice(1);
+                    // مزامنة اللغة من Firebase
+                    if(p.language && window.KarniLang){
+                        const savedLocal = localStorage.getItem('karni_language');
+                        if(p.language !== savedLocal){
+                            KarniLang.setLanguage(p.language);
+                            localStorage.setItem('karni_language', p.language);
+                        }
                     }
-                    if(!finalName) finalName = 'مستخدم';
-                    const firstLetter = finalName.charAt(0).toUpperCase();
-                    avatarEl.textContent = firstLetter;
-                    nameEl.textContent = finalName;
-                    emailEl.textContent = email;
-                    if(roleEl){
-                        const role = email.includes('admin') ? 'Administrator' : 'User';
-                        roleEl.textContent = role;
+                    // مزامنة الثيم من Firebase
+                    if(p.theme){
+                        const themeToApply = p.theme;
+                        localStorage.setItem('theme', themeToApply==='auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light') : themeToApply);
+                        loadTheme(themeToApply);
                     }
-                    // cache مؤقت فقط لتحسين السرعة
-                    localStorage.setItem('userName', finalName);
-                    localStorage.setItem('userEmail', email);
+
+                    // استماع مباشر لتغييرات البروفايل (اسم/بريد/لغة/ثيم)
+                    if(profileListenerUnsub) { try{profileListenerUnsub();}catch(e){} }
+                    profileListenerUnsub = onValue(profileRef, (s)=>{
+                        if(!s.exists()) return;
+                        const data = s.val();
+                        const dName = data.displayName || user.displayName || '';
+                        const dEmail = data.email || user.email || '';
+                        updateDrawerProfileUI(dName, dEmail);
+                        if(data.language && window.KarniLang && data.language !== KarniLang.getLanguage()){
+                            KarniLang.setLanguage(data.language);
+                        }
+                        if(data.theme){
+                            loadTheme(data.theme);
+                        }
+                    });
+
+                }catch(e){
+                    // fallback: استخدم بيانات auth فقط
+                    updateDrawerProfileUI(user.displayName, user.email);
+                    console.warn('Profile load error', e);
                 }
 
-                // الآن بعد معرفة UID نبدأ تحميل Firebase
                 initFirebase();
             });
         }
@@ -495,7 +552,7 @@
 
         function renderCustomers(customers){
             const list=document.getElementById('customersList'); list.innerHTML='';
-            if(!customers || Object.keys(customers).length===0){ list.innerHTML='<div style="text-align:center;padding:48px;color:var(--text-muted)"><i class="fas fa-users" style="font-size:32px;opacity:0.2;display:block;margin-bottom:8px"></i>لا توجد زبناء</div>'; updateStats({totalAmount:0,customersCount:0,todayCount:0,overdueCount:0,upcomingCount:0}); return; }
+            if(!customers || Object.keys(customers).length===0){ list.innerHTML=`<div style="text-align:center;padding:48px;color:var(--text-muted)"><i class="fas fa-users" style="font-size:32px;opacity:0.2;display:block;margin-bottom:8px"></i>${window.KarniLang ? KarniLang.t('noCustomers') : 'لا توجد زبناء'}</div>`; updateStats({totalAmount:0,customersCount:0,todayCount:0,overdueCount:0,upcomingCount:0}); return; }
             let totalAmount=0, customersCount=0, todayCount=0, overdueCount=0, upcomingCount=0;
             const today=new Date().toISOString().split('T')[0];
             Object.keys(customers).forEach((key, idx)=>{
@@ -506,9 +563,10 @@
                 if(customer.date===today) todayCount++; else if(customer.date && customer.date<today) overdueCount++; else if(customer.date && customer.date>today) upcomingCount++;
                 const overdueClass = customer.date && customer.date<today ? 'overdue' : '';
                 let badgeHtml='';
-                if(customer.date===today) badgeHtml='<div class="badge today"><i class="fas fa-circle" style="font-size:6px"></i> اليوم</div>';
-                else if(customer.date && customer.date<today) badgeHtml='<div class="badge overdue"><i class="fas fa-circle" style="font-size:6px"></i> متأخر</div>';
-                else if(customer.date && customer.date>today) badgeHtml='<div class="badge upcoming"><i class="fas fa-circle" style="font-size:6px"></i> قادم</div>';
+                const tFn = (k)=> (window.KarniLang ? KarniLang.t(k) : (k==='today'?'اليوم':k==='overdue'?'متأخر':'قادم'));
+                if(customer.date===today) badgeHtml=`<div class="badge today"><i class="fas fa-circle" style="font-size:6px"></i> ${tFn('todayBadge')}</div>`;
+                else if(customer.date && customer.date<today) badgeHtml=`<div class="badge overdue"><i class="fas fa-circle" style="font-size:6px"></i> ${tFn('overdueBadge')}</div>`;
+                else if(customer.date && customer.date>today) badgeHtml=`<div class="badge upcoming"><i class="fas fa-circle" style="font-size:6px"></i> ${tFn('upcomingBadge')}</div>`;
                 const hasBadge = badgeHtml !== '';
                 const cardPadding = hasBadge ? 'padding-top:44px;' : '';
                 const card = `
@@ -530,9 +588,9 @@
                         </div>
                     </div>
                     <div class="customer-actions">
-                        <button class="btn btn-view" onclick="event.stopPropagation(); openDetails('${key}')"><i class="fas fa-eye"></i> عرض</button>
-                        <button class="btn btn-date" onclick="event.stopPropagation(); setPaymentDate('${key}')"><i class="fas fa-calendar-days"></i> التاريخ</button>
-                        <button class="btn btn-del" onclick="event.stopPropagation(); confirmDelete('${key}')"><i class="fas fa-trash"></i> حذف</button>
+                        <button class="btn btn-view" onclick="event.stopPropagation(); openDetails('${key}')"><i class="fas fa-eye"></i> ${window.KarniLang ? KarniLang.t('view') : 'عرض'}</button>
+                        <button class="btn btn-date" onclick="event.stopPropagation(); setPaymentDate('${key}')"><i class="fas fa-calendar-days"></i> ${window.KarniLang ? KarniLang.t('changeDate') : 'التاريخ'}</button>
+                        <button class="btn btn-del" onclick="event.stopPropagation(); confirmDelete('${key}')"><i class="fas fa-trash"></i> ${window.KarniLang ? KarniLang.t('delete') : 'حذف'}</button>
                     </div>
                 </div>`;
                 list.innerHTML+=card;
@@ -572,8 +630,32 @@
         window.filterBy = (filter)=>{ currentFilter=filter; currentCityFilter=null; document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); if(event && event.target) event.target.closest('.filter-tab')?.classList.add('active'); applyFilter(filter); }
         function applyFilter(filter){ const filtered={}; const today=new Date().toISOString().split('T')[0]; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(!c || !c.name) return; if(filter==='all') filtered[k]=c; else if(filter==='today' && c.date===today) filtered[k]=c; else if(filter==='overdue' && c.date && c.date<today) filtered[k]=c; else if(filter==='upcoming' && c.date && c.date>today) filtered[k]=c; }); renderCustomers(filtered); }
         window.searchCustomer = ()=>{ const s=document.getElementById('searchInput').value.toLowerCase().trim(); if(!s){ applyFilter(currentFilter); return; } const f={}; Object.keys(allCustomers).forEach(k=>{ if(allCustomers[k].name?.toLowerCase().includes(s)) f[k]=allCustomers[k]; }); renderCustomers(f); }
-        function loadTheme(){ const t=localStorage.getItem('theme')||'light'; document.documentElement.setAttribute('data-theme',t); const ti=document.getElementById('themeIcon'); if(ti) ti.className=t==='dark'?'fas fa-sun':'fas fa-moon'; const d=document.getElementById('drawerThemeIcon'); if(d) d.className=t==='dark'?'fas fa-sun':'fas fa-moon'; }
-        window.toggleTheme = ()=>{ const cur=document.documentElement.getAttribute('data-theme'); const nt=cur==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',nt); localStorage.setItem('theme',nt); loadTheme(); }
+        function loadTheme(externalTheme){
+            let t = externalTheme || localStorage.getItem('theme') || 'light';
+            // إذا كانت auto نحسب الفعلي
+            let effective = t;
+            if(t==='auto'){
+                effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+            document.documentElement.setAttribute('data-theme', effective);
+            const ti=document.getElementById('themeIcon'); if(ti) ti.className=effective==='dark'?'fas fa-sun':'fas fa-moon';
+            const d=document.getElementById('drawerThemeIcon'); if(d) d.className=effective==='dark'?'fas fa-sun':'fas fa-moon';
+            // حفظ الفعلي للتوافق
+            if(!externalTheme){
+                // لا نكتب إذا جاء من Firebase (تم حفظه هناك)
+            }
+        }
+        window.toggleTheme = async ()=>{
+            const cur=document.documentElement.getAttribute('data-theme');
+            const nt=cur==='dark'?'light':'dark';
+            document.documentElement.setAttribute('data-theme',nt);
+            localStorage.setItem('theme',nt);
+            loadTheme(nt);
+            // حفظ في Firebase أيضا
+            if(currentUid){
+                try{ await update(ref(db, `users/${currentUid}/profile`), {theme: nt, updatedAt: new Date().toISOString()}); }catch(e){}
+            }
+        }
         function setTodayDate(){ const el=document.getElementById('customerDate'); if(el) el.value=new Date().toISOString().split('T')[0]; }
         window.setPaymentDate = async (id)=>{
             if(!currentUid){ showToastPro('يجب تسجيل الدخول','error'); return; }
@@ -582,6 +664,7 @@
             if(newDate){ await updateCustomer(id, {date:newDate, updatedAt:new Date().toISOString()}); }
         }
         document.getElementById('customerModal').addEventListener('click', (e)=>{ if(e.target===e.currentTarget) closeModal(); });
+        window.addEventListener('karniLanguageChanged', ()=>{ if(window.KarniLang){ KarniLang.applyTranslations(); } applyFilter(currentFilter); });
     </script>
 
     <script>
