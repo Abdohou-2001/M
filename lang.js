@@ -669,5 +669,5 @@ if (typeof window !== "undefined") {
 }
 
 // دعم ES Module
-export { translations };
-export default KarniLang;
+// exports removed for global usage
+// export default removed - global only
