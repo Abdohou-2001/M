@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
+<head><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<!-- PLAYABLE_TOUCH_PATCH_V1 --><script>
 (function() {
   if (window.__playableTouchPatchInstalled) return;
   window.__playableTouchPatchInstalled = true;
@@ -19,13 +20,19 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
-</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0f766e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Karni Pro">
 <title>Karni Pro - تسجيل الدخول</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="lang.js"></script>
 <style>
 :root{
   --primary:#0f766e; --primary-dark:#0d5c56; --primary-light:#14b8a6;
@@ -72,102 +79,104 @@ body{min-height:100vh;background:radial-gradient(1200px 600px at 90% -10%,rgba(2
 .steps-list li{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:10px;display:flex;gap:10px;align-items:flex-start;line-height:1.6}
 .steps-list li:last-child{margin-bottom:0}
 .steps-list li span.num{width:24px;height:24px;background:var(--gradient);color:white;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;flex-shrink:0;margin-top:1px}
+.lang-switcher{display:flex;gap:6px;justify-content:center;margin-bottom:16px}
+.lang-btn{padding:6px 14px;border-radius:100px;border:1.5px solid var(--border);background:rgba(255,255,255,0.7);font-family:'Cairo';font-size:11.5px;font-weight:800;cursor:pointer;transition:all .3s}
+.lang-btn.active{background:var(--gradient);color:white;border-color:transparent;box-shadow:0 4px 12px rgba(15,118,110,0.2)}
 </style>
 </head>
 <body>
 <div class="toast-container" id="toastContainer"></div>
 
 <div class="card-main glass">
+  <div class="lang-switcher">
+    <button class="lang-btn" data-lang="ar" onclick="changeLoginLanguage('ar')">العربية</button>
+    <button class="lang-btn" data-lang="fr" onclick="changeLoginLanguage('fr')">FR</button>
+    <button class="lang-btn" data-lang="en" onclick="changeLoginLanguage('en')">EN</button>
+  </div>
   <div style="text-align:center;margin-bottom:20px">
     <div class="logo-box"><i class="fa-solid fa-book-open" style="color:white;font-size:28px;position:relative;z-index:1"></i></div>
     <h1 style="font-size:23px;font-weight:900;letter-spacing:-0.3px">Karni Pro</h1>
-    <p id="pageSubtitle" style="font-size:12.5px;color:var(--text-muted);margin-top:4px;font-weight:600">تسجيل الدخول إلى حسابك</p>
+    <p id="pageSubtitle" style="font-size:12.5px;color:var(--text-muted);margin-top:4px;font-weight:600" data-i18n="loginDesc">تسجيل الدخول إلى حسابك</p>
   </div>
   <div class="tabs">
-    <button id="loginTab" class="tab active" onclick="switchMode('login')">تسجيل الدخول</button>
-    <button id="signupTab" class="tab" onclick="switchMode('signup')">إنشاء حساب</button>
+    <button id="loginTab" class="tab active" onclick="switchMode('login')" data-i18n="login">تسجيل الدخول</button>
+    <button id="signupTab" class="tab" onclick="switchMode('signup')" data-i18n="signup">إنشاء حساب</button>
   </div>
   <div id="authForm">
     <div id="fullNameGroup" class="input-group has-label" style="display:none">
-      <label class="input-label">الاسم الكامل</label>
-      <div style="position:relative"><input id="fullNameInput" type="text" class="input-field" placeholder="مصطفى أحمد"><i class="fa-solid fa-user input-icon"></i></div>
+      <label class="input-label" data-i18n="fullName">الاسم الكامل</label>
+      <div style="position:relative"><input id="fullNameInput" type="text" class="input-field" data-i18n-placeholder="fullNamePlaceholder" placeholder="مصطفى أحمد"><i class="fa-solid fa-user input-icon"></i></div>
     </div>
     <div class="input-group has-label">
-      <label class="input-label">البريد الإلكتروني</label>
-      <div style="position:relative"><input id="emailInput" type="email" class="input-field" placeholder="example@mail.com"><i class="fa-solid fa-envelope input-icon"></i></div>
+      <label class="input-label" data-i18n="email">البريد الإلكتروني</label>
+      <div style="position:relative"><input id="emailInput" type="email" class="input-field" placeholder="example@mail.com" data-i18n-placeholder="emailPlaceholder"><i class="fa-solid fa-envelope input-icon"></i></div>
     </div>
     <div class="input-group has-label">
-      <label class="input-label">كلمة المرور</label>
-      <div style="position:relative"><input id="passwordInput" type="password" class="input-field" placeholder="••••••••"><i class="fa-solid fa-lock input-icon"></i></div>
+      <label class="input-label" data-i18n="password">كلمة المرور</label>
+      <div style="position:relative"><input id="passwordInput" type="password" class="input-field" placeholder="••••••••" data-i18n-placeholder="passwordPlaceholder"><i class="fa-solid fa-lock input-icon"></i></div>
     </div>
     <div id="confirmPasswordGroup" class="input-group has-label" style="display:none">
-      <label class="input-label">تأكيد كلمة المرور</label>
-      <div style="position:relative"><input id="confirmPasswordInput" type="password" class="input-field" placeholder="••••••••"><i class="fa-solid fa-lock input-icon"></i></div>
+      <label class="input-label" data-i18n="confirmPassword">تأكيد كلمة المرور</label>
+      <div style="position:relative"><input id="confirmPasswordInput" type="password" class="input-field" placeholder="••••••••" data-i18n-placeholder="confirmPasswordPlaceholder"><i class="fa-solid fa-lock input-icon"></i></div>
     </div>
-    <div id="forgotWrapper" class="forgot-wrapper"><button onclick="openForgotModal()" class="forgot-btn">نسيت كلمة المرور؟</button></div>
-    <button id="actionBtn" onclick="handleAuth()" class="btn-primary"><i id="actionIcon" class="fa-solid fa-right-to-bracket"></i><span id="actionText">تسجيل الدخول</span></button>
+    <div id="forgotWrapper" class="forgot-wrapper"><button onclick="openForgotModal()" class="forgot-btn" data-i18n="forgotPassword">نسيت كلمة المرور؟</button></div>
+    <button id="actionBtn" onclick="handleAuth()" class="btn-primary"><i id="actionIcon" class="fa-solid fa-right-to-bracket"></i><span id="actionText" data-i18n="login">تسجيل الدخول</span></button>
   </div>
 </div>
 
-<!-- OTP Modal - فقط لإنشاء الحساب -->
 <div id="otpModal" class="modal">
   <div class="modal-card">
     <div class="otp-icon"><i class="fa-solid fa-shield-halved"></i></div>
-    <h3 style="font-size:19px;font-weight:800" id="otpTitle">رمز التحقق</h3>
-    <p style="font-size:12.5px;color:var(--text-muted);margin-top:4px">تم إرسال رمز مكون من 6 أرقام إلى</p>
+    <h3 style="font-size:19px;font-weight:800" id="otpTitle" data-i18n="otpTitle">رمز التحقق</h3>
+    <p style="font-size:12.5px;color:var(--text-muted);margin-top:4px" data-i18n="otpSentTo">تم إرسال رمز مكون من 6 أرقام إلى</p>
     <p id="otpEmailDisplay" style="font-size:13px;font-weight:800;color:var(--primary);margin:6px 0"></p>
     <input id="otpInput" type="text" maxlength="6" inputmode="numeric" pattern="[0-9]*" class="otp-single" placeholder="123456">
     <div style="display:flex;justify-content:space-between;font-size:11.5px;color:var(--text-muted);font-weight:600;margin-bottom:14px">
-      <span>الصلاحية: <span id="expiryTimer" style="color:var(--primary);font-weight:800">05:00</span></span><span>5 دقائق</span>
+      <span><span data-i18n="expiry">الصلاحية</span>: <span id="expiryTimer" style="color:var(--primary);font-weight:800">05:00</span></span><span>5 <span data-i18n="minutes">دقائق</span></span>
     </div>
-    <button id="verifyOtpBtn" onclick="verifyOtp()" class="btn-primary" style="margin-bottom:10px">تأكيد الرمز</button>
-    <button id="resendBtn" onclick="resendOtp()" disabled style="width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#f8fafc;color:#94a3b8;font-weight:700;font-family:'Cairo';cursor:not-allowed">إعادة الإرسال (<span id="resendTimer">60</span>ث)</button>
-    <button onclick="closeOtpModal()" style="width:100%;margin-top:10px;background:none;border:none;color:var(--text-muted);font-weight:700;font-size:13px;cursor:pointer">إلغاء</button>
+    <button id="verifyOtpBtn" onclick="verifyOtp()" class="btn-primary" style="margin-bottom:10px" data-i18n="verifyCode">تأكيد الرمز</button>
+    <button id="resendBtn" onclick="resendOtp()" disabled style="width:100%;padding:11px;border-radius:12px;border:1.5px solid var(--border);background:#f8fafc;color:#94a3b8;font-weight:700;font-family:'Cairo';cursor:not-allowed"><span data-i18n="resend">إعادة الإرسال</span> (<span id="resendTimer">60</span>ث)</button>
+    <button onclick="closeOtpModal()" style="width:100%;margin-top:10px;background:none;border:none;color:var(--text-muted);font-weight:700;font-size:13px;cursor:pointer" data-i18n="cancel">إلغاء</button>
   </div>
 </div>
 
-<!-- Forgot Password - بريد فقط - نظام رسمي -->
 <div id="forgotModal" class="modal">
   <div class="modal-card" style="text-align:right">
     <div style="text-align:center;margin-bottom:14px">
       <div style="width:60px;height:60px;background:#e0f2f1;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 10px"><i class="fa-solid fa-key" style="color:var(--primary);font-size:22px"></i></div>
-      <h3 style="font-size:18px;font-weight:800">نسيت كلمة المرور؟</h3>
-      <p style="font-size:12px;color:var(--text-muted);margin-top:4px">أدخل بريدك وسيصلك رابط رسمي من Firebase</p>
+      <h3 style="font-size:18px;font-weight:800" data-i18n="forgotPasswordTitle">نسيت كلمة المرور؟</h3>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:4px" data-i18n="forgotPasswordDesc">أدخل بريدك وسيصلك رابط رسمي من Firebase</p>
     </div>
-    <div class="input-group has-label"><label class="input-label">البريد الإلكتروني</label><div style="position:relative"><input id="forgotEmailInput" type="email" class="input-field" placeholder="example@mail.com"><i class="fa-solid fa-envelope input-icon"></i></div></div>
+    <div class="input-group has-label"><label class="input-label" data-i18n="email">البريد الإلكتروني</label><div style="position:relative"><input id="forgotEmailInput" type="email" class="input-field" placeholder="example@mail.com" data-i18n-placeholder="emailPlaceholder"><i class="fa-solid fa-envelope input-icon"></i></div></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px">
-      <button onclick="closeForgotModal()" style="padding:12px;border-radius:12px;border:1.5px solid var(--border);background:#f0fdfa;font-weight:700;font-family:'Cairo';cursor:pointer">إلغاء</button>
-      <button id="forgotSendBtn" onclick="sendForgotPassword()" class="btn-primary">إرسال الرابط</button>
+      <button onclick="closeForgotModal()" style="padding:12px;border-radius:12px;border:1.5px solid var(--border);background:#f0fdfa;font-weight:700;font-family:'Cairo';cursor:pointer" data-i18n="cancel">إلغاء</button>
+      <button id="forgotSendBtn" onclick="sendForgotPassword()" class="btn-primary" data-i18n="sendLink">إرسال الرابط</button>
     </div>
   </div>
 </div>
 
-<!-- Success Instructions Modal -->
 <div id="successInstructionsModal" class="modal">
   <div class="modal-card" style="max-width:440px;text-align:right">
     <div style="text-align:center">
       <div class="success-icon"><i class="fa-solid fa-check"></i></div>
-      <h3 style="font-size:20px;font-weight:900;color:#0f172a">تم الإرسال بنجاح</h3>
-      <p style="font-size:13px;color:var(--text-muted);margin-top:6px;font-weight:600">تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني</p>
+      <h3 style="font-size:20px;font-weight:900;color:#0f172a" data-i18n="sentSuccess">تم الإرسال بنجاح</h3>
+      <p style="font-size:13px;color:var(--text-muted);margin-top:6px;font-weight:600" data-i18n="resetLinkSentDesc">تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني</p>
       <p id="successEmailDisplay" style="font-size:13px;font-weight:800;color:var(--primary);margin-top:8px;background:#f0fdfa;padding:8px 12px;border-radius:12px;border:1px solid var(--border)"></p>
     </div>
-
     <div style="background:linear-gradient(135deg,#f0fdfa,#ecfdf5);border:1px solid var(--border);border-radius:16px;padding:14px;margin:16px 0;text-align:right">
-      <p style="font-size:13px;font-weight:800;color:var(--primary);margin-bottom:8px"><i class="fa-solid fa-envelope ml-2"></i>افتح بريدك الإلكتروني واضغط على الرابط المرسل من Firebase.</p>
-      <p style="font-size:11.5px;color:var(--text-muted);font-weight:600;line-height:1.6">بعد إنشاء كلمة مرور جديدة يمكنك العودة إلى التطبيق وتسجيل الدخول مباشرة.</p>
+      <p style="font-size:13px;font-weight:800;color:var(--primary);margin-bottom:8px"><i class="fa-solid fa-envelope ml-2"></i><span data-i18n="openEmailInstruction">افتح بريدك الإلكتروني واضغط على الرابط المرسل من Firebase.</span></p>
+      <p style="font-size:11.5px;color:var(--text-muted);font-weight:600;line-height:1.6" data-i18n="afterResetInfo">بعد إنشاء كلمة مرور جديدة يمكنك العودة إلى التطبيق وتسجيل الدخول مباشرة.</p>
     </div>
-
     <ul class="steps-list">
-      <li><span class="num">1</span><span>افتح بريدك الإلكتروني</span></li>
-      <li><span class="num">2</span><span>افتح الرسالة القادمة من Firebase</span></li>
-      <li><span class="num">3</span><span>اضغط على زر <b>Reset Password</b></span></li>
-      <li><span class="num">4</span><span>أدخل كلمة المرور الجديدة</span></li>
-      <li><span class="num">5</span><span>احفظها واضغط Save</span></li>
-      <li><span class="num">6</span><span>ارجع إلى تطبيق Karni Pro وسجل الدخول بكلمة المرور الجديدة</span></li>
+      <li><span class="num">1</span><span data-i18n="step1">افتح بريدك الإلكتروني</span></li>
+      <li><span class="num">2</span><span data-i18n="step2">افتح الرسالة القادمة من Firebase</span></li>
+      <li><span class="num">3</span><span data-i18n="step3">اضغط على زر Reset Password</span></li>
+      <li><span class="num">4</span><span data-i18n="step4">أدخل كلمة المرور الجديدة</span></li>
+      <li><span class="num">5</span><span data-i18n="step5">احفظها واضغط Save</span></li>
+      <li><span class="num">6</span><span data-i18n="step6">ارجع إلى تطبيق Karni Pro وسجل الدخول بكلمة المرور الجديدة</span></li>
     </ul>
-
-    <button id="openEmailBtn" onclick="openEmailProvider()" class="btn-primary" style="margin-bottom:10px"><i class="fa-solid fa-envelope-open"></i> فتح البريد الإلكتروني</button>
-    <button onclick="closeSuccessInstructionsModal()" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:white;font-weight:800;font-family:'Cairo';cursor:pointer;color:var(--text)">العودة لتسجيل الدخول</button>
+    <button id="openEmailBtn" onclick="openEmailProvider()" class="btn-primary" style="margin-bottom:10px"><i class="fa-solid fa-envelope-open"></i> <span data-i18n="openEmail">فتح البريد الإلكتروني</span></button>
+    <button onclick="closeSuccessInstructionsModal()" style="width:100%;padding:12px;border-radius:12px;border:1.5px solid var(--border);background:white;font-weight:800;font-family:'Cairo';cursor:pointer;color:var(--text)" data-i18n="backToLogin">العودة لتسجيل الدخول</button>
   </div>
 </div>
 
@@ -183,6 +192,30 @@ let isProcessing=false, isSending=false;
 let otpCode=null, otpExpiry=null, pendingData=null;
 let resendInt=null, expiryInt=null;
 let lastResetEmail='';
+
+// Central Lang System
+function initLanguage(){
+  const saved = localStorage.getItem('karni_language') || 'ar';
+  if(window.KarniLang){
+    KarniLang.setLanguage(saved);
+    KarniLang.applyDirection(saved);
+    KarniLang.applyTranslations(document);
+    document.querySelectorAll('.lang-btn').forEach(btn=>{
+      btn.classList.toggle('active', btn.dataset.lang===saved);
+    });
+  }
+}
+window.changeLoginLanguage = function(lang){
+  if(!window.KarniLang) return;
+  KarniLang.setLanguage(lang);
+  KarniLang.applyDirection(lang);
+  KarniLang.applyTranslations(document);
+  localStorage.setItem('karni_language', lang);
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang===lang);
+  });
+  switchMode(currentMode);
+}
 
 function showToast(msg,type='info'){
   const c=document.getElementById('toastContainer');
@@ -213,14 +246,14 @@ function startTimers(){
   rTimer.textContent=resend; eTimer.textContent='05:00'; eTimer.style.color='#0f766e';
   resendInt=setInterval(()=>{
     resend--; rTimer.textContent=resend;
-    if(resend<=0){ clearInterval(resendInt); rBtn.disabled=false; rBtn.style.cursor='pointer'; rBtn.style.background='white'; rBtn.style.color='#0f766e'; rBtn.innerHTML='إعادة إرسال الرمز'; }
+    if(resend<=0){ clearInterval(resendInt); rBtn.disabled=false; rBtn.style.cursor='pointer'; rBtn.style.background='white'; rBtn.style.color='#0f766e'; rBtn.innerHTML= window.KarniLang ? KarniLang.t('resendCode') : 'إعادة إرسال الرمز'; }
   },1000);
   expiryInt=setInterval(()=>{
     expiry--; const m=Math.floor(expiry/60).toString().padStart(2,'0'); const s=(expiry%60).toString().padStart(2,'0'); eTimer.textContent=`${m}:${s}`;
     if(expiry<=0){ 
       clearInterval(expiryInt); 
       eTimer.textContent='00:00'; eTimer.style.color='#ef4444'; 
-      showToast('انتهت صلاحية الرمز','error');
+      showToast(window.KarniLang?KarniLang.t('otpExpired'):'انتهت صلاحية الرمز','error');
       clearSignupOtpData();
     }
   },1000);
@@ -228,26 +261,13 @@ function startTimers(){
 function clearTimers(){ if(resendInt) clearInterval(resendInt); if(expiryInt) clearInterval(expiryInt); }
 
 function getFirebaseErrorMessage(error){
-  if(!navigator.onLine) return 'لا يوجد اتصال بالإنترنت';
   const code=error.code||'';
-  const msg=(error.message||'').toLowerCase();
-  switch(code){
-    case 'auth/invalid-email': return 'البريد الإلكتروني غير صحيح';
-    case 'auth/user-not-found': return 'البريد غير موجود';
-    case 'auth/wrong-password': return 'كلمة المرور غير صحيحة';
-    case 'auth/invalid-credential': return 'البريد أو كلمة المرور غير صحيحة';
-    case 'auth/email-already-in-use': return 'البريد مستخدم مسبقاً';
-    case 'auth/weak-password': return 'كلمة المرور ضعيفة جداً';
-    case 'auth/too-many-requests': return 'محاولات كثيرة جداً، حاول مرة أخرى لاحقاً';
-    case 'auth/network-request-failed': return 'فشل الاتصال بالشبكة، تحقق من الإنترنت';
-    case 'auth/missing-email': return 'الرجاء إدخال البريد الإلكتروني';
-    case 'auth/user-disabled': return 'تم تعطيل هذا الحساب';
-    default:
-      if(msg.includes('user-not-found')) return 'البريد غير موجود';
-      if(msg.includes('invalid-email')) return 'البريد غير صحيح';
-      if(msg.includes('network')) return 'لا يوجد اتصال بالإنترنت';
-      return error.message || 'حدث خطأ غير متوقع';
-  }
+  if(code==='auth/invalid-email') return window.KarniLang?KarniLang.t('invalidEmail'):'البريد غير صحيح';
+  if(code==='auth/user-not-found') return window.KarniLang?KarniLang.t('userNotFound'):'البريد غير موجود';
+  if(code==='auth/wrong-password' || code==='auth/invalid-credential') return window.KarniLang?KarniLang.t('wrongPassword'):'كلمة المرور غير صحيحة';
+  if(code==='auth/email-already-in-use') return 'البريد مستخدم مسبقاً';
+  if(code==='auth/weak-password') return 'كلمة المرور ضعيفة';
+  return error.message || 'حدث خطأ';
 }
 
 window.switchMode=function(mode){
@@ -257,8 +277,9 @@ window.switchMode=function(mode){
   document.getElementById('fullNameGroup').style.display=mode==='signup'?'block':'none';
   document.getElementById('confirmPasswordGroup').style.display=mode==='signup'?'block':'none';
   document.getElementById('forgotWrapper').style.display=mode==='login'?'block':'none';
-  document.getElementById('pageSubtitle').textContent=mode==='login'?'تسجيل الدخول إلى حسابك':'إنشاء حساب جديد';
-  document.getElementById('actionText').textContent=mode==='login'?'تسجيل الدخول':'إنشاء حساب';
+  const t = (k)=> window.KarniLang?KarniLang.t(k):k;
+  document.getElementById('pageSubtitle').textContent=mode==='login'?t('loginDesc'):t('signupDesc');
+  document.getElementById('actionText').textContent=mode==='login'?t('login'):t('signup');
   document.getElementById('actionIcon').className=mode==='login'?'fa-solid fa-right-to-bracket':'fa-solid fa-user-plus';
 }
 
@@ -271,64 +292,52 @@ window.handleAuth=async function(){
   const email=document.getElementById('emailInput').value.trim();
   const password=document.getElementById('passwordInput').value;
   const confirm=document.getElementById('confirmPasswordInput').value;
-  if(!email||!password){ showToast('الرجاء إدخال البريد وكلمة المرور','error'); return; }
-  if(!isValidEmail(email)){ showToast('البريد غير صحيح','error'); return; }
+  if(!email||!password){ showToast(window.KarniLang?KarniLang.t('requiredFields'):'أدخل البريد وكلمة المرور','error'); return; }
+  if(!isValidEmail(email)){ showToast(window.KarniLang?KarniLang.t('invalidEmail'):'البريد غير صحيح','error'); return; }
 
   if(currentMode==='signup'){
-    if(!fullName){ showToast('الرجاء إدخال الاسم الكامل','error'); return; }
-    if(password.length<6){ showToast('كلمة المرور ضعيفة - 6 أحرف على الأقل','error'); return; }
-    if(password!==confirm){ showToast('كلمة المرور غير متطابقة','error'); return; }
+    if(!fullName){ showToast(window.KarniLang?KarniLang.t('fullNameRequired'):'أدخل الاسم','error'); return; }
+    if(password.length<6){ showToast('6 أحرف على الأقل','error'); return; }
+    if(password!==confirm){ showToast(window.KarniLang?KarniLang.t('passwordMismatch'):'كلمة المرور غير متطابقة','error'); return; }
     if(isSending) return;
     try{
       isSending=true; isProcessing=true; setLoading(true);
       otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000; pendingData={fullName,email,password};
       await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:email,to_name:fullName,otp_code:otpCode,user_name:fullName,email:email,message:`رمز التحقق: ${otpCode}`});
       document.getElementById('otpEmailDisplay').textContent=email;
-      document.getElementById('otpTitle').textContent='تأكيد إنشاء الحساب';
       document.getElementById('otpModal').classList.add('active');
       document.getElementById('otpInput').value=''; setTimeout(()=>document.getElementById('otpInput').focus(),100);
-      startTimers(); showToast('تم إرسال رمز التحقق','success');
-    }catch(error){
-    alert(error.code);
-    alert(error.message);
-    console.error(error);
-}
+      startTimers(); showToast(window.KarniLang?KarniLang.t('otpSent'):'تم إرسال الرمز','success');
+    }catch(e){ showToast('فشل الإرسال','error'); console.error(e); }
     finally{ setLoading(false); isProcessing=false; isSending=false; }
   } else {
     try{
       isProcessing=true; setLoading(true);
-      const cred=await signInWithEmailAndPassword(auth,email,password);
-      if(!auth.currentUser){ showToast('فشل تسجيل الدخول','error'); return; }
+      await signInWithEmailAndPassword(auth,email,password);
       localStorage.setItem('loggedIn','true');
       localStorage.setItem('appVersion','10');
-      localStorage.setItem('userName_temp', auth.currentUser.displayName || email.split('@')[0]);
-      localStorage.setItem('userEmail_temp', auth.currentUser.email || email);
-      showToast('تم تسجيل الدخول بنجاح','success');
-      setTimeout(()=>{
-        if(auth.currentUser){
-          window.location.href='index.html';
-        }
-      },700);
+      showToast(window.KarniLang?KarniLang.t('loginSuccess'):'تم تسجيل الدخول','success');
+      setTimeout(()=>{ window.location.href='./index.html'; },700);
     }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
     finally{ setLoading(false); isProcessing=false; }
   }
 }
 
-// OTP - فقط لإنشاء الحساب
 window.verifyOtp=async function(){
   const input=document.getElementById('otpInput').value.trim();
-  if(input.length!==6 || !/^\d{6}$/.test(input)){ showToast('الرجاء إدخال رمز مكون من 6 أرقام','error'); return; }
-  if(!otpExpiry || Date.now()>otpExpiry){ showToast('انتهت صلاحية الرمز','error'); clearSignupOtpData(); clearTimers(); return; }
+  if(input.length!==6){ showToast('6 أرقام','error'); return; }
+  if(!otpExpiry || Date.now()>otpExpiry){ showToast(window.KarniLang?KarniLang.t('otpExpired'):'انتهت الصلاحية','error'); clearSignupOtpData(); clearTimers(); return; }
   if(!otpCode || input!==otpCode){ showToast('رمز غير صحيح','error'); return; }
-
   try{
     isProcessing=true; setLoading(true,'otp');
     const cred=await createUserWithEmailAndPassword(auth, pendingData.email, pendingData.password);
     const uid=cred.user.uid;
     await updateProfile(cred.user,{displayName:pendingData.fullName});
+    const savedLang = localStorage.getItem('karni_language')||'ar';
     await set(ref(db,`users/${uid}/profile`),{
       displayName:pendingData.fullName,
       email:pendingData.email,
+      language: savedLang,
       createdAt:new Date().toISOString()
     });
     await Promise.all([
@@ -341,14 +350,9 @@ window.verifyOtp=async function(){
     ]);
     localStorage.setItem('loggedIn','true');
     localStorage.setItem('appVersion','10');
-    clearTimers(); closeOtpModal();
-    clearSignupOtpData();
-    showToast('تم إنشاء الحساب بنجاح','success');
-    setTimeout(()=>{
-      if(auth.currentUser){
-        window.location.href='index.html';
-      }
-    },800);
+    clearTimers(); closeOtpModal(); clearSignupOtpData();
+    showToast(window.KarniLang?KarniLang.t('accountCreated'):'تم إنشاء الحساب','success');
+    setTimeout(()=>{ window.location.href='./index.html'; },800);
   }catch(e){ showToast(getFirebaseErrorMessage(e),'error'); }
   finally{ isProcessing=false; setLoading(false,'otp'); }
 }
@@ -358,105 +362,68 @@ window.resendOtp=async function(){
   try{
     isSending=true;
     otpCode=genOtp(); otpExpiry=Date.now()+5*60*1000;
-    const targetEmail = pendingData?.email || '';
-    const targetName = pendingData?.fullName || '';
-    await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:targetEmail,to_name:targetName,otp_code:otpCode,user_name:targetName,email:targetEmail,message:`رمزك الجديد: ${otpCode}`});
+    await emailjs.send("service_wkx3xnm","template_6z991zk",{to_email:pendingData.email,to_name:pendingData.fullName,otp_code:otpCode,user_name:pendingData.fullName,email:pendingData.email,message:`رمزك الجديد: ${otpCode}`});
     document.getElementById('otpInput').value=''; startTimers(); showToast('تم إرسال رمز جديد','success');
-  }catch(e){ showToast('فشل إرسال الرمز','error'); } finally{ isSending=false; }
+  }catch(e){ showToast('فشل الإرسال','error'); } finally{ isSending=false; }
 }
+window.closeOtpModal=function(){ document.getElementById('otpModal').classList.remove('active'); clearTimers(); }
 
-window.closeOtpModal=function(){ 
-  document.getElementById('otpModal').classList.remove('active'); 
-  clearTimers(); 
-  const input=document.getElementById('otpInput');
-  if(input) input.value='';
-}
-
-// ===== نسيت كلمة المرور - النظام الرسمي فقط - تم إصلاح actionCodeSettings =====
-window.openForgotModal=function(){ document.getElementById('forgotModal').classList.add('active'); document.getElementById('forgotEmailInput').value=document.getElementById('emailInput').value.trim(); setTimeout(()=>document.getElementById('forgotEmailInput').focus(),100); }
+window.openForgotModal=function(){ document.getElementById('forgotModal').classList.add('active'); document.getElementById('forgotEmailInput').value=document.getElementById('emailInput').value.trim(); }
 window.closeForgotModal=function(){ document.getElementById('forgotModal').classList.remove('active'); }
 
 window.sendForgotPassword=async function(){
   const email=document.getElementById('forgotEmailInput').value.trim();
   const btn=document.getElementById('forgotSendBtn');
-  if(!email){ showToast('الرجاء إدخال البريد','error'); return; }
-  if(!isValidEmail(email)){ showToast('البريد الإلكتروني غير صحيح','error'); return; }
+  if(!email){ showToast('أدخل البريد','error'); return; }
+  if(!isValidEmail(email)){ showToast('البريد غير صحيح','error'); return; }
   if(isSending) return;
   try{
     isSending=true; btn.disabled=true; btn.textContent='جاري الإرسال...';
-    console.log('[ForgotPassword] Attempting password reset for:', email);
-    console.log('[ForgotPassword] Auth instance:', auth);
-    console.log('[ForgotPassword] Current user:', auth.currentUser);
-    console.log('[ForgotPassword] Removing actionCodeSettings - testing simple call as requested');
-    
-    // تم إزالة actionCodeSettings مؤقتا - المشكلة كانت غالبا في url غير مسموح به في Authorized domains أو handleCodeInApp
-    // الآن نستخدم الاستدعاء البسيط: sendPasswordResetEmail(auth, email)
-    const result = await sendPasswordResetEmail(auth, email);
-    
-    console.log('[ForgotPassword] sendPasswordResetEmail result:', result);
-    console.log('[ForgotPassword] Success - If user exists in Firebase Auth, email should arrive. Check Gmail spam/junk too.');
-    console.log('[ForgotPassword] If still not arriving, check: 1) Firebase Console > Authentication > Templates > Password reset enabled, 2) Authorized domains includes your domain, 3) Email provider not blocking noreply@...');
-    
+    await sendPasswordResetEmail(auth, email);
     lastResetEmail=email;
     closeForgotModal();
     document.getElementById('successEmailDisplay').textContent=email;
     document.getElementById('successInstructionsModal').classList.add('active');
-    showToast('✅ تم إرسال رابط إعادة تعيين كلمة المرور بنجاح','success');
-  }catch(error){
-    console.error('[ForgotPassword] Full error object:', error);
-    console.error('[ForgotPassword] Error code:', error.code);
-    console.error('[ForgotPassword] Error message:', error.message);
-    console.error('[ForgotPassword] Error stack:', error.stack);
-    console.log('[ForgotPassword] Troubleshooting: If code is auth/user-not-found -> email not in Firebase Auth. If invalid-email -> bad format. If too-many-requests -> wait.');
-    showToast(getFirebaseErrorMessage(error),"error");
-  }
-  finally{ btn.disabled=false; btn.textContent='إرسال الرابط'; isSending=false; }
+    showToast('✅ تم الإرسال','success');
+  }catch(e){ showToast(getFirebaseErrorMessage(e),"error"); }
+  finally{ btn.disabled=false; btn.textContent= window.KarniLang?KarniLang.t('sendLink'):'إرسال الرابط'; isSending=false; }
 }
 
 window.openEmailProvider=function(){
-  const email = lastResetEmail || document.getElementById('successEmailDisplay').textContent || '';
+  const email = lastResetEmail || '';
   const domain = email.split('@')[1]?.toLowerCase() || '';
   let url = '';
-  if(domain.includes('gmail') || domain.includes('googlemail')){
-    url='https://mail.google.com';
-  } else if(domain.includes('outlook') || domain.includes('hotmail') || domain.includes('live')){
-    url='https://outlook.live.com/mail/';
-  } else if(domain.includes('yahoo')){
-    url='https://mail.yahoo.com';
-  } else {
-    showToast('📧 الرجاء فتح بريدك الإلكتروني يدوياً','info');
-    return;
-  }
+  if(domain.includes('gmail')) url='https://mail.google.com';
+  else if(domain.includes('outlook')||domain.includes('hotmail')||domain.includes('live')) url='https://outlook.live.com/mail/';
+  else if(domain.includes('yahoo')) url='https://mail.yahoo.com';
+  else { showToast('افتح بريدك يدوياً','info'); return; }
   window.open(url,'_blank');
 }
-
 window.closeSuccessInstructionsModal=function(){
   document.getElementById('successInstructionsModal').classList.remove('active');
   lastResetEmail='';
 }
 
-document.getElementById('otpModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeOtpModal(); });
-document.getElementById('forgotModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeForgotModal(); });
-document.getElementById('successInstructionsModal')?.addEventListener('click',(e)=>{ if(e.target===e.currentTarget) closeSuccessInstructionsModal(); });
-document.getElementById('otpInput')?.addEventListener('input',(e)=>{ e.target.value=e.target.value.replace(/\D/g,'').slice(0,6); });
-
-onAuthStateChanged(auth, (user)=>{
-  if(user){
-    const displayName=user.displayName || '';
-    const email=user.email || '';
-    if(displayName) localStorage.setItem('userName_temp', displayName);
-    if(email) localStorage.setItem('userEmail_temp', email);
-    localStorage.setItem('lastLoginTime', Date.now().toString());
-  }
+document.addEventListener('DOMContentLoaded', ()=>{
+  initLanguage();
 });
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js',{scope:'./'}).catch(()=>{});
+  });
+}
 
 function setLoading(isLoading,ctx='main'){
   const btn=document.getElementById('actionBtn');
   if(ctx==='main'){
-    btn.disabled=isLoading; btn.style.opacity=isLoading?'0.7':'1';
+    btn.disabled=isLoading;
     const icon=document.getElementById('actionIcon');
-    if(isLoading){ icon.className='fa-solid fa-spinner fa-spin'; document.getElementById('actionText').textContent='جاري المعالجة...'; }
-    else{ if(currentMode==='login'){ icon.className='fa-solid fa-right-to-bracket'; document.getElementById('actionText').textContent='تسجيل الدخول'; } else { icon.className='fa-solid fa-user-plus'; document.getElementById('actionText').textContent='إنشاء حساب'; } }
+    if(isLoading){ icon.className='fa-solid fa-spinner fa-spin'; document.getElementById('actionText').textContent='...'; }
+    else{ 
+      if(currentMode==='login'){ icon.className='fa-solid fa-right-to-bracket'; document.getElementById('actionText').textContent= window.KarniLang?KarniLang.t('login'):'تسجيل الدخول'; } 
+      else { icon.className='fa-solid fa-user-plus'; document.getElementById('actionText').textContent= window.KarniLang?KarniLang.t('signup'):'إنشاء حساب'; } 
+    }
   }
 }
 </script>
