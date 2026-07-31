@@ -1,0 +1,47 @@
+{
+  // === الهوية ===
+  // name: الاسم الكامل الظاهر في شاشة التثبيت
+  // short_name: الاسم المختصر تحت الأيقونة
+  // description: وصف التطبيق لـ Play Console
+  // id: معرف ثابت ومستقر - مهم جداً لـ TWA و Google Play لا تغيره أبداً
+  // lang: اللغة الافتراضية ar
+  // dir: اتجاه الكتابة rtl للعربية
+  "name": "Karni Pro",
+  "short_name": "Karni",
+  "description": "نظام إدارة الكرني الذكي لإدارة العملاء والدفعات والتقارير.",
+  "id": "karni-pro-pwa",
+  "lang": "ar",
+  "dir": "rtl",
+
+  // === التشغيل ===
+  // start_url: نقطة الدخول، ?utm_source=pwa يسمح بتمرير باراميترات إضافية مثل ?shortcut=customers
+  // scope: نطاق التطبيق، "./" مهم لـ GitHub Pages (مثل https://username.github.io/karni-pro/)
+  // display: standalone يخفي شريط المتصفح ليبدو كتطبيق أصلي
+  // orientation: portrait للهواتف
+  // theme_color / background_color: ألوان التطبيق #0f766e نفس لون Karni Pro
+  "start_url": "./index.html?utm_source=pwa",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#0f766e",
+  "background_color": "#f6fcfb",
+
+  // === الأيقونات ===
+  // icon-192.png و icon-512.png يجب أن تكون في جذر الموقع
+  // purpose any = أيقونة عادية
+  // purpose maskable = أيقونة تتكيف مع أشكال Android المختلفة
+  "icons": [ ... ],
+
+  // === الاختصارات ===
+  // تظهر عند الضغط المطول على أيقونة التطبيق في Android
+  "shortcuts": [ الرئيسية, العملاء, التقارير, المتجر ],
+
+  // === لقطات الشاشة ===
+  // مطلوبة لـ Google Play Console عند رفع PWA
+  "screenshots": [ ... ],
+
+  // === ملاحظة مهمة ===
+  // لا تضع أي مفاتيح Firebase هنا أبداً
+  // Firebase يبقى فقط في firebase.js
+  // manifest مسؤول فقط عن تعريف PWA
+}
