@@ -30,24 +30,24 @@ const CACHE_NAME = CACHE_VERSION;
 // App Shell - Core files required for offline functionality
 // Use relative paths for GitHub Pages compatibility (./ instead of /)
 const APP_SHELL = [
-  './',
-  './index.html',
-  './login.html',
-  './account-settings.html',
-  './person.html',
-  './reports.html',
-  './route.html',
-  './products.html',
-  './matjar.html',
-  './reglematjar.html',
-  './rapport.html',
-  './reset-password.html',
-  './firebase.js',
-  './lang.js',
-  './shared.js',
-  './manifest.webmanifest',
-  './icon-192.png',
-  './icon-512.png'
+  '/',
+  '/index.html',
+  '/login.html',
+  '/account-settings.html',
+  '/person.html',
+  '/reports.html',
+  '/route.html',
+  '/products.html',
+  '/matjar.html',
+  '/reglematjar.html',
+  '/rapport.html',
+  '/reset-password.html',
+  '/firebase.js',
+  '/lang.js',
+  '/shared.js',
+  '/manifest.webmanifest',
+  '/icon-192.png',
+  '/icon-512.png'
 ];
 
 // Optional assets - will be cached if exist, won't fail if missing
