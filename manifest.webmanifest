@@ -104,14 +104,14 @@
   ],
   "screenshots": [
     {
-      "src": "/icon-512.png",
+      "src": "/screenshot-1.png",
       "sizes": "1080x1920",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "لوحة تحكم Karni Pro"
     },
     {
-      "src": "//icon-192.png",
+      "src": "/screenshot-2.png",
       "sizes": "1920x1080",
       "type": "image/png",
       "form_factor": "wide",
