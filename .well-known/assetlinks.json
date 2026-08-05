@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.karnipro.app",
+      "sha256_cert_fingerprints": [
+        "B4:82:46:30:FD:BB:63:60:91:4A:D3:A8:51:EE:CF:1E:FA:9C:71:80:52:4A:F2:5D:29:00:E4:A8:18:7C:A9:D1"
+      ]
+    }
+  }
+]
