@@ -1,14 +1,8 @@
-[
-  {
-    "relation": [
-      "delegate_permission/common.handle_all_urls"
-    ],
-    "target": {
-      "namespace": "android_app",
-      "package_name": "com.abdohou.karnipro",
-      "sha256_cert_fingerprints": [
-        "AA:BB:CC:DD:EE:FF:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:11:22:33:44:55:66:77:88:99:AA"
-      ]
-    }
-  }
-]
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "dev.workers.hounaabdelali2001.m.twa",
+        "sha256_cert_fingerprints": ["53:60:A4:CE:97:8E:73:97:95:1D:D3:93:D6:9E:F3:42:61:AB:38:90:95:3C:DB:CB:C1:9E:23:6A:03:CD:47:C8"]
+      }
+    }]
