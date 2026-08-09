@@ -19,25 +19,6 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
-</script><script>
-(function() {
-  if (window.__playableTouchPatchInstalled) return;
-  window.__playableTouchPatchInstalled = true;
-  var origAdd = EventTarget.prototype.addEventListener;
-  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
-  EventTarget.prototype.addEventListener = function(type, listener, options) {
-    if (blockedTypes[type]) {
-      if (options === undefined || options === null) {
-        options = { passive: true };
-      } else if (typeof options === 'boolean') {
-        options = { capture: options, passive: true };
-      } else {
-        options = Object.assign({}, options, { passive: true });
-      }
-    }
-    return origAdd.call(this, type, listener, options);
-  };
-})();
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <script>
 (function() {
@@ -281,7 +262,9 @@ window.showAbout = function(){ const t=(k)=>window.KarniLang?KarniLang.t(k):k; o
 window.showPrivacy = function(){ const t=(k)=>window.KarniLang?KarniLang.t(k):k; openDialog({title:t('privacyPolicy'), message:t('privacyMsg'), icon:'shield-halved', iconType:'info', hideCancel:true, confirmText:t('close')}); }
 
 document.addEventListener('DOMContentLoaded', ()=>{
+  // Ensure lang.js loaded
   if(!window.KarniLang){ console.error("KarniLang not loaded - check lang.js"); return; }
+  console.log("Initial KarniLang:", KarniLang.getLanguage(), "LS:", localStorage.getItem("karni_language"));
   KarniLang.applyTranslations(document);
   loadTheme(); setTodayDate(); initConnectionListener(); initEyeState();
   document.getElementById('searchInput').addEventListener('input', ()=>{ showAutocomplete(); searchCustomer(); });
@@ -347,36 +330,52 @@ function initUserProfile(){
       const profileRef = ref(db, `users/${currentUid}/profile`);
       const snap = await get(profileRef);
       let profile = snap.exists() ? snap.val() : {};
+      console.log("Firebase profile:", profile);
+      console.log("Firebase language:", profile.language);
+      console.log("Current language:", window.KarniLang ? KarniLang.getLanguage() : 'no KarniLang');
+      console.log("LocalStorage:", localStorage.getItem("karni_language"));
+
       let displayName = profile.displayName || user.displayName || '';
       let email = profile.email || user.email || '';
       updateDrawerProfileUI(displayName, email);
+
       if(profile.language && window.KarniLang){
         const lang = profile.language;
+        console.log("[Fix] Applying Firebase language:", lang);
         await KarniLang.setLanguage(lang);
         KarniLang.applyDirection(lang);
         KarniLang.applyTranslations(document);
         localStorage.setItem("karni_language", lang);
+        console.log("Translation:", KarniLang.t("connected"));
+        console.log("Document lang:", document.documentElement.lang);
+        console.log("After set - KarniLang:", KarniLang.getLanguage(), "HTML lang:", document.documentElement.lang, "dir:", document.documentElement.dir);
       } else {
         if(window.KarniLang){
           KarniLang.applyTranslations(document);
         }
       }
+
       if(profile.theme){ loadTheme(profile.theme); }
+
       if(profileListenerUnsub){ try{profileListenerUnsub();}catch(e){} }
       profileListenerUnsub = onValue(profileRef, async (s)=>{
         if(!s.exists()) return;
         const data = s.val();
+        console.log("Realtime profile update:", data);
         const dName = data.displayName || user.displayName || '';
         const dEmail = data.email || user.email || '';
         updateDrawerProfileUI(dName, dEmail);
         if(data.language && window.KarniLang && data.language !== KarniLang.getLanguage()){
+          console.log("[Realtime] Switching language to", data.language);
           await KarniLang.setLanguage(data.language);
           KarniLang.applyDirection(data.language);
           KarniLang.applyTranslations(document);
           localStorage.setItem("karni_language", data.language);
+          console.log("Realtime Translation:", KarniLang.t("connected"));
         }
         if(data.theme){ loadTheme(data.theme); }
       });
+
     }catch(e){
       console.warn('Profile load error', e);
       updateDrawerProfileUI(user.displayName, user.email);
@@ -480,21 +479,7 @@ function renderCustomers(customers){
 function updateStats(s){ document.getElementById('totalAmount').textContent=formatAmount(s.totalAmount||0); document.getElementById('totalCustomers').textContent=s.customersCount||0; document.getElementById('todayCount').textContent=s.todayCount||0; document.getElementById('overdueCount').textContent=s.overdueCount||0; const upEl=document.getElementById('upcomingCount'); if(upEl) upEl.textContent=s.upcomingCount||0; }
 window.showAddModal = ()=>{ document.getElementById('customerId').value=''; document.getElementById('customerName').value=''; document.getElementById('customerPhone').value=''; document.getElementById('customerCity').value=''; setTodayDate(); document.getElementById('customerModal').classList.add('active'); if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('customerModal')); }
 window.closeModal = ()=> document.getElementById('customerModal').classList.remove('active');
-window.saveCustomer = async (e)=>{ 
-  e.preventDefault(); 
-  const cityVal=document.getElementById('customerCity').value.trim(); 
-  const data={ 
-    name:document.getElementById('customerName').value.trim(), 
-    amount:0, 
-    phone:document.getElementById('customerPhone').value.trim(), 
-    city:cityVal, 
-    ville:cityVal, 
-    date:document.getElementById('customerDate').value, 
-    updatedAt:new Date().toISOString() 
-  }; 
-  await addCustomer(data); 
-  closeModal(); 
-}
+window.saveCustomer = async (e)=>{ e.preventDefault(); const cityVal=document.getElementById('customerCity').value.trim(); const data={ name:document.getElementById('customerName').value.trim(), amount:0, phone:document.getElementById('customerPhone').value.trim(), city:cityVal, ville:cityVal, date:document.getElementById('customerDate').value, updatedAt:new Date().toISOString() }; await addCustomer(data); closeModal(); }
 window.renameCustomer = async (id)=>{
   const t=(k,p)=>window.KarniLang?KarniLang.t(k,p):k;
   if(!currentUid){ showToastPro(t('loginRequired'),'error'); return; }
