@@ -19,7 +19,16 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
-</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+</script>
+<style>
+/* --- الإضافة فقط --- */
+.add-amounts-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.add-amount-box{border-radius:14px;padding:10px 12px;border:1.5px solid var(--border);background:var(--bg)}
+.add-amount-label{font-size:11.5px;font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.add-amount-input{width:100%;border:none;outline:none;background:transparent;font-family:'Cairo';font-size:14px;font-weight:700;color:var(--text)}
+.add-amount-box.paid-box{border-color:#fecaca;background:#fff5f5}
+.add-amount-box.received-box{border-color:#bbf7d0;background:#f0fdf4}
+</style>
 <script>
 (function() {
   if (window.__playableTouchPatchInstalled) return;
@@ -39,7 +48,7 @@
     return origAdd.call(this, type, listener, options);
   };
 })();
-</script>
+</script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
@@ -196,7 +205,22 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <button class="fab" onclick="showAddModal()"><i class="fas fa-plus"></i></button>
 
-<div class="dialog-overlay" id="customerModal"><div class="dialog-box" style="max-width:420px"><div class="dialog-icon edit"><i class="fas fa-user-plus"></i></div><div class="dialog-title" data-i18n="addCustomer">إضافة زبون جديد</div><form id="customerForm" onsubmit="saveCustomer(event)"><input type="hidden" id="customerId"><input type="text" class="dialog-input" id="customerName" data-i18n-placeholder="customerNamePlaceholder" placeholder="اسم الزبون *"><input type="tel" class="dialog-input" id="customerPhone" data-i18n-placeholder="phonePlaceholder" placeholder="رقم الهاتف"><input type="text" class="dialog-input" id="customerCity" data-i18n-placeholder="cityPlaceholder" placeholder="المدينة"><input type="date" class="dialog-input" id="customerDate"><div class="dialog-actions"><button type="button" class="dialog-btn dialog-btn-cancel" onclick="closeModal()"><i class="fas fa-xmark"></i> <span data-i18n="cancel">إلغاء</span></button><button type="submit" class="dialog-btn dialog-btn-confirm"><i class="fas fa-check"></i> <span data-i18n="save">حفظ</span></button></div></form></div></div>
+<!-- MODAL تم تعديله فقط هنا - إضافة دفع واستلام -->
+<div class="dialog-overlay" id="customerModal"><div class="dialog-box" style="max-width:420px"><div class="dialog-icon edit"><i class="fas fa-user-plus"></i></div><div class="dialog-title" data-i18n="addCustomer">إضافة زبون جديد</div><form id="customerForm" onsubmit="saveCustomer(event)"><input type="hidden" id="customerId"><input type="text" class="dialog-input" id="customerName" data-i18n-placeholder="customerNamePlaceholder" placeholder="اسم الزبون *"><input type="tel" class="dialog-input" id="customerPhone" data-i18n-placeholder="phonePlaceholder" placeholder="رقم الهاتف"><input type="text" class="dialog-input" id="customerCity" data-i18n-placeholder="cityPlaceholder" placeholder="المدينة"><input type="date" class="dialog-input" id="customerDate">
+
+<!-- البطاقات الجديدة - دفع واستلام -->
+<div class="add-amounts-row">
+  <div class="add-amount-box received-box">
+    <div class="add-amount-label"><i class="fas fa-arrow-down" style="color:#00b894"></i> <span data-i18n="receivedLabel">استلام</span></div>
+    <input type="number" inputmode="decimal" step="any" class="add-amount-input" id="customerReceived" placeholder="0">
+  </div>
+  <div class="add-amount-box paid-box">
+    <div class="add-amount-label"><i class="fas fa-arrow-up" style="color:#ff6b6b"></i> <span data-i18n="paidLabel">دفع</span></div>
+    <input type="number" inputmode="decimal" step="any" class="add-amount-input" id="customerPaid" placeholder="0">
+  </div>
+</div>
+
+<div class="dialog-actions"><button type="button" class="dialog-btn dialog-btn-cancel" onclick="closeModal()"><i class="fas fa-xmark"></i> <span data-i18n="cancel">إلغاء</span></button><button type="submit" class="dialog-btn dialog-btn-confirm"><i class="fas fa-check"></i> <span data-i18n="save">حفظ</span></button></div></form></div></div>
 
 <div class="city-modal" id="cityModal" onclick="if(event.target===this) closeCityFilter()"><div class="city-modal-content"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><b><i class="fas fa-city"></i> <span data-i18n="city">المدينة</span></b><button class="icon-btn" style="width:32px;height:32px;background:var(--bg);color:var(--text)" onclick="closeCityFilter()"><i class="fas fa-times" style="font-size:12px"></i></button></div><div id="cityList"></div><button class="dialog-btn dialog-btn-confirm" style="width:100%;margin-top:12px" onclick="clearCityFilter()"><i class="fas fa-rotate"></i> <span data-i18n="all">الكل</span></button></div></div>
 
@@ -262,9 +286,7 @@ window.showAbout = function(){ const t=(k)=>window.KarniLang?KarniLang.t(k):k; o
 window.showPrivacy = function(){ const t=(k)=>window.KarniLang?KarniLang.t(k):k; openDialog({title:t('privacyPolicy'), message:t('privacyMsg'), icon:'shield-halved', iconType:'info', hideCancel:true, confirmText:t('close')}); }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  // Ensure lang.js loaded
   if(!window.KarniLang){ console.error("KarniLang not loaded - check lang.js"); return; }
-  console.log("Initial KarniLang:", KarniLang.getLanguage(), "LS:", localStorage.getItem("karni_language"));
   KarniLang.applyTranslations(document);
   loadTheme(); setTodayDate(); initConnectionListener(); initEyeState();
   document.getElementById('searchInput').addEventListener('input', ()=>{ showAutocomplete(); searchCustomer(); });
@@ -330,54 +352,35 @@ function initUserProfile(){
       const profileRef = ref(db, `users/${currentUid}/profile`);
       const snap = await get(profileRef);
       let profile = snap.exists() ? snap.val() : {};
-      console.log("Firebase profile:", profile);
-      console.log("Firebase language:", profile.language);
-      console.log("Current language:", window.KarniLang ? KarniLang.getLanguage() : 'no KarniLang');
-      console.log("LocalStorage:", localStorage.getItem("karni_language"));
-
       let displayName = profile.displayName || user.displayName || '';
       let email = profile.email || user.email || '';
       updateDrawerProfileUI(displayName, email);
-
       if(profile.language && window.KarniLang){
         const lang = profile.language;
-        console.log("[Fix] Applying Firebase language:", lang);
         await KarniLang.setLanguage(lang);
         KarniLang.applyDirection(lang);
         KarniLang.applyTranslations(document);
         localStorage.setItem("karni_language", lang);
-        console.log("Translation:", KarniLang.t("connected"));
-        console.log("Document lang:", document.documentElement.lang);
-        console.log("After set - KarniLang:", KarniLang.getLanguage(), "HTML lang:", document.documentElement.lang, "dir:", document.documentElement.dir);
       } else {
-        if(window.KarniLang){
-          KarniLang.applyTranslations(document);
-        }
+        if(window.KarniLang){ KarniLang.applyTranslations(document); }
       }
-
       if(profile.theme){ loadTheme(profile.theme); }
-
       if(profileListenerUnsub){ try{profileListenerUnsub();}catch(e){} }
       profileListenerUnsub = onValue(profileRef, async (s)=>{
         if(!s.exists()) return;
         const data = s.val();
-        console.log("Realtime profile update:", data);
         const dName = data.displayName || user.displayName || '';
         const dEmail = data.email || user.email || '';
         updateDrawerProfileUI(dName, dEmail);
         if(data.language && window.KarniLang && data.language !== KarniLang.getLanguage()){
-          console.log("[Realtime] Switching language to", data.language);
           await KarniLang.setLanguage(data.language);
           KarniLang.applyDirection(data.language);
           KarniLang.applyTranslations(document);
           localStorage.setItem("karni_language", data.language);
-          console.log("Realtime Translation:", KarniLang.t("connected"));
         }
         if(data.theme){ loadTheme(data.theme); }
       });
-
     }catch(e){
-      console.warn('Profile load error', e);
       updateDrawerProfileUI(user.displayName, user.email);
       if(window.KarniLang){ KarniLang.applyTranslations(document); }
     }
@@ -438,6 +441,7 @@ window.clearSearch = ()=>{ document.getElementById('searchInput').value=''; docu
 window.openReports = ()=> window.location.href='rapport.html';
 window.openRoute = ()=> window.location.href='route.html';
 window.openDetails = (id)=> window.location.href='person.html?id='+id;
+
 async function addCustomer(data){
   const t=(k)=>window.KarniLang?KarniLang.t(k):k;
   if(!currentUid || !customersRef){ showToastPro(t('loginRequired'),'error'); return; }
@@ -477,9 +481,53 @@ function renderCustomers(customers){
   updateStats({totalAmount, customersCount, todayCount, overdueCount, upcomingCount});
 }
 function updateStats(s){ document.getElementById('totalAmount').textContent=formatAmount(s.totalAmount||0); document.getElementById('totalCustomers').textContent=s.customersCount||0; document.getElementById('todayCount').textContent=s.todayCount||0; document.getElementById('overdueCount').textContent=s.overdueCount||0; const upEl=document.getElementById('upcomingCount'); if(upEl) upEl.textContent=s.upcomingCount||0; }
-window.showAddModal = ()=>{ document.getElementById('customerId').value=''; document.getElementById('customerName').value=''; document.getElementById('customerPhone').value=''; document.getElementById('customerCity').value=''; setTodayDate(); document.getElementById('customerModal').classList.add('active'); if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('customerModal')); }
+
+window.showAddModal = ()=>{
+  document.getElementById('customerId').value='';
+  document.getElementById('customerName').value='';
+  document.getElementById('customerPhone').value='';
+  document.getElementById('customerCity').value='';
+  document.getElementById('customerPaid').value='';
+  document.getElementById('customerReceived').value='';
+  setTodayDate();
+  document.getElementById('customerModal').classList.add('active');
+  if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('customerModal'));
+}
 window.closeModal = ()=> document.getElementById('customerModal').classList.remove('active');
-window.saveCustomer = async (e)=>{ e.preventDefault(); const cityVal=document.getElementById('customerCity').value.trim(); const data={ name:document.getElementById('customerName').value.trim(), amount:0, phone:document.getElementById('customerPhone').value.trim(), city:cityVal, ville:cityVal, date:document.getElementById('customerDate').value, updatedAt:new Date().toISOString() }; await addCustomer(data); closeModal(); }
+
+// تم تعديل هذه الدالة فقط لإضافة دفع واستلام
+window.saveCustomer = async (e)=>{
+  e.preventDefault();
+  const cityVal=document.getElementById('customerCity').value.trim();
+  const paidVal = parseFloat(document.getElementById('customerPaid').value) || 0;
+  const receivedVal = parseFloat(document.getElementById('customerReceived').value) || 0;
+
+  // إنشاء العمليات
+  let operations = [];
+  const now = new Date();
+  const todayStr = now.toISOString().split('T')[0];
+  const timeStr = now.toTimeString().slice(0,5);
+  
+  if(receivedVal > 0) operations.push({type:'received', amount:receivedVal, date:todayStr, time:timeStr});
+  if(paidVal > 0) operations.push({type:'paid', amount:paidVal, date:todayStr, time:timeStr});
+
+  const currentBalance = paidVal - receivedVal; // لأن amount الأساسي 0
+
+  const data={
+    name:document.getElementById('customerName').value.trim(),
+    amount:0,
+    phone:document.getElementById('customerPhone').value.trim(),
+    city:cityVal,
+    ville:cityVal,
+    date:document.getElementById('customerDate').value,
+    operations: operations,
+    currentBalance: currentBalance,
+    updatedAt:new Date().toISOString()
+  };
+  await addCustomer(data);
+  closeModal();
+}
+
 window.renameCustomer = async (id)=>{
   const t=(k,p)=>window.KarniLang?KarniLang.t(k,p):k;
   if(!currentUid){ showToastPro(t('loginRequired'),'error'); return; }
