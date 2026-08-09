@@ -20,6 +20,26 @@
   };
 })();
 </script><script>window.Intl=window.Intl||{};Intl.t=function(s){return(Intl._locale&&Intl._locale[s])||s;};</script>
+<script>
+(function() {
+  if (window.__playableTouchPatchInstalled) return;
+  window.__playableTouchPatchInstalled = true;
+  var origAdd = EventTarget.prototype.addEventListener;
+  var blockedTypes = { touchstart: 1, touchmove: 1, wheel: 1 };
+  EventTarget.prototype.addEventListener = function(type, listener, options) {
+    if (blockedTypes[type]) {
+      if (options === undefined || options === null) {
+        options = { passive: true };
+      } else if (typeof options === 'boolean') {
+        options = { capture: options, passive: true };
+      } else {
+        options = Object.assign({}, options, { passive: true });
+      }
+    }
+    return origAdd.call(this, type, listener, options);
+  };
+})();
+</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0f766e">
@@ -105,13 +125,12 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-h
 .drawer-footer{padding:14px;text-align:center;font-size:10.5px;color:var(--text-muted)}
 .dialog-overlay{position:fixed;inset:0;background:rgba(15,23,42,0.55);backdrop-filter:blur(14px);z-index:5000;display:none;align-items:center;justify-content:center;padding:16px}
 .dialog-overlay.active{display:flex}
-.dialog-box{background:var(--card);border-radius:22px;padding:20px;width:100%;max-width:420px;box-shadow:0 20px 50px rgba(0,0,0,0.22);border:1px solid var(--border);max-height:92vh;overflow-y:auto}
+.dialog-box{background:var(--card);border-radius:22px;padding:20px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,0.22);border:1px solid var(--border)}
 .dialog-icon{width:52px;height:52px;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:20px}
 .dialog-icon.edit{background:#e0f2f1;color:#0f766e} .dialog-icon.danger{background:#fee2e2;color:#dc2626} .dialog-icon.info{background:#dbeafe;color:#2563eb}
-.dialog-title{text-align:center;font-size:16px;font-weight:800;margin-bottom:12px}
+.dialog-title{text-align:center;font-size:16px;font-weight:800;margin-bottom:6px}
 .dialog-msg{text-align:center;font-size:12.5px;color:var(--text-muted);margin-bottom:16px}
-.dialog-input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:'Cairo';font-size:14px;background:var(--bg);margin-bottom:14px;outline:none}
-.dialog-input:focus{border-color:var(--primary)}
+.dialog-input{width:100%;padding:13px 14px;border:1.5px solid var(--border);border-radius:12px;font-family:'Cairo';font-size:14px;background:var(--bg);margin-bottom:14px}
 .dialog-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dialog-btn{padding:12px;border:none;border-radius:12px;font-weight:800;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Cairo'}
 .dialog-btn-cancel{background:var(--bg);color:var(--text-muted);border:1px solid var(--border)} .dialog-btn-confirm{background:var(--gradient);color:white} .dialog-btn-danger{background:#ef4444;color:white}
@@ -124,14 +143,6 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-h
 .city-modal-content{background:var(--card);border-radius:22px;padding:18px;width:100%;max-width:360px;box-shadow:var(--shadow-lg);border:1px solid var(--border)}
 .city-item{padding:12px 14px;border-radius:12px;background:var(--bg);border:1.5px solid var(--border);margin-bottom:6px;cursor:pointer;display:flex;justify-content:space-between}
 .city-item.active{background:var(--primary);color:white}
-/* ==== إضافة الدفع والاستلام ==== */
-.add-amounts-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-.add-amount-box{border-radius:14px;padding:12px;border:1.5px solid var(--border);background:var(--bg);transition:all .2s}
-.add-amount-box:focus-within{border-color:var(--primary);box-shadow:0 0 0 3px rgba(15,118,110,.1);background:white}
-.add-amount-label{font-size:11.5px;font-weight:800;display:flex;align-items:center;gap:6px;margin-bottom:8px;color:var(--text)}
-.add-amount-input{width:100%;border:none;outline:none;background:transparent;font-family:'Cairo';font-size:15px;font-weight:800;color:var(--text)}
-.add-amount-box.paid-box{border-color:#fecaca;background:#fff5f5}
-.add-amount-box.received-box{border-color:#bbf7d0;background:#f0fdf4}
 </style>
 </head>
 <body>
@@ -139,7 +150,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-h
 <div class="drawer" id="drawer">
 <div class="drawer-header">
 <div class="drawer-top"><span style="font-weight:800;font-size:13px" data-i18n="mainMenu">القائمة الرئيسية</span><button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button></div>
-<div class="drawer-user" onclick="openAccountSettings()" title="إعدادات الحساب">
+<div class="drawer-user" onclick="openAccountSettings()" data-i18n-title="accountSettings" title="إعدادات الحساب">
 <div class="drawer-avatar" id="drawerUserAvatar">•</div>
 <div class="drawer-user-info">
 <div class="drawer-user-name" id="drawerUserName">...</div>
@@ -159,7 +170,7 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-h
 <div class="drawer-card"><div class="drawer-section-title"><i class="fas fa-headset"></i> <span data-i18n="support">الدعم</span></div><div class="drawer-item" onclick="showAbout()"><i class="fas fa-circle-info"></i> <span data-i18n="aboutApp">حول التطبيق</span></div><div class="drawer-item" onclick="showPrivacy()"><i class="fas fa-shield-halved"></i> <span data-i18n="privacyPolicy">سياسة الخصوصية</span></div><div class="drawer-item" onclick="contactUs()"><i class="fas fa-headset"></i> <span data-i18n="contactUs">تواصل معنا</span></div></div>
 <div class="drawer-card"><div class="drawer-item danger" onclick="logoutKarni()"><i class="fas fa-right-from-bracket"></i> <span data-i18n="logout">تسجيل الخروج</span></div></div>
 </div>
-<div class="drawer-footer">Karni Pro © 2026 • صنع بحب في المغرب</div>
+<div class="drawer-footer" data-i18n="madeWithLove">Karni Pro © 2026 • صنع بحب في المغرب</div>
 </div>
 
 <header class="header">
@@ -177,46 +188,21 @@ body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--text);min-h
 
 <div class="actions-row"><button class="action-btn primary" onclick="openReports()"><i class="fas fa-chart-simple"></i> <span data-i18n="reports">التقارير</span></button><button class="action-btn" onclick="openRoute()"><i class="fas fa-route"></i> <span data-i18n="route">المسار</span></button></div>
 
-<div class="search-wrapper" id="searchWrapper"><div class="search-box"><i class="fas fa-search"></i><input type="text" placeholder="ابحث عن زبون..." id="searchInput" autocomplete="off"><i class="fas fa-xmark" id="clearSearchBtn" onclick="clearSearch()" style="display:none;cursor:pointer;width:22px;height:22px;background:var(--bg);border-radius:50%;align-items:center;justify-content:center;font-size:11px"></i></div><div class="autocomplete-list" id="autocompleteList"></div></div>
+<div class="search-wrapper" id="searchWrapper"><div class="search-box"><i class="fas fa-search"></i><input type="text" data-i18n-placeholder="searchPlaceholder" placeholder="ابحث عن زبون..." id="searchInput" autocomplete="off"><i class="fas fa-xmark" id="clearSearchBtn" onclick="clearSearch()" style="display:none;cursor:pointer;width:22px;height:22px;background:var(--bg);border-radius:50%;align-items:center;justify-content:center;font-size:11px"></i></div><div class="autocomplete-list" id="autocompleteList"></div></div>
 
-<div class="filter-tabs"><button class="filter-tab active" data-filter="all" onclick="filterBy('all')"><i class="fas fa-layer-group"></i> الكل</button><button class="filter-tab" data-filter="today" onclick="filterBy('today')"><i class="fas fa-sun"></i> اليوم</button><button class="filter-tab" data-filter="overdue" onclick="filterBy('overdue')"><i class="fas fa-circle-exclamation"></i> متأخر</button><button class="filter-tab" data-filter="upcoming" onclick="filterBy('upcoming')"><i class="fas fa-clock"></i> قادم</button><button class="filter-tab" id="cityFilterBtn" onclick="openCityFilter()"><i class="fas fa-city"></i> المدينة</button></div>
+<div class="filter-tabs"><button class="filter-tab active" data-filter="all" onclick="filterBy('all')"><i class="fas fa-layer-group"></i> <span data-i18n="all">الكل</span></button><button class="filter-tab" data-filter="today" onclick="filterBy('today')"><i class="fas fa-sun"></i> <span data-i18n="today">اليوم</span></button><button class="filter-tab" data-filter="overdue" onclick="filterBy('overdue')"><i class="fas fa-circle-exclamation"></i> <span data-i18n="overdue">متأخر</span></button><button class="filter-tab" data-filter="upcoming" onclick="filterBy('upcoming')"><i class="fas fa-clock"></i> <span data-i18n="upcoming">قادم</span></button><button class="filter-tab" id="cityFilterBtn" onclick="openCityFilter()"><i class="fas fa-city"></i> <span data-i18n="city">المدينة</span></button></div>
 
-<div class="customers-list" id="customersList"><div style="text-align:center;padding:48px;color:var(--text-muted)">جاري التحميل...</div></div>
+<div class="customers-list" id="customersList"><div style="text-align:center;padding:48px;color:var(--text-muted)" data-i18n="loading">جاري التحميل...</div></div>
 
 <button class="fab" onclick="showAddModal()"><i class="fas fa-plus"></i></button>
 
-<!-- نافذة إضافة زبون - فيها الدفع والاستلام -->
-<div class="dialog-overlay" id="customerModal"><div class="dialog-box" style="max-width:440px">
-<div class="dialog-icon edit"><i class="fas fa-user-plus"></i></div>
-<div class="dialog-title">إضافة زبون جديد</div>
-<form id="customerForm" onsubmit="saveCustomer(event)">
-<input type="hidden" id="customerId">
-<input type="text" class="dialog-input" id="customerName" placeholder="اسم الزبون *" required>
-<input type="tel" class="dialog-input" id="customerPhone" placeholder="رقم الهاتف">
-<input type="text" class="dialog-input" id="customerCity" placeholder="المدينة">
-<input type="date" class="dialog-input" id="customerDate">
+<div class="dialog-overlay" id="customerModal"><div class="dialog-box" style="max-width:420px"><div class="dialog-icon edit"><i class="fas fa-user-plus"></i></div><div class="dialog-title" data-i18n="addCustomer">إضافة زبون جديد</div><form id="customerForm" onsubmit="saveCustomer(event)"><input type="hidden" id="customerId"><input type="text" class="dialog-input" id="customerName" data-i18n-placeholder="customerNamePlaceholder" placeholder="اسم الزبون *"><input type="tel" class="dialog-input" id="customerPhone" data-i18n-placeholder="phonePlaceholder" placeholder="رقم الهاتف"><input type="text" class="dialog-input" id="customerCity" data-i18n-placeholder="cityPlaceholder" placeholder="المدينة"><input type="date" class="dialog-input" id="customerDate"><div class="dialog-actions"><button type="button" class="dialog-btn dialog-btn-cancel" onclick="closeModal()"><i class="fas fa-xmark"></i> <span data-i18n="cancel">إلغاء</span></button><button type="submit" class="dialog-btn dialog-btn-confirm"><i class="fas fa-check"></i> <span data-i18n="save">حفظ</span></button></div></form></div></div>
 
-<!-- بطاقتين جديدتين -->
-<div class="add-amounts-row">
-  <div class="add-amount-box received-box">
-    <div class="add-amount-label"><i class="fas fa-arrow-down" style="color:#00b894"></i> استلام</div>
-    <input type="number" inputmode="decimal" step="any" class="add-amount-input" id="customerReceived" placeholder="0">
-  </div>
-  <div class="add-amount-box paid-box">
-    <div class="add-amount-label"><i class="fas fa-arrow-up" style="color:#ef4444"></i> دفع</div>
-    <input type="number" inputmode="decimal" step="any" class="add-amount-input" id="customerPaid" placeholder="0">
-  </div>
-</div>
+<div class="city-modal" id="cityModal" onclick="if(event.target===this) closeCityFilter()"><div class="city-modal-content"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><b><i class="fas fa-city"></i> <span data-i18n="city">المدينة</span></b><button class="icon-btn" style="width:32px;height:32px;background:var(--bg);color:var(--text)" onclick="closeCityFilter()"><i class="fas fa-times" style="font-size:12px"></i></button></div><div id="cityList"></div><button class="dialog-btn dialog-btn-confirm" style="width:100%;margin-top:12px" onclick="clearCityFilter()"><i class="fas fa-rotate"></i> <span data-i18n="all">الكل</span></button></div></div>
 
-<div class="dialog-actions"><button type="button" class="dialog-btn dialog-btn-cancel" onclick="closeModal()"><i class="fas fa-xmark"></i> إلغاء</button><button type="submit" class="dialog-btn dialog-btn-confirm"><i class="fas fa-check"></i> حفظ</button></div>
-</form>
-</div></div>
+<div class="dialog-overlay" id="customDialog"><div class="dialog-box"><div class="dialog-icon edit" id="dialogIcon"><i class="fas fa-pen"></i></div><div class="dialog-title" id="dialogTitle">تأكيد</div><div class="dialog-msg" id="dialogMsg">هل أنت متأكد؟</div><input type="text" class="dialog-input" id="dialogInput" style="display:none"><div class="dialog-actions"><button class="dialog-btn dialog-btn-cancel" id="dialogCancel"><i class="fas fa-xmark"></i> <span data-i18n="cancel">إلغاء</span></button><button class="dialog-btn dialog-btn-confirm" id="dialogConfirm"><i class="fas fa-check"></i> <span data-i18n="save">حفظ</span></button></div></div></div>
 
-<div class="city-modal" id="cityModal" onclick="if(event.target===this) closeCityFilter()"><div class="city-modal-content"><div style="display:flex;justify-content:space-between;margin-bottom:12px"><b><i class="fas fa-city"></i> المدينة</b><button class="icon-btn" style="width:32px;height:32px;background:var(--bg);color:var(--text)" onclick="closeCityFilter()"><i class="fas fa-times" style="font-size:12px"></i></button></div><div id="cityList"></div><button class="dialog-btn dialog-btn-confirm" style="width:100%;margin-top:12px" onclick="clearCityFilter()"><i class="fas fa-rotate"></i> الكل</button></div></div>
-
-<div class="dialog-overlay" id="customDialog"><div class="dialog-box"><div class="dialog-icon edit" id="dialogIcon"><i class="fas fa-pen"></i></div><div class="dialog-title" id="dialogTitle">تأكيد</div><div class="dialog-msg" id="dialogMsg">هل أنت متأكد؟</div><input type="text" class="dialog-input" id="dialogInput" style="display:none"><div class="dialog-actions"><button class="dialog-btn dialog-btn-cancel" id="dialogCancel"><i class="fas fa-xmark"></i> إلغاء</button><button class="dialog-btn dialog-btn-confirm" id="dialogConfirm"><i class="fas fa-check"></i> حفظ</button></div></div></div>
-
-<div class="toast-pro" id="toastPro"><div class="toast-pro-icon"><i class="fas fa-check"></i></div><div class="toast-pro-msg" id="toastProMsg">تم</div></div>
+<div class="toast-pro" id="toastPro"><div class="toast-pro-icon"><i class="fas fa-check"></i></div><div class="toast-pro-msg" id="toastProMsg">تم</div><div class="toast-pro-progress"></div></div>
 
 <script type="module">
 import { auth, db } from './firebase.js';
@@ -234,7 +220,8 @@ let dialogResolve = null;
 window.openDialog = function({title='', message='', icon='pen-to-square', iconType='edit', inputValue='', inputType='text', placeholder='', showInput=false, confirmText='', cancelText='', hideCancel=false, danger=false}){
   return new Promise((resolve)=>{
     dialogResolve = resolve;
-    document.getElementById('dialogTitle').textContent = title || 'تأكيد';
+    const t = (k)=> window.KarniLang ? window.KarniLang.t(k) : k;
+    document.getElementById('dialogTitle').textContent = title || t('confirm');
     document.getElementById('dialogMsg').textContent = message;
     document.getElementById('dialogMsg').style.display = message ? 'block' : 'none';
     const iconEl = document.getElementById('dialogIcon');
@@ -250,11 +237,12 @@ window.openDialog = function({title='', message='', icon='pen-to-square', iconTy
     } else {
       inputEl.style.display = 'none';
     }
-    document.getElementById('dialogConfirm').innerHTML = `<i class="fas fa-${danger?'trash':'check'}"></i> ${confirmText || 'حفظ'}`;
+    document.getElementById('dialogConfirm').innerHTML = `<i class="fas fa-${danger?'trash':'check'}"></i> ${confirmText || t('save')}`;
     document.getElementById('dialogConfirm').className = 'dialog-btn ' + (danger ? 'dialog-btn-danger' : 'dialog-btn-confirm');
-    document.getElementById('dialogCancel').innerHTML = `<i class="fas fa-xmark"></i> ${cancelText || 'إلغاء'}`;
+    document.getElementById('dialogCancel').innerHTML = `<i class="fas fa-xmark"></i> ${cancelText || t('cancel')}`;
     document.getElementById('dialogCancel').style.display = hideCancel ? 'none' : 'flex';
     document.getElementById('customDialog').classList.add('active');
+    if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('customDialog'));
   });
 }
 function closeDialog(result){ document.getElementById('customDialog').classList.remove('active'); if(dialogResolve){ dialogResolve(result); dialogResolve=null; } }
@@ -266,11 +254,18 @@ window.showToastPro = function(msg, type='success'){
   const toast=document.getElementById('toastPro'); toast.className='toast-pro '+type+' show';
   toast.querySelector('.toast-pro-icon').innerHTML= type==='error'?'<i class="fas fa-xmark"></i>':'<i class="fas fa-check"></i>';
   document.getElementById('toastProMsg').textContent=msg;
+  const prog=toast.querySelector('.toast-pro-progress'); prog.style.animation='none'; prog.offsetHeight; prog.style.animation='toastProgress 2.8s linear forwards';
   setTimeout(()=>toast.classList.remove('show'),2800);
 }
 window.showToast = showToastPro;
+window.showAbout = function(){ const t=(k)=>window.KarniLang?KarniLang.t(k):k; openDialog({title:t('aboutApp'), message:t('aboutAppMsg'), icon:'circle-info', iconType:'info', hideCancel:true, confirmText:t('close')}); }
+window.showPrivacy = function(){ const t=(k)=>window.KarniLang?KarniLang.t(k):k; openDialog({title:t('privacyPolicy'), message:t('privacyMsg'), icon:'shield-halved', iconType:'info', hideCancel:true, confirmText:t('close')}); }
 
 document.addEventListener('DOMContentLoaded', ()=>{
+  // Ensure lang.js loaded
+  if(!window.KarniLang){ console.error("KarniLang not loaded - check lang.js"); return; }
+  console.log("Initial KarniLang:", KarniLang.getLanguage(), "LS:", localStorage.getItem("karni_language"));
+  KarniLang.applyTranslations(document);
   loadTheme(); setTodayDate(); initConnectionListener(); initEyeState();
   document.getElementById('searchInput').addEventListener('input', ()=>{ showAutocomplete(); searchCustomer(); });
   document.getElementById('searchInput').addEventListener('focus', onSearchFocus);
@@ -282,11 +277,12 @@ window.toggleAmountVisibility = function(){ const current = localStorage.getItem
 function applyEyeState(hidden){ const amountEl = document.getElementById('totalAmount'); const icon = document.getElementById('eyeIcon'); if(!amountEl || !icon) return; if(hidden){ amountEl.dataset.real = amountEl.textContent; amountEl.textContent = '••••••'; icon.className = 'fas fa-eye-slash'; } else { if(amountEl.dataset.real) amountEl.textContent = amountEl.dataset.real; icon.className = 'fas fa-eye'; } }
 
 function setConnectionUI(state){
+  const t=(k)=> window.KarniLang?KarniLang.t(k):k;
   const dot=document.getElementById('syncDot'), text=document.getElementById('syncText');
   if(!dot||!text) return;
-  if(state==='online'){ dot.style.background='#4ade80'; text.textContent='متصل'; }
-  else if(state==='offline'){ dot.style.background='#f87171'; text.textContent='غير متصل'; }
-  else { dot.style.background='#fbbf24'; text.textContent='جارٍ التحقق...'; }
+  if(state==='online'){ dot.style.background='#4ade80'; text.textContent=t('connected'); }
+  else if(state==='offline'){ dot.style.background='#f87171'; text.textContent=t('offline'); }
+  else { dot.style.background='#fbbf24'; text.textContent=t('checking'); }
 }
 function initConnectionListener(){ setConnectionUI(navigator.onLine?'checking':'offline'); window.addEventListener('online',()=>setConnectionUI('online')); window.addEventListener('offline',()=>setConnectionUI('offline')); }
 
@@ -305,8 +301,25 @@ function initFirebase(){
 }
 
 window.toggleDrawer = ()=>{ document.getElementById('drawer').classList.toggle('active'); document.getElementById('drawerOverlay').classList.toggle('active'); }
-window.openAccountSettings = ()=>{ window.location.href='account-settings.html'; }
+window.openAccountSettings = ()=>{
+  const drawer=document.getElementById('drawer'); const overlay=document.getElementById('drawerOverlay');
+  if(drawer && drawer.classList.contains('active')){ drawer.classList.remove('active'); overlay.classList.remove('active'); }
+  setTimeout(()=>{ window.location.href='account-settings.html'; }, 250);
+}
 function formatAmount(value){ const num = Number(value); if(!isFinite(num) || isNaN(num)) return '0'; const fixed = Number(num.toFixed(10)); if(Number.isInteger(fixed)) return fixed.toString(); return fixed.toString(); }
+
+let profileListenerUnsub = null;
+function updateDrawerProfileUI(displayName, email){
+  const avatarEl=document.getElementById('drawerUserAvatar'); const nameEl=document.getElementById('drawerUserName'); const emailEl=document.getElementById('drawerUserEmail'); const roleEl=document.getElementById('drawerUserRole');
+  if(!avatarEl || !nameEl || !emailEl) return;
+  let finalName = (displayName||'').trim();
+  if(!finalName && email && email.includes('@')){ finalName = email.split('@')[0]; finalName = finalName.charAt(0).toUpperCase() + finalName.slice(1); }
+  if(!finalName) finalName = window.KarniLang ? KarniLang.t('noCustomers') : 'User';
+  avatarEl.textContent = finalName.charAt(0).toUpperCase();
+  nameEl.textContent = finalName;
+  emailEl.textContent = email || '...';
+  if(roleEl){ roleEl.textContent = email && email.includes('admin') ? 'Administrator' : 'User'; }
+}
 
 function initUserProfile(){
   onAuthStateChanged(auth, async (user)=>{
@@ -317,35 +330,107 @@ function initUserProfile(){
       const profileRef = ref(db, `users/${currentUid}/profile`);
       const snap = await get(profileRef);
       let profile = snap.exists() ? snap.val() : {};
+      console.log("Firebase profile:", profile);
+      console.log("Firebase language:", profile.language);
+      console.log("Current language:", window.KarniLang ? KarniLang.getLanguage() : 'no KarniLang');
+      console.log("LocalStorage:", localStorage.getItem("karni_language"));
+
       let displayName = profile.displayName || user.displayName || '';
       let email = profile.email || user.email || '';
-      document.getElementById('drawerUserAvatar').textContent = (displayName||email||'U').charAt(0).toUpperCase();
-      document.getElementById('drawerUserName').textContent = displayName || email.split('@')[0];
-      document.getElementById('drawerUserEmail').textContent = email;
-    }catch(e){}
+      updateDrawerProfileUI(displayName, email);
+
+      if(profile.language && window.KarniLang){
+        const lang = profile.language;
+        console.log("[Fix] Applying Firebase language:", lang);
+        await KarniLang.setLanguage(lang);
+        KarniLang.applyDirection(lang);
+        KarniLang.applyTranslations(document);
+        localStorage.setItem("karni_language", lang);
+        console.log("Translation:", KarniLang.t("connected"));
+        console.log("Document lang:", document.documentElement.lang);
+        console.log("After set - KarniLang:", KarniLang.getLanguage(), "HTML lang:", document.documentElement.lang, "dir:", document.documentElement.dir);
+      } else {
+        if(window.KarniLang){
+          KarniLang.applyTranslations(document);
+        }
+      }
+
+      if(profile.theme){ loadTheme(profile.theme); }
+
+      if(profileListenerUnsub){ try{profileListenerUnsub();}catch(e){} }
+      profileListenerUnsub = onValue(profileRef, async (s)=>{
+        if(!s.exists()) return;
+        const data = s.val();
+        console.log("Realtime profile update:", data);
+        const dName = data.displayName || user.displayName || '';
+        const dEmail = data.email || user.email || '';
+        updateDrawerProfileUI(dName, dEmail);
+        if(data.language && window.KarniLang && data.language !== KarniLang.getLanguage()){
+          console.log("[Realtime] Switching language to", data.language);
+          await KarniLang.setLanguage(data.language);
+          KarniLang.applyDirection(data.language);
+          KarniLang.applyTranslations(document);
+          localStorage.setItem("karni_language", data.language);
+          console.log("Realtime Translation:", KarniLang.t("connected"));
+        }
+        if(data.theme){ loadTheme(data.theme); }
+      });
+
+    }catch(e){
+      console.warn('Profile load error', e);
+      updateDrawerProfileUI(user.displayName, user.email);
+      if(window.KarniLang){ KarniLang.applyTranslations(document); }
+    }
     initFirebase();
   });
 }
 
-window.logoutKarni = async ()=>{ localStorage.clear(); try{await signOut(auth);}catch(e){} window.location.href='login.html'; }
-window.changePassword = async ()=>{ const user=auth.currentUser; if(!user?.email){ showToastPro('البريد غير موجود','error'); return; } try{ await sendPasswordResetEmail(auth, user.email); showToastPro('تم إرسال رابط التغيير'); toggleDrawer(); }catch(e){ showToastPro('فشل الإرسال','error'); } }
+window.logoutKarni = async ()=>{ 
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
+  const ok=await openDialog({title:t('logoutTitle'), message:t('logoutMsg'), icon:'right-from-bracket', iconType:'danger', confirmText:t('logout'), cancelText:t('cancel'), danger:true}); 
+  if(!ok) return; 
+  localStorage.removeItem('loggedIn'); localStorage.removeItem('userName'); localStorage.removeItem('userEmail');
+  try{await signOut(auth);}catch(e){} window.location.href='login.html'; 
+}
+window.changePassword = async ()=>{ 
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
+  const user=auth.currentUser; if(!user?.email){ showToastPro(t('invalidEmail'),'error'); return; } 
+  try{ await sendPasswordResetEmail(auth, user.email); showToastPro(t('passwordResetSent')); toggleDrawer(); }catch(e){ showToastPro(t('sendFailed'),'error'); } 
+}
 window.openStore = () => { window.location.href = "matjar.html"; };
 window.openStoreSettings = () => { window.location.href = "reglematjar.html"; };
-window.openReportsWithAuth = ()=> window.location.href='products.html';
-window.backupSimple = ()=>{ showToastPro('النسخ الاحتياطي'); }
+window.openReportsWithAuth = async ()=>{ 
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
+  const pwd=await openDialog({title:t('reports'), message:t('chooseNewDate'), icon:'lock', iconType:'info', showInput:true, inputType:'password', placeholder:t('password'), confirmText:t('confirm')}); 
+  if(pwd==='1234@1234'){ window.location.href='products.html'; } else if(pwd!==null){ showToastPro(t('invalidCode'),'error'); } 
+}
+window.backupSimple = ()=>{
+  const t=(k,p)=>window.KarniLang?KarniLang.t(k,p):k;
+  if(!currentUid){ showToastPro(t('loginRequired'),'error'); return; }
+  function getRealBalance(c){ if(typeof c.currentBalance!=='undefined'&&c.currentBalance!==null) return parseFloat(c.currentBalance)||0; let p=0,r=0; if(c.operations){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); } return (parseFloat(c.amount)||0)+p-r; }
+  let txt=''; Object.values(allCustomers).forEach(c=>{ if(!c.name) return; txt+=`${(c.name||'').trim()}\n${formatAmount(getRealBalance(c))}\n\n`; });
+  if(!txt.trim()){ showToastPro(t('noData'),'error'); return; }
+  const blob=new Blob([txt.trim()],{type:'text/plain;charset=utf-8'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`karni-backup-${new Date().toISOString().split('T')[0]}.txt`; a.click(); URL.revokeObjectURL(url); showToastPro(t('backupDone', {count: Object.keys(allCustomers).length}));
+}
 window.contactUs = ()=> window.open('mailto:karnipro@gmail.com?subject=Karni Pro');
 function getAllCities(){ const set=new Set(); Object.values(allCustomers).forEach(c=>{ if(c.city?.trim()) set.add(c.city.trim()); if(c.ville?.trim()) set.add(c.ville.trim()); }); return Array.from(set).sort(); }
-window.openCityFilter = ()=>{ const cities=getAllCities(); const list=document.getElementById('cityList'); if(cities.length===0){ list.innerHTML=`<div style="text-align:center;padding:16px;color:var(--text-muted)">لا يوجد</div>`; } else { list.innerHTML=cities.map(city=>{ const count=Object.values(allCustomers).filter(c=>c.city===city||c.ville===city).length; const active=currentCityFilter===city?'active':''; return `<div class="city-item ${active}" onclick="filterByCity('${city.replace(/'/g,"\\'")}')"><span>${city}</span><span>${count}</span></div>`; }).join(''); } document.getElementById('cityModal').classList.add('active'); }
+window.openCityFilter = ()=>{ 
+  const cities=getAllCities(); const list=document.getElementById('cityList'); const t=(k)=>window.KarniLang?KarniLang.t(k):k;
+  if(cities.length===0){ list.innerHTML=`<div style="text-align:center;padding:16px;color:var(--text-muted)">${t('noResults')}</div>`; } 
+  else { list.innerHTML=cities.map(city=>{ const count=Object.values(allCustomers).filter(c=>c.city===city||c.ville===city).length; const active=currentCityFilter===city?'active':''; return `<div class="city-item ${active}" onclick="filterByCity('${city.replace(/'/g,"\\'")}')"><span>${city}</span><span>${count}</span></div>`; }).join(''); } 
+  document.getElementById('cityModal').classList.add('active'); 
+}
 window.closeCityFilter = ()=> document.getElementById('cityModal').classList.remove('active');
-window.clearCityFilter = ()=>{ currentCityFilter=null; document.getElementById('cityFilterBtn').classList.remove('active'); document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.querySelector('[data-filter="all"]').classList.add('active'); applyFilter('all'); closeCityFilter(); }
-window.filterByCity = (city, silent=false)=>{ currentCityFilter=city; document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.getElementById('cityFilterBtn').classList.add('active'); const filtered={}; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(c.city===city||c.ville===city) filtered[k]=c; }); renderCustomers(filtered); closeCityFilter(); }
+window.clearCityFilter = ()=>{ currentCityFilter=null; document.getElementById('cityFilterBtn').classList.remove('active'); document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.querySelector('[data-filter="all"]').classList.add('active'); applyFilter('all'); closeCityFilter(); showToastPro(window.KarniLang?KarniLang.t('allCities'):'All'); }
+window.filterByCity = (city, silent=false)=>{ currentCityFilter=city; document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); document.getElementById('cityFilterBtn').classList.add('active'); const filtered={}; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(c.city===city||c.ville===city) filtered[k]=c; }); renderCustomers(filtered); closeCityFilter(); if(!silent) showToastPro(window.KarniLang?KarniLang.t('cityFilter', {city}):city); }
 window.onSearchFocus = ()=>{ document.getElementById('searchWrapper').classList.add('sticky'); window.scrollTo({ top: 0, behavior: "smooth" }); }
 function showAutocomplete(){
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
   const q=document.getElementById('searchInput').value.toLowerCase().trim(); const list=document.getElementById('autocompleteList'); const clearBtn=document.getElementById('clearSearchBtn');
   if(!q){ list.classList.remove('active'); clearBtn.style.display='none'; return; } clearBtn.style.display='flex';
   const matches=[]; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(c.name?.toLowerCase().includes(q)) matches.push({id:k,...c}); });
-  if(matches.length===0){ list.innerHTML=`<div style="text-align:center;padding:16px;color:var(--text-muted)">لا يوجد</div>`; list.classList.add('active'); return; }
-  list.innerHTML=matches.slice(0,8).map(m=>`<div style="padding:10px;display:flex;gap:10px;cursor:pointer" onclick="selectAutocomplete('${m.id}')"><div style="width:36px;height:36px;border-radius:10px;background:#e0f2f1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary)">${(m.name||'').charAt(0)}</div><div><div style="font-weight:700;font-size:13px">${m.name}</div></div></div>`).join('');
+  if(matches.length===0){ list.innerHTML=`<div style="text-align:center;padding:16px;color:var(--text-muted)">${t('noResults')}</div>`; list.classList.add('active'); return; }
+  list.innerHTML=matches.slice(0,8).map(m=>`<div class="autocomplete-item" onclick="selectAutocomplete('${m.id}')"><div style="width:36px;height:36px;border-radius:10px;background:#e0f2f1;display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--primary)">${(m.name||'').charAt(0)}</div><div><div style="font-weight:700;font-size:13px">${m.name}</div><div style="font-size:11px;color:var(--text-muted)">${formatAmount(m.amount||0)} ${t('amount')}</div></div></div>`).join('');
   list.classList.add('active');
 }
 window.selectAutocomplete = (id)=>{ document.getElementById('autocompleteList').classList.remove('active'); const f={}; f[id]=allCustomers[id]; renderCustomers(f); document.getElementById('searchWrapper').classList.remove('sticky'); }
@@ -353,23 +438,26 @@ window.clearSearch = ()=>{ document.getElementById('searchInput').value=''; docu
 window.openReports = ()=> window.location.href='rapport.html';
 window.openRoute = ()=> window.location.href='route.html';
 window.openDetails = (id)=> window.location.href='person.html?id='+id;
-
 async function addCustomer(data){
-  if(!currentUid || !customersRef){ showToastPro('سجل الدخول أولا','error'); return; }
-  const r=push(customersRef); await set(r,{...data, id:r.key, createdAt:new Date().toISOString(), status:'pending'}); showToastPro('تمت إضافة الزبون');
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
+  if(!currentUid || !customersRef){ showToastPro(t('loginRequired'),'error'); return; }
+  const r=push(customersRef); await set(r,{...data, id:r.key, createdAt:new Date().toISOString(), status:'pending'}); showToastPro(t('customerAdded'));
 }
 async function updateCustomer(id,data){
-  if(!currentUid){ showToastPro('سجل الدخول أولا','error'); return; }
-  await update(ref(db,`users/${currentUid}/customers/${id}`), data);
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
+  if(!currentUid){ showToastPro(t('loginRequired'),'error'); return; }
+  await update(ref(db,`users/${currentUid}/customers/${id}`), data); showToastPro(t('customerUpdated'));
 }
 async function deleteCustomer(id){
-  if(!currentUid){ showToastPro('سجل الدخول أولا','error'); return; }
-  await remove(ref(db,`users/${currentUid}/customers/${id}`)); showToastPro('تم الحذف');
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
+  if(!currentUid){ showToastPro(t('loginRequired'),'error'); return; }
+  await remove(ref(db,`users/${currentUid}/customers/${id}`)); showToastPro(t('customerDeleted'));
 }
 function getRealBalance(c){ if(typeof c.currentBalance!=='undefined' && c.currentBalance!==null) return parseFloat(c.currentBalance)||0; let p=0,r=0; if(c.operations && Array.isArray(c.operations)){ c.operations.forEach(op=>{ if(op.type==='paid') p+=Number(op.amount)||0; else if(op.type==='received') r+=Number(op.amount)||0; }); } return (parseFloat(c.amount)||0)+p-r; }
 function renderCustomers(customers){
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
   const list=document.getElementById('customersList'); list.innerHTML='';
-  if(!customers || Object.keys(customers).length===0){ list.innerHTML=`<div style="text-align:center;padding:48px;color:var(--text-muted)"><i class="fas fa-users" style="font-size:32px;opacity:0.2;display:block;margin-bottom:8px"></i>لا يوجد زبناء</div>`; updateStats({totalAmount:0,customersCount:0,todayCount:0,overdueCount:0,upcomingCount:0}); return; }
+  if(!customers || Object.keys(customers).length===0){ list.innerHTML=`<div style="text-align:center;padding:48px;color:var(--text-muted)"><i class="fas fa-users" style="font-size:32px;opacity:0.2;display:block;margin-bottom:8px"></i>${t('noCustomers')}</div>`; updateStats({totalAmount:0,customersCount:0,todayCount:0,overdueCount:0,upcomingCount:0}); return; }
   let totalAmount=0, customersCount=0, todayCount=0, overdueCount=0, upcomingCount=0;
   const today=new Date().toISOString().split('T')[0];
   Object.keys(customers).forEach((key, idx)=>{
@@ -379,87 +467,54 @@ function renderCustomers(customers){
     if(customer.date===today) todayCount++; else if(customer.date && customer.date<today) overdueCount++; else if(customer.date && customer.date>today) upcomingCount++;
     const overdueClass = customer.date && customer.date<today ? 'overdue' : '';
     let badgeHtml='';
-    if(customer.date===today) badgeHtml=`<div class="badge today">اليوم</div>`;
-    else if(customer.date && customer.date<today) badgeHtml=`<div class="badge overdue">متأخر</div>`;
-    else if(customer.date && customer.date>today) badgeHtml=`<div class="badge upcoming">قادم</div>`;
+    if(customer.date===today) badgeHtml=`<div class="badge today"><i class="fas fa-circle" style="font-size:6px"></i> ${t('todayBadge')}</div>`;
+    else if(customer.date && customer.date<today) badgeHtml=`<div class="badge overdue"><i class="fas fa-circle" style="font-size:6px"></i> ${t('overdueBadge')}</div>`;
+    else if(customer.date && customer.date>today) badgeHtml=`<div class="badge upcoming"><i class="fas fa-circle" style="font-size:6px"></i> ${t('upcomingBadge')}</div>`;
     const hasBadge = badgeHtml !== ''; const cardPadding = hasBadge ? 'padding-top:44px;' : '';
-    const card = `<div class="customer-card ${overdueClass}" style="${cardPadding}">${badgeHtml}<div class="customer-header"><div class="customer-avatar">${(customer.name||'').charAt(0).toUpperCase()}</div><div class="customer-info"><div class="customer-name-row"><div class="customer-name-text">${customer.name}</div></div><div class="customer-details"><div class="detail-line amount"><i class="fas fa-wallet"></i> ${formatAmount(realBalance)} درهم</div><div class="detail-line"><i class="fas fa-phone"></i> ${customer.phone||'لا يوجد'}</div><div class="detail-line"><i class="fas fa-calendar"></i> ${customer.date||'-'}</div>${customer.city?`<div class="detail-line"><i class="fas fa-city"></i> ${customer.city}</div>`:''}</div></div></div><div class="customer-actions"><button class="btn btn-view" onclick="openDetails('${key}')"><i class="fas fa-eye"></i> عرض</button><button class="btn btn-date" onclick="setPaymentDate('${key}')"><i class="fas fa-calendar-days"></i> تاريخ</button><button class="btn btn-del" onclick="confirmDelete('${key}')"><i class="fas fa-trash"></i> حذف</button></div></div>`;
+    const card = `<div class="customer-card ${overdueClass}" data-customer-id="${key}" style="animation-delay:${idx*0.03}s;${cardPadding}">${badgeHtml}<div class="customer-header"><div class="customer-avatar">${(customer.name||'').charAt(0).toUpperCase()}</div><div class="customer-info"><div class="customer-name-row"><div class="customer-name-text">${customer.name}</div><button class="edit-name-btn" onclick="event.stopPropagation(); renameCustomer('${key}')" title="${t('edit')}"><i class="fas fa-pen" style="font-size:11px"></i></button></div><div class="customer-details"><div class="detail-line amount"><i class="fas fa-wallet"></i> ${formatAmount(realBalance)} ${t('amount')}</div><div class="detail-line"><i class="fas fa-phone"></i> ${customer.phone||t('noPhone')}</div><div class="detail-line"><i class="fas fa-calendar"></i> ${customer.date||'-'}</div>${customer.city?`<div class="detail-line"><i class="fas fa-city"></i> ${customer.city}</div>`:''}</div></div></div><div class="customer-actions"><button class="btn btn-view" onclick="event.stopPropagation(); openDetails('${key}')"><i class="fas fa-eye"></i> ${t('view')}</button><button class="btn btn-date" onclick="event.stopPropagation(); setPaymentDate('${key}')"><i class="fas fa-calendar-days"></i> ${t('changeDate')}</button><button class="btn btn-del" onclick="event.stopPropagation(); confirmDelete('${key}')"><i class="fas fa-trash"></i> ${t('delete')}</button></div></div>`;
     list.innerHTML+=card;
   });
   updateStats({totalAmount, customersCount, todayCount, overdueCount, upcomingCount});
 }
 function updateStats(s){ document.getElementById('totalAmount').textContent=formatAmount(s.totalAmount||0); document.getElementById('totalCustomers').textContent=s.customersCount||0; document.getElementById('todayCount').textContent=s.todayCount||0; document.getElementById('overdueCount').textContent=s.overdueCount||0; const upEl=document.getElementById('upcomingCount'); if(upEl) upEl.textContent=s.upcomingCount||0; }
-
-window.showAddModal = ()=>{
-  document.getElementById('customerId').value='';
-  document.getElementById('customerName').value='';
-  document.getElementById('customerPhone').value='';
-  document.getElementById('customerCity').value='';
-  document.getElementById('customerPaid').value='';
-  document.getElementById('customerReceived').value='';
-  setTodayDate();
-  document.getElementById('customerModal').classList.add('active');
-}
+window.showAddModal = ()=>{ document.getElementById('customerId').value=''; document.getElementById('customerName').value=''; document.getElementById('customerPhone').value=''; document.getElementById('customerCity').value=''; setTodayDate(); document.getElementById('customerModal').classList.add('active'); if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('customerModal')); }
 window.closeModal = ()=> document.getElementById('customerModal').classList.remove('active');
-
-window.saveCustomer = async (e)=>{
-  e.preventDefault();
-  const name = document.getElementById('customerName').value.trim();
-  if(!name){ showToastPro('أدخل اسم الزبون','error'); return; }
-  const cityVal=document.getElementById('customerCity').value.trim();
-  const paidVal = parseFloat(document.getElementById('customerPaid').value) || 0;
-  const receivedVal = parseFloat(document.getElementById('customerReceived').value) || 0;
-  const dateVal = document.getElementById('customerDate').value || new Date().toISOString().split('T')[0];
-
-  let operations = [];
-  const now = new Date();
-  const todayStr = now.toISOString().split('T')[0];
-  const timeStr = now.toTimeString().slice(0,5);
-  
-  if(receivedVal > 0) operations.push({type:'received', amount:receivedVal, date:dateVal, time:timeStr});
-  if(paidVal > 0) operations.push({type:'paid', amount:paidVal, date:dateVal, time:timeStr});
-
-  const currentBalance = paidVal - receivedVal;
-
-  const data={
-    name:name,
-    amount:0,
-    phone:document.getElementById('customerPhone').value.trim(),
-    city:cityVal,
-    ville:cityVal,
-    date:dateVal,
-    operations: operations,
-    currentBalance: currentBalance,
-    updatedAt:new Date().toISOString()
-  };
-  await addCustomer(data);
-  closeModal();
+window.saveCustomer = async (e)=>{ e.preventDefault(); const cityVal=document.getElementById('customerCity').value.trim(); const data={ name:document.getElementById('customerName').value.trim(), amount:0, phone:document.getElementById('customerPhone').value.trim(), city:cityVal, ville:cityVal, date:document.getElementById('customerDate').value, updatedAt:new Date().toISOString() }; await addCustomer(data); closeModal(); }
+window.renameCustomer = async (id)=>{
+  const t=(k,p)=>window.KarniLang?KarniLang.t(k,p):k;
+  if(!currentUid){ showToastPro(t('loginRequired'),'error'); return; }
+  const currentName = allCustomers[id]?.name || '';
+  const newName = await openDialog({title:t('editCustomerName'), message:t('chooseNewDate'), icon:'pen', iconType:'edit', showInput:true, inputType:'text', inputValue:currentName, placeholder:t('newNamePlaceholder'), confirmText:t('saveName')});
+  if(newName && newName.trim() && newName.trim() !== currentName){ const trimmedName = newName.trim(); await update(ref(db,`users/${currentUid}/customers/${id}`), {name:trimmedName, updatedAt:new Date().toISOString()}); if(allCustomers[id]) allCustomers[id].name = trimmedName; showToastPro(t('nameUpdated')); }
 }
-
-window.confirmDelete = async (id)=>{ if(confirm('حذف الزبون؟')) deleteCustomer(id); }
+window.confirmDelete = async (id)=>{ const t=(k,p)=>window.KarniLang?KarniLang.t(k,p):k; const ok=await openDialog({title:t('deleteCustomerTitle'), message:t('deleteCustomerMsg', {name: allCustomers[id]?.name||''}), icon:'trash', iconType:'danger', confirmText:t('delete'), cancelText:t('cancel'), danger:true}); if(ok) deleteCustomer(id); }
 window.filterBy = (filter)=>{ currentFilter=filter; currentCityFilter=null; document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active')); if(event && event.target) event.target.closest('.filter-tab')?.classList.add('active'); applyFilter(filter); }
 function applyFilter(filter){ const filtered={}; const today=new Date().toISOString().split('T')[0]; Object.keys(allCustomers).forEach(k=>{ const c=allCustomers[k]; if(!c || !c.name) return; if(filter==='all') filtered[k]=c; else if(filter==='today' && c.date===today) filtered[k]=c; else if(filter==='overdue' && c.date && c.date<today) filtered[k]=c; else if(filter==='upcoming' && c.date && c.date>today) filtered[k]=c; }); renderCustomers(filtered); }
 window.searchCustomer = ()=>{ const s=document.getElementById('searchInput').value.toLowerCase().trim(); if(!s){ applyFilter(currentFilter); return; } const f={}; Object.keys(allCustomers).forEach(k=>{ if(allCustomers[k].name?.toLowerCase().includes(s)) f[k]=allCustomers[k]; }); renderCustomers(f); }
-function loadTheme(){ let t = localStorage.getItem('theme') || 'light'; document.documentElement.setAttribute('data-theme', t); }
-window.toggleTheme = async ()=>{ const cur=document.documentElement.getAttribute('data-theme'); const nt=cur==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',nt); localStorage.setItem('theme',nt); }
+function loadTheme(externalTheme){ let t = externalTheme || localStorage.getItem('theme') || 'light'; let effective = t; if(t==='auto'){ effective = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; } document.documentElement.setAttribute('data-theme', effective); const ti=document.getElementById('themeIcon'); if(ti) ti.className=effective==='dark'?'fas fa-sun':'fas fa-moon'; const d=document.getElementById('drawerThemeIcon'); if(d) d.className=effective==='dark'?'fas fa-sun':'fas fa-moon'; }
+window.toggleTheme = async ()=>{ const cur=document.documentElement.getAttribute('data-theme'); const nt=cur==='dark'?'light':'dark'; document.documentElement.setAttribute('data-theme',nt); localStorage.setItem('theme',nt); loadTheme(nt); if(currentUid){ try{ await update(ref(db, `users/${currentUid}/profile`), {theme: nt, updatedAt: new Date().toISOString()}); }catch(e){} } }
 function setTodayDate(){ const el=document.getElementById('customerDate'); if(el) el.value=new Date().toISOString().split('T')[0]; }
 window.setPaymentDate = async (id)=>{
-  const newDate = prompt('تاريخ جديد (YYYY-MM-DD)', allCustomers[id]?.date||'');
+  const t=(k)=>window.KarniLang?KarniLang.t(k):k;
+  if(!currentUid){ showToastPro(t('loginRequired'),'error'); return; }
+  const current=allCustomers[id]?.date||'';
+  const newDate=await openDialog({title:t('editPaymentDate'), message:t('chooseNewDate'), icon:'calendar-days', iconType:'info', showInput:true, inputType:'date', inputValue:current, confirmText:t('saveDate'), cancelText:t('cancel')});
   if(newDate){ await updateCustomer(id, {date:newDate, updatedAt:new Date().toISOString()}); }
 }
 document.getElementById('customerModal').addEventListener('click', (e)=>{ if(e.target===e.currentTarget) closeModal(); });
+window.addEventListener('karniLanguageChanged', ()=>{ if(window.KarniLang){ KarniLang.applyTranslations(document); } applyFilter(currentFilter); setConnectionUI(navigator.onLine?'online':'offline'); });
 </script>
 <script>
-const appVersion="11";
-if(localStorage.getItem("appVersion") && localStorage.getItem("appVersion")!==appVersion){
+const appVersion="10"; 
+if(localStorage.getItem("appVersion") && localStorage.getItem("appVersion")!==appVersion){ 
   const theme=localStorage.getItem("theme"); const lang=localStorage.getItem("karni_language");
-  localStorage.clear();
+  localStorage.clear(); 
   if(theme) localStorage.setItem("theme",theme);
   if(lang) localStorage.setItem("karni_language",lang);
   localStorage.setItem("appVersion",appVersion);
-  location.href="login.html";
+  window.location.href="login.html"; 
 }
-localStorage.setItem("appVersion",appVersion);
+if('serviceWorker' in navigator){ window.addEventListener('load', ()=>navigator.serviceWorker.register('./sw.js',{scope:'./'})); }
 </script>
 </body>
 </html>
