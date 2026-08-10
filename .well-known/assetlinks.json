@@ -1,8 +1,11 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "dev.workers.hounaabdelali2001.m.twa",
-        "sha256_cert_fingerprints": ["A5:D7:B2:3B:65:67:57:A8:4B:C6:C7:8C:4F:2B:42:30:CF:2C:76:50:62:20:80:23:86:20:1A:9E:76:5F:E2:58"]
-      }
-    }]
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "dev.workers.hounaabdelali2001.m.twa",
+      "sha256_cert_fingerprints":
+        ["AD:98:28:EC:83:F5:1A:BA:E5:A9:16:6C:6B:E5:73:46:2E:35:CF:21:6D:8D:F8:F3:18:7C:BF:FB:21:A6:B5:4A"]
+    }
+  }
+]
