@@ -67,10 +67,19 @@ setTimeout(()=>{
       <a href="index.html" class="w-9 h-9 bg-gray-100 rounded-xl flex items-center justify-center"><i class="fa-solid fa-arrow-right"></i></a>
       <h1 class="font-bold text-gray-900" data-i18n="myStore">متجري</h1>
     </div>
-    <button id="reportsBtn" class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center relative">
-      <i class="fa-solid fa-file-invoice"></i>
-      <span id="orderCount" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
-    </button>
+    <div class="flex items-center gap-2">
+      <button id="customerOrdersBtn" class="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center relative hover:bg-orange-100 transition" title="طلبات الزبائن">
+        <i class="fa-solid fa-inbox"></i>
+        <span id="customerOrdersCount" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+      </button>
+      <button id="shareStoreBtn" class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center hover:bg-blue-100 transition" title="مشاركة متجري">
+        <i class="fa-solid fa-share-nodes"></i>
+      </button>
+      <button id="reportsBtn" class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center relative">
+        <i class="fa-solid fa-file-invoice"></i>
+        <span id="orderCount" class="hidden absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+      </button>
+    </div>
   </div>
 </header>
 
@@ -169,7 +178,7 @@ setTimeout(()=>{
 
 <script type="module">
 import { auth, db } from "./firebase.js";
-import { ref, get, push, update } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { ref, get, push, update, set, onValue, onChildAdded } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 let products = [];
@@ -189,8 +198,11 @@ let customersRef = null;
 let ordersRef = null;
 let profileRef = null;
 
-function t(key, params={}){ return window.KarniLang ? window.KarniLang.t(key, params) : key; }
-
+function t(key, params={}){ return window.KarniLang? window.KarniLang.t(key, params) : key; }
+function escapeHtml(str){
+  if(str==null) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
 function getProdCacheKey(){ return `products_${currentUid}`; }
 function getClientCacheKey(){ return `clients_${currentUid}`; }
 function getClientTimeKey(){ return `clients_time_${currentUid}`; }
@@ -199,7 +211,7 @@ function saveProductsToPhone(data){
   try{
     if(!currentUid) return;
     localStorage.setItem(getProdCacheKey(), JSON.stringify({v:'v3', t:Date.now(), d:data}));
-  } catch(e){}
+  } catch(e){ console.error('[MATJAR] saveProducts cache failed', e); }
 }
 function loadProductsFromPhone(){
   try{
@@ -209,24 +221,24 @@ function loadProductsFromPhone(){
     const p = JSON.parse(raw);
     if(Date.now() - p.t > 24*60*60*1000) return null;
     return p.d;
-  } catch(e){ return null; }
+  } catch(e){ console.error('[MATJAR] loadProducts cache failed', e); return null; }
 }
 function saveClientsToPhone(clients){
   try{
     if(!currentUid) return;
     localStorage.setItem(getClientCacheKey(), JSON.stringify(clients));
     localStorage.setItem(getClientTimeKey(), Date.now().toString());
-  } catch(e){}
+  } catch(e){ console.error('[MATJAR] saveClients failed', e); }
 }
 function loadClientsFromPhone(){
   try{
     if(!currentUid) return null;
     const raw = localStorage.getItem(getClientCacheKey());
     const time = localStorage.getItem(getClientTimeKey());
-    if(!raw || !time) return null;
+    if(!raw ||!time) return null;
     if(Date.now() - parseInt(time) > 24*60*60*1000) return null;
     return JSON.parse(raw);
-  } catch(e){ return null; }
+  } catch(e){ console.error('[MATJAR] loadClients failed', e); return null; }
 }
 
 function renderInstant(){
@@ -255,7 +267,7 @@ function renderInstant(){
 }
 
 async function loadClients(){
-  if(!currentUid || !customersRef) return;
+  if(!currentUid ||!customersRef) return;
   try{
     const snap = await get(customersRef);
     let clients = [];
@@ -263,7 +275,7 @@ async function loadClients(){
       const val = snap.val();
       if(val._init) delete val._init;
       Object.values(val).forEach(c=>{
-        if(!c || !c.name) return;
+        if(!c ||!c.name) return;
         if(c.name) clients.push(c.name.trim());
       });
     }
@@ -280,35 +292,119 @@ async function loadClients(){
         document.getElementById('clientSearchInput').value = activeClient;
       }
     } else if(allClients.length===0){
-      document.getElementById('clientsLoading').innerHTML = `<span class="text-red-400 text-xs">${t('noClients')}</span>`;
+      document.getElementById('clientsLoading').innerHTML = `<span class="text-red-400 text-xs">${escapeHtml(t('noClients'))}</span>`;
     }
-  }catch(e){
-    console.error(e);
+  }catch(error){
+    console.error('[MATJAR] Firebase loadClients error:', error);
   }
 }
 
 async function loadProducts(){
-  if(!currentUid || !productsRef) return;
+  if(!currentUid ||!productsRef) return;
   try{
     const snap = await get(productsRef);
     if(snap.exists()){
-      const val = snap.val();
-      if(val._init) delete val._init;
-      const fresh = Object.values(val).filter(v=>v && typeof v==='object' && !v._init).map(p=>{
-        if(p.image && !p.mainImage) p.mainImage = p.image;
+      const rawVal = snap.val();
+      console.log('[MATJAR] Firebase users/'+currentUid+'/products raw keys:', Object.keys(rawVal).length);
+      if(rawVal._init) delete rawVal._init;
+      const values = Object.values(rawVal).filter(v=>v && typeof v==='object' &&!v._init);
+      const normalized = values.map(p=>{
+        if(!p) return null;
+        if(p.image &&!p.mainImage) p.mainImage = p.image;
         if(p.mainImage && (!p.images || p.images.length===0)) p.images=[p.mainImage];
-        if(!p.images) p.images = p.mainImage ? [p.mainImage] : [];
+        if(!p.images) p.images = p.mainImage? [p.mainImage] : [];
         if(!p.mainImage && p.images.length>0) p.mainImage = p.images[0];
-        return {hidden:false, ...p};
-      }).filter(p=>!p.hidden);
-      if(JSON.stringify(fresh.map(p=>p.id).sort()) !== JSON.stringify(products.map(p=>p.id).sort())){
-        products = fresh;
-        filteredProducts = [...fresh];
-        saveProductsToPhone(fresh);
-        renderProducts(true);
-      }
+        if(!p.id) p.id = p.productId || Math.random().toString(36).slice(2);
+        return p;
+      }).filter(p=>p && p.id &&!p.hidden);
+      console.log('[MATJAR] Normalized products:', normalized.length, 'visible');
+      products = normalized;
+      filteredProducts = [...normalized];
+      saveProductsToPhone(normalized);
+      renderProducts(true);
+      await syncPublicStore();
+    } else {
+      console.log('[MATJAR] No products in users/'+currentUid+'/products');
+      products = [];
+      filteredProducts = [];
+      renderProducts(true);
+      await syncPublicStore();
     }
-  } catch(e){}
+  } catch(error){
+    console.error('[MATJAR] Firebase loadProducts error:', error);
+  }
+}
+
+async function syncPublicStore(){
+  if(!currentUid) return;
+  try{
+    let storeName = 'المتجر';
+    let logo = '';
+    try{
+      const profSnap = await get(ref(db, `users/${currentUid}/profile`));
+      if(profSnap.exists()){
+        const prof = profSnap.val();
+        storeName = prof.storeName || prof.displayName || 'المتجر';
+        logo = prof.logo || prof.storeLogo || '';
+      }
+    }catch(e){ console.error('[MATJAR] profile fetch error', e); }
+    const publicProducts = products.filter(p=>!p.hidden).map(p=>({
+      id: p.id,
+      name: p.name||'',
+      price: parseFloat(p.price||0),
+      stock: parseInt(p.stock||0),
+      mainImage: p.mainImage||'',
+      images: (p.images||[]).slice(0,5)
+    }));
+    const publicData = {
+      owner: currentUid,
+      name: storeName,
+      logo: logo,
+      updatedAt: new Date().toISOString(),
+      products: publicProducts
+    };
+    console.log('[MATJAR] Syncing publicStores/'+currentUid+' with', publicProducts.length, 'products');
+    await set(ref(db, `publicStores/${currentUid}`), publicData);
+    console.log('[MATJAR] publicStores sync success');
+  }catch(error){
+    console.error('[MATJAR] syncPublicStore failed', error);
+  }
+}
+
+// نظام استقبال طلبات الزبائن فوري
+function listenCustomerOrders(){
+  if(!currentUid) return;
+  const custRef = ref(db, `users/${currentUid}/orders`);
+  console.log('[MATJAR] Listening to users/'+currentUid+'/orders for real-time customer orders');
+
+  onValue(custRef, (snap)=>{
+    const badge = document.getElementById('customerOrdersCount');
+    if(!badge) return;
+    if(!snap.exists()){
+      badge.classList.add('hidden');
+      return;
+    }
+    const allOrders = Object.values(snap.val());
+    const newOrders = allOrders.filter(o=> o.status==='new' );
+    console.log('[MATJAR] Total orders:', allOrders.length, 'new:', newOrders.length);
+    if(newOrders.length>0){
+      badge.textContent = newOrders.length>99? '99+' : newOrders.length;
+      badge.classList.remove('hidden');
+      badge.classList.add('flex');
+    } else {
+      badge.classList.add('hidden');
+    }
+  });
+
+  onChildAdded(custRef, (snap)=>{
+    const order = snap.val();
+    if(!order) return;
+    // إشعار فقط للطلبات الجديدة القادمة من المتجر العام
+    if(order.source==='public_store' && order.status==='new'){
+      console.log('[MATJAR] New customer order received:', order.orderId);
+      showToast(`طلب جديد من: ${order.clientName||'زبون'}`, 'success');
+    }
+  });
 }
 
 function renderProducts(reset=true){
@@ -328,31 +424,31 @@ function renderProducts(reset=true){
   const nextSlice = list.slice(renderedCount, renderedCount+PAGE_SIZE);
   if(nextSlice.length===0) return;
   const html = nextSlice.map(p=>{
-    const mainImg = p.mainImage || p.images?.[0] || 'https://via.placeholder.com/300';
+    const mainImg = escapeHtml(p.mainImage || p.images?.[0] || 'https://via.placeholder.com/300');
     const inOrder = currentOrder.find(o=>o.productId==p.id);
-    const hasQty = inOrder ? inOrder.qty : 0;
+    const hasQty = inOrder? inOrder.qty : 0;
     const isZero = (parseInt(p.stock)||0) <= 0;
-    const badgeText = isZero ? t('outOfStock') : t('available');
-    const badgeClass = isZero ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-700';
+    const badgeText = isZero? escapeHtml(t('outOfStock')) : escapeHtml(t('available'));
+    const badgeClass = isZero? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-700';
     return `<div class="product-card bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      <div class="relative bg-gray-50 cursor-pointer" onclick="openOrderModal('${p.id}')">
-        <img src="${mainImg}" alt="${p.name}" class="w-full h-48 object-cover" loading="lazy" decoding="async">
+      <div class="relative bg-gray-50 cursor-pointer" onclick="openOrderModal('${escapeHtml(p.id)}')">
+        <img src="${mainImg}" alt="${escapeHtml(p.name)}" class="w-full h-48 object-cover" loading="lazy" decoding="async">
         <span class="absolute top-2 right-2 ${badgeClass} text-[11px] px-2.5 py-1 rounded-full font-bold">${badgeText}</span>
         ${hasQty>0?`<span class="absolute top-2 left-2 bg-emerald-600 text-white text-xs w-7 h-7 rounded-full flex items-center justify-center font-bold">${hasQty}</span>`:''}
       </div>
       <div class="p-3">
-        <h3 class="font-bold text-[13px] text-gray-900 line-clamp-1 mb-2 text-center">${p.name||t('noName')}</h3>
-        <p class="font-bold text-emerald-600 text-[13px] text-center mb-1">${parseFloat(p.price||0).toFixed(2)} ${t('dirham')}</p>
-        <p class="text-[11px] text-gray-400 text-center mb-2">${t('stockLabel')}: ${p.stock||0}</p>
+        <h3 class="font-bold text-[13px] text-gray-900 line-clamp-1 mb-2 text-center">${escapeHtml(p.name)||escapeHtml(t('noName'))}</h3>
+        <p class="font-bold text-emerald-600 text-[13px] text-center mb-1">${parseFloat(p.price||0).toFixed(2)} ${escapeHtml(t('dirham'))}</p>
+        <p class="text-[11px] text-gray-400 text-center mb-2">${escapeHtml(t('stockLabel'))}: ${parseInt(p.stock||0)}</p>
         ${hasQty>0?`
         <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-2 flex items-center justify-between gap-1">
-          <button onclick="editProductQty('${p.id}',-1)" class="w-8 h-8 bg-white border rounded-full flex items-center justify-center font-bold">-</button>
+          <button onclick="editProductQty('${escapeHtml(p.id)}',-1)" class="w-8 h-8 bg-white border rounded-full flex items-center justify-center font-bold">-</button>
           <span class="flex-1 text-center font-bold text-sm">${hasQty}</span>
-          <button onclick="editProductQty('${p.id}',1)" class="w-8 h-8 bg-white border rounded-full flex items-center justify-center font-bold">+</button>
-          <button onclick="deleteFromOrder('${p.id}')" class="w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center ml-1"><i class="fa-solid fa-trash text-[11px]"></i></button>
+          <button onclick="editProductQty('${escapeHtml(p.id)}',1)" class="w-8 h-8 bg-white border rounded-full flex items-center justify-center font-bold">+</button>
+          <button onclick="deleteFromOrder('${escapeHtml(p.id)}')" class="w-8 h-8 bg-red-50 text-red-500 rounded-full flex items-center justify-center ml-1"><i class="fa-solid fa-trash text-[11px]"></i></button>
         </div>
         `:`
-        <button onclick="openOrderModal('${p.id}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-cart-plus ml-1"></i>${t('addToOrder')}</button>
+        <button onclick="openOrderModal('${escapeHtml(p.id)}')" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs"><i class="fa-solid fa-cart-plus ml-1"></i>${escapeHtml(t('addToOrder'))}</button>
         `}
       </div>
     </div>`;
@@ -385,12 +481,12 @@ window.openOrderModal = function(productId){
   document.getElementById('orderProductName').textContent = p.name;
   document.getElementById('orderPrice').textContent = parseFloat(p.price||0).toFixed(2);
   document.getElementById('orderStock').textContent = p.stock||0;
-  document.getElementById('orderStockBadge').textContent = (parseInt(p.stock)||0) <=0 ? t('outOfStock') : t('available');
-  document.getElementById('orderStockBadge').className = `absolute top-3 right-3 text-xs px-3 py-1 rounded-full font-bold ${(parseInt(p.stock)||0)<=0 ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-700'}`;
+  document.getElementById('orderStockBadge').textContent = (parseInt(p.stock)||0) <=0? t('outOfStock') : t('available');
+  document.getElementById('orderStockBadge').className = `absolute top-3 right-3 text-xs px-3 py-1 rounded-full font-bold ${(parseInt(p.stock)||0)<=0? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-700'}`;
   document.getElementById('orderImagesCount').querySelector('span').textContent = p.images?.length||1;
-  document.getElementById('orderThumbs').innerHTML = (p.images||[]).map((img,i)=>`<img src="${img}" class="w-16 h-16 rounded-xl object-cover border-2 ${i===0?'border-emerald-500':'border-transparent'} cursor-pointer" onclick="setOrderMain('${img}',${i})">`).join('');
+  document.getElementById('orderThumbs').innerHTML = (p.images||[]).map((img,i)=>`<img src="${escapeHtml(img)}" class="w-16 h-16 rounded-xl object-cover border-2 ${i===0?'border-emerald-500':'border-transparent'} cursor-pointer" onclick="setOrderMain('${escapeHtml(img)}',${i})">`).join('');
   const existing = currentOrder.find(o=>o.productId==p.id);
-  document.getElementById('orderQty').value = existing ? existing.qty : 1;
+  document.getElementById('orderQty').value = existing? existing.qty : 1;
   document.getElementById('orderModal').classList.add('active');
   if(window.KarniLang) KarniLang.applyTranslations(document.getElementById('orderModal'));
   galleryImages = p.images||[mainImg];
@@ -411,6 +507,7 @@ window.confirmOrder = function(){
   if(qty<=0){ showToast(t('enterValidQty'),'error'); return; }
   const p = products[currentProductIndex];
   if(!p) return;
+  if(qty > (parseInt(p.stock)||0)){ showToast('الكمية أكبر من المخزون المتاح: '+p.stock,'error'); return; }
   const existingIdx = currentOrder.findIndex(o=>o.productId==p.id);
   if(existingIdx>-1) currentOrder[existingIdx].qty = qty;
   else currentOrder.push({productId:p.id, name:p.name, qty, price:p.price, mainImage:p.mainImage||p.images?.[0]});
@@ -423,70 +520,86 @@ window.confirmOrder = function(){
 function updateProgress(){
   const bar = document.getElementById('orderProgress');
   const countEl = document.getElementById('orderCount');
-  if(currentOrder.length===0 && !activeClient){ bar.classList.add('hidden'); countEl.classList.add('hidden'); return; }
+  if(currentOrder.length===0 &&!activeClient){ bar.classList.add('hidden'); countEl.classList.add('hidden'); return; }
   bar.classList.remove('hidden');
   countEl.classList.remove('hidden');
   countEl.textContent = currentOrder.length;
   document.getElementById('progressText').textContent = `${currentOrder.length} / ${window._lastFiltered?.length||products.length||0}`;
   const total = window._lastFiltered?.length||products.length||1;
   document.getElementById('progressBar').style.width = `${(currentOrder.length/total)*100}%`;
-  document.getElementById('orderSummary').innerHTML = currentOrder.map(o=>`<div class="bg-gray-50 rounded-lg p-2.5 flex justify-between items-center"><span class="font-bold text-xs truncate">${o.name}</span><div class="flex items-center gap-2"><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold text-xs">${o.qty}</span><button onclick="deleteFromOrder('${o.productId}')" class="w-6 h-6 bg-red-50 text-red-500 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-[10px]"></i></button></div></div>`).join('');
+  document.getElementById('orderSummary').innerHTML = currentOrder.map(o=>`<div class="bg-gray-50 rounded-lg p-2.5 flex justify-between items-center"><span class="font-bold text-xs truncate">${escapeHtml(o.name)}</span><div class="flex items-center gap-2"><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold text-xs">${o.qty}</span><button onclick="deleteFromOrder('${escapeHtml(o.productId)}')" class="w-6 h-6 bg-red-50 text-red-500 rounded-full flex items-center justify-center"><i class="fa-solid fa-xmark text-[10px]"></i></button></div></div>`).join('');
 }
 
 window.finishOrder = async function(){
   if(!currentUid){ location.href="login.html"; return; }
   if(!activeClient){ showToast(t('chooseClientFirst'),'error'); return; }
   if(currentOrder.length===0){ showToast(t('noOrders'),'error'); return; }
-  
+
   const btn = document.getElementById('finishOrderBtn');
   const originalHTML = btn.innerHTML;
   btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin ml-2"></i> ${t('loadingClients')}`;
   btn.disabled = true;
-  
+
   try{
-    // 1. خصم الكمية من المخزون مباشرة - حتى لو أصبح 0 أو سالب مسموح
     for(const item of currentOrder){
       const product = products.find(p=>p.id==item.productId);
       if(product){
         const currentStock = parseInt(product.stock)||0;
+        if(item.qty > currentStock){
+          throw new Error('INSUFFICIENT_STOCK:'+product.name);
+        }
         const newStock = currentStock - parseInt(item.qty);
-        // تحديث محلي
+        if(newStock < 0){
+          throw new Error('NEGATIVE_STOCK');
+        }
         product.stock = newStock;
-        // تحديث في Firebase - نسمح حتى لو 0 أو سالب
         try{
           await update(ref(db, `users/${currentUid}/products/${product.id}`), {
             stock: newStock,
             updatedAt: new Date().toISOString()
           });
         }catch(e){
-          console.warn("Stock update failed for", product.id, e);
+          console.error('[MATJAR] Firebase stock update failed for', product.id, e);
+          throw e;
         }
       }
     }
-    
-    // حفظ المنتجات المحدثة محليا
+
     saveProductsToPhone(products);
-    
-    // 2. إنشاء الطلب
+    await syncPublicStore();
+
+    // مسار موحد مع الحقول المطلوبة
+    const newOrderRef = push(ref(db, `users/${currentUid}/orders`));
+    const orderId = newOrderRef.key;
     const orderData = {
-      clientName:activeClient, 
-      items:currentOrder, 
-      totalItems:currentOrder.length, 
-      totalQty:currentOrder.reduce((s,i)=>s+i.qty,0), 
-      totalValue:currentOrder.reduce((s,i)=>s+(parseFloat(i.price)||0)*i.qty,0), 
-      createdAt:new Date().toISOString(), 
-      status:'pending'
+      orderId: orderId,
+      clientName: activeClient,
+      phone: '',
+      address: '',
+      city: '',
+      items: currentOrder,
+      totalItems: currentOrder.length,
+      totalQty: currentOrder.reduce((s,i)=>s+i.qty,0),
+      totalValue: currentOrder.reduce((s,i)=>s+(parseFloat(i.price)||0)*i.qty,0),
+      paymentMethod: 'cod',
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      source: 'matjar'
     };
-    await push(ref(db, `users/${currentUid}/orders`), orderData);
-    await push(ref(db, `users/${currentUid}/clientBons/${activeClient}/orders`), orderData);
-    
+    await set(newOrderRef, orderData);
+
     showToast(t('orderSent', {client: activeClient, count: currentOrder.length}),'success');
-    currentOrder=[]; 
-    updateProgress(); 
+    currentOrder=[];
+    updateProgress();
     renderProducts(true);
     setTimeout(()=>{ window.location.href='reports.html'; }, 800);
-  } catch(e){ 
-    showToast(t('orderError')+': '+e.message,'error'); 
+  } catch(error){
+    console.error('[MATJAR] finishOrder error:', error);
+    if(String(error.message).includes('INSUFFICIENT_STOCK')){
+      showToast('الكمية غير كافية - '+error.message.split(':')[1],'error');
+    } else {
+      showToast(t('orderError')+': '+error.message,'error');
+    }
     btn.innerHTML = originalHTML;
     btn.disabled = false;
     if(window.KarniLang) KarniLang.applyTranslations(btn);
@@ -498,8 +611,8 @@ function renderClientDropdown(filter){
   const dropdown = document.getElementById('clientDropdown');
   let list = allClients;
   if(filter) list = list.filter(c=>c.toLowerCase().includes(filter.toLowerCase()));
-  if(list.length===0 || !filter){ dropdown.classList.add('hidden'); return; }
-  dropdown.innerHTML = list.slice(0,20).map(c=>`<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b last:border-0 text-sm font-bold" onclick="selectClient('${c.replace(/'/g,"\'")}')"><i class="fa-solid fa-user ml-2 text-gray-400"></i>${c}</div>`).join('');
+  if(list.length===0 ||!filter){ dropdown.classList.add('hidden'); return; }
+  dropdown.innerHTML = list.slice(0,20).map(c=>`<div class="p-3 hover:bg-emerald-50 cursor-pointer border-b last:border-0 text-sm font-bold" onclick="selectClient('${escapeHtml(c).replace(/'/g,"\\'")}')"><i class="fa-solid fa-user ml-2 text-gray-400"></i>${escapeHtml(c)}</div>`).join('');
   dropdown.classList.remove('hidden');
 }
 window.selectClient = function(name){
@@ -518,6 +631,55 @@ function setActiveClient(name){
   updateProgress();
 }
 
+window.shareStore = async function(){
+  if(!currentUid){
+    showToast(t('loginRequired')||'يجب تسجيل الدخول','error');
+    return;
+  }
+  const base = new URL('store.html', window.location.href);
+  const publicStoreUrl = base.href + '?store=' + encodeURIComponent(currentUid);
+  console.log('[MATJAR] Generated public store URL:', publicStoreUrl);
+
+  const storeTitle = t('myStore')!== 'myStore'? t('myStore') : 'متجري';
+  const shareText = t('shareStoreText')!== 'shareStoreText'? t('shareStoreText') : 'يمكنك زيارة متجري والاطلاع على المنتجات وإرسال طلبك بسهولة.';
+  const linkCopiedMsg = t('linkCopied')!== 'linkCopied'? t('linkCopied') : 'تم نسخ رابط المتجر بنجاح';
+  const shareFailedMsg = t('shareFailed')!== 'shareFailed'? t('shareFailed') : 'تعذر مشاركة المتجر';
+
+  if(navigator.share){
+    try{
+      await navigator.share({ title: storeTitle, text: shareText, url: publicStoreUrl });
+    }catch(err){
+      if(err && err.name === 'AbortError') return;
+      console.error('[MATJAR] Web Share failed:', err);
+      try{
+        await navigator.clipboard.writeText(publicStoreUrl);
+        showToast(linkCopiedMsg,'success');
+      }catch(e){
+        console.error('[MATJAR] Clipboard fallback failed:', e);
+        showToast(shareFailedMsg,'error');
+      }
+    }
+  } else {
+    try{
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        await navigator.clipboard.writeText(publicStoreUrl);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = publicStoreUrl;
+        ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      showToast(linkCopiedMsg,'success');
+    }catch(e){
+      console.error('[MATJAR] Copy failed:', e);
+      showToast(shareFailedMsg,'error');
+    }
+  }
+}
+
 window.openGalleryFromOrder = function(){ openGallery(galleryImages, galleryIndex); }
 function openGallery(images, startIdx=0){ galleryImages=images; galleryIndex=startIdx; showGallery(); document.getElementById('galleryModal').classList.add('active'); }
 function showGallery(){
@@ -525,7 +687,7 @@ function showGallery(){
   document.getElementById('galleryImage').src=galleryImages[galleryIndex];
   document.getElementById('galleryCounter').textContent=`${galleryIndex+1} / ${galleryImages.length}`;
   document.getElementById('galleryDots').innerHTML=galleryImages.map((_,i)=>`<div class="w-2 h-2 rounded-full ${i===galleryIndex?'bg-white w-6':'bg-white/40'}" onclick="goGallery(${i})"></div>`).join('');
-  document.getElementById('galleryThumbs').innerHTML=galleryImages.map((img,i)=>`<img src="${img}" class="w-14 h-14 rounded-lg object-cover border-2 ${i===galleryIndex?'border-emerald-500':'border-transparent'} cursor-pointer" onclick="goGallery(${i})">`).join('');
+  document.getElementById('galleryThumbs').innerHTML=galleryImages.map((img,i)=>`<img src="${escapeHtml(img)}" class="w-14 h-14 rounded-lg object-cover border-2 ${i===galleryIndex?'border-emerald-500':'border-transparent'} cursor-pointer" onclick="goGallery(${i})">`).join('');
 }
 window.nextGallery=function(){ galleryIndex=(galleryIndex+1)%galleryImages.length; showGallery(); }
 window.prevGallery=function(){ galleryIndex=(galleryIndex-1+galleryImages.length)%galleryImages.length; showGallery(); }
@@ -547,20 +709,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
     ordersRef = ref(db, `users/${currentUid}/orders`);
     profileRef = ref(db, `users/${currentUid}/profile`);
 
+    // تشغيل الاستماع الفوري لطلبات الزبائن
+    listenCustomerOrders();
+
     try{
       const snap = await get(profileRef);
-      let profile = snap.exists() ? snap.val() : {};
-      console.log("Firebase profile:", profile);
-      console.log("Firebase language:", profile.language);
-      console.log("Current language:", window.KarniLang ? KarniLang.getLanguage() : 'no KarniLang');
-      console.log("LocalStorage:", localStorage.getItem("karni_language"));
+      let profile = snap.exists()? snap.val() : {};
       if(profile.language && window.KarniLang){
         await KarniLang.setLanguage(profile.language);
         KarniLang.applyDirection(profile.language);
         KarniLang.applyTranslations(document);
         localStorage.setItem("karni_language", profile.language);
-        console.log("Translation:", KarniLang.t("available"));
-        console.log("Document lang:", document.documentElement.lang);
       } else {
         if(window.KarniLang){
           const ls = localStorage.getItem("karni_language") || "ar";
@@ -574,13 +733,15 @@ document.addEventListener('DOMContentLoaded', ()=>{
     const hasCache = renderInstant();
     document.getElementById('clientSearchInput').addEventListener('input', e=>renderClientDropdown(e.target.value));
     document.getElementById('clientSearchInput').addEventListener('focus', e=>renderClientDropdown(e.target.value));
-    document.addEventListener('click', e=>{ if(!e.target.closest('#clientSearchInput') && !e.target.closest('#clientDropdown')) document.getElementById('clientDropdown').classList.add('hidden'); });
+    document.addEventListener('click', e=>{ if(!e.target.closest('#clientSearchInput') &&!e.target.closest('#clientDropdown')) document.getElementById('clientDropdown').classList.add('hidden'); });
     document.getElementById('searchClientBtn').addEventListener('click', ()=>{ const v=document.getElementById('clientSearchInput').value.trim(); if(v) setActiveClient(v); });
     document.getElementById('changeClientBtn').addEventListener('click', ()=>{ document.getElementById('activeClientBar').classList.add('hidden'); document.getElementById('clientSearchInput').value=''; activeClient=''; localStorage.removeItem('activeClient'); updateProgress(); });
     document.getElementById('searchInput').addEventListener('input', ()=>{ renderProducts(true); });
     document.getElementById('finishOrderBtn').addEventListener('click', finishOrder);
     document.getElementById('clearOrderBtn').addEventListener('click', clearOrder);
     document.getElementById('reportsBtn').addEventListener('click', ()=>window.location.href='reports.html');
+    document.getElementById('customerOrdersBtn').addEventListener('click', ()=>window.location.href='orders.html');
+    document.getElementById('shareStoreBtn').addEventListener('click', shareStore);
     const observer = new IntersectionObserver(entries=>{ if(entries[0].isIntersecting) renderProducts(false); }, {rootMargin:'300px'});
     observer.observe(document.getElementById('loadMoreTrigger'));
 
